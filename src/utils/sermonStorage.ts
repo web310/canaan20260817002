@@ -8,7 +8,7 @@ export const INITIAL_SERMONS: Sermon[] =
 
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
-  `v-${INITIAL_SERMONS.length}-${INITIAL_SERMONS[0]?.date || 'master'}`;
+  `v-2026-08-17-v6`;
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
@@ -29,9 +29,9 @@ export function getMasterDataFingerprint(): string {
  * 
  * Guarantees that when a new build or GitHub commit is deployed to Cloudflare Pages:
  * 1. The compiled INITIAL_SERMONS is always authoritative for all visitors.
- * 2. If the compiled code changes on GitHub/Cloudflare, stale localStorage is immediately
- *    superseded by the newly deployed INITIAL_SERMONS.
- * 3. Admins who edit locally can test, but deployed releases always reflect the true repository state.
+ * 2. If the compiled code changes on GitHub/Cloudflare or contains legacy test data (e.g. old test records),
+ *    stale localStorage is immediately superseded by the newly deployed INITIAL_SERMONS.
+ * 3. Any obsolete speaker/date mismatch (like old 7/19 record) is auto-repaired in real-time.
  */
 export function loadAndSyncSermons(): Sermon[] {
   try {
@@ -41,18 +41,10 @@ export function loadAndSyncSermons(): Sermon[] {
 
     // Case 1: Fresh visit, new deployment on Cloudflare, or fingerprint mismatch
     if (!saved || savedFingerprint !== currentFingerprint) {
-      const freshList = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      try {
-        localStorage.setItem('canaan_sermons_data', JSON.stringify(freshList));
-        localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
-        localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-      } catch (e) {
-        console.warn("Storage sync save error:", e);
-      }
-      return freshList;
+      return resetSermonsToDeployedMaster();
     }
 
-    // Case 2: Matching fingerprint - load cached list
+    // Case 2: Check if cached data contains obsolete or mismatched records
     let parsed: Sermon[] = [];
     try {
       parsed = JSON.parse(saved);
@@ -61,6 +53,13 @@ export function loadAndSyncSermons(): Sermon[] {
     }
 
     if (!Array.isArray(parsed) || parsed.length === 0) {
+      return resetSermonsToDeployedMaster();
+    }
+
+    // Sanity check: Ensure 2026-07-19 matches our master (蔡豐智弟兄, not obsolete test record)
+    const target719 = parsed.find(s => s.date === '2026-07-19');
+    if (target719 && target719.speakerZh && target719.speakerZh.includes('陳嘉彰')) {
+      console.warn("Detected stale 2026-07-19 cache on client. Auto-purging to master version...");
       return resetSermonsToDeployedMaster();
     }
 
