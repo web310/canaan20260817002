@@ -1,0 +1,6 @@
+{
+  "name": "Canaan Shin Sheng Christian Church",
+  "description": "Professional website for Canaan Shin Sheng Christian Church (加南新生基督教會) in Harbor City, CA featuring worship schedules, bilingual support, live sermons, ministries, online giving, and prayer requests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
