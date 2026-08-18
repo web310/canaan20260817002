@@ -8,7 +8,7 @@ export const INITIAL_SERMONS: Sermon[] =
 
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
-  `v-${INITIAL_SERMONS.length}-${INITIAL_SERMONS[0]?.date || 'master'}`;
+  `v-2026-08-17-v6`;
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
@@ -29,7 +29,7 @@ export function getMasterDataFingerprint(): string {
  * 
  * Guarantees that when a new build or GitHub commit is deployed to Cloudflare Pages:
  * 1. The compiled INITIAL_SERMONS is always authoritative for all visitors.
- * 2. If the compiled code changes on GitHub/Cloudflare or contains legacy test data,
+ * 2. If the compiled code changes on GitHub/Cloudflare or contains legacy test data (e.g. old test records),
  *    stale localStorage is immediately superseded by the newly deployed INITIAL_SERMONS.
  * 3. Any obsolete speaker/date mismatch (like old 7/19 record) is auto-repaired in real-time.
  */
