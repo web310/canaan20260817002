@@ -3,11 +3,11 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-08-18T05:03:45.622Z
+// Updated at: 2026-08-18T05:04:30.302Z
 // Total Sermons: 5
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "auto-2026-08-18-1787029425622";
+export const SERMONS_DATA_VERSION = "version-2026-08-18-msy77g4e";
 
 export const INITIAL_SERMONS: Sermon[] = [
   {
@@ -49,16 +49,16 @@ export const INITIAL_SERMONS: Sermon[] = [
     "series": "Sunday Message",
     "seriesZh": "主日證道",
     "summary": "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
-    "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』在日光之下尋找上帝賜予永恆的生命目的與公義冠冕。",
+    "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』孟蘇倫牧師從傳道書深刻省思日光之下的虛空勞碌，在基督裡尋求上帝賜予永恆的生命目的與公義冠冕。",
     "points": [
-      "Vanity under the sun — Ecclesiastes 1:2-3",
-      "Everything beautiful in its time — Ecclesiastes 3:11",
-      "The whole duty of humanity — Ecclesiastes 12:13"
+      "1. Vanity of vanities under the sun — Ecclesiastes 1:2-3",
+      "2. Everything beautiful in its time — Ecclesiastes 3:11",
+      "3. The whole duty of humanity — Ecclesiastes 12:13"
     ],
     "pointsZh": [
-      "日光之下的虛空 — 傳道書 1:2-3",
-      "神造萬物，各按其時成為美好 — 傳道書 3:11",
-      "人所當盡的分 — 傳道書 12:13"
+      "一、日光之下的虛空 — 傳道書 1:2-3",
+      "二、神造萬物，各按其時成為美好 — 傳道書 3:11",
+      "三、人所當盡的分：敬畏神、謹守誡命 — 傳道書 12:13"
     ],
     "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
     "videoPasscode": "8s4y?JHX"
@@ -115,8 +115,7 @@ export const INITIAL_SERMONS: Sermon[] = [
       "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
     "videoUrl": "https://us06web.zoom.us/rec/share/bs86Bo4nzLCBf0qV_MfnMECJLF1rzT5ZU3vtrXHP4YIZvHRJTdbThzgL9h",
-    "videoPasscode": "CLaQ$R13",
-    "audioUrl": ""
+    "videoPasscode": "CLaQ$R13"
   },
   {
     "id": "sermon-5",
@@ -127,23 +126,24 @@ export const INITIAL_SERMONS: Sermon[] = [
     "date": "2026-07-19",
     "scripture": "2 Peter 1:3-11",
     "scriptureZh": "彼得後書第 1 章第 3-11 節",
-    "series": "Sunday Worship",
-    "seriesZh": "主日崇拜",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
     "summary": "Brother Fengzhi Cai shares from 2 Peter 1:3-11 on the spiritual work and transformation God completes in us—exploring the dimensions of Christian maturity, their inner biblical connections, spiritual impact, and how to diligently pursue spiritual growth.",
     "summaryZh": "加南新生基督教會主日崇拜，蔡豐智弟兄透過彼得後書第 1 章第 3-11 節傳講《神要完成的工程》，深入剖析信徒邁向屬靈成熟的各個相度、其內涵與彼此關係、生命影響與果效，並勉勵大家在基督裡殷勤竭力，活出神所喜悅成熟豐盛的生命。",
     "points": [
-      "1. The Lord is My Shepherd, I Lack Nothing (Psalm 23:1-2)",
-      "2. He Restores My Soul and Guides My Paths (Psalm 23:3-4)",
-      "3. Goodness and Love Follow Me All My Days (Psalm 23:5-6)"
+      "1. Dimensions of moving toward spiritual maturity (2 Peter 1:3-7)",
+      "2. Their essential biblical meaning and interconnections",
+      "3. Their spiritual impact and consequences (2 Peter 1:8-10)",
+      "4. How to pursue and attain maturity (2 Peter 1:11)"
     ],
     "pointsZh": [
-      "一、耶和華是我的牧者，我必不致缺乏 (詩篇 23:1-2)",
-      "二、祂使我的靈魂甦醒，引導走義路 (詩篇 23:3-4)",
-      "三、一生一世必有恩惠慈愛隨著我 (詩篇 23:5-6)"
+      "1. 邁向成熟的幾個相度 (彼得後書 1:3-7)",
+      "2. 它們的內涵與關係",
+      "3. 它們的影響與後果 (彼得後書 1:8-10)",
+      "4. 如何邁向成熟 (彼得後書 1:11)"
     ],
-    "videoPasscode": "=szKp5f9",
     "videoUrl": "https://us06web.zoom.us/rec/share/RzkXPscs-KnPGSOeeA5ybRRaVmn1EeMbLRb34EV1WfW2MkHqQ0xpHj-7-C",
-    "audioUrl": ""
+    "videoPasscode": "=szKp5f9"
   }
 ];
 
