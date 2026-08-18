@@ -387,7 +387,7 @@ Strictly output your answer as a JSON object matching this schema:
         "二、事奉的原則與態度 (路加福音 10:4-12)",
         "三、因名記在天上而歡喜 (路加福音 10:17-21)"
       ],
-      videoUrl: "https://us06web.zoom.us/rec/share/bs86Bo4nzLCBf0qV_MfnMECJLF1rzT5ZU3vtrXHP4YIZvHRJTdbThzgL9h",
+      videoUrl: "https://us06web.zoom.us/rec/share/jYgGyM75MC5uunPmFMHVqTVRW6vASafMEi_vY-dKTHEQQY19EC9zXzqeaQNKabMB.lgi1HEXebTIUS5x0?startTime=1785089659000",
       videoPasscode: "CLaQ$R13"
     },
     {

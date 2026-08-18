@@ -3,11 +3,11 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-08-17T20:39:00.000Z
+// Updated at: 2026-08-18T02:19:00.000Z
 // Total Sermons: 5
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "2026-08-17-v7";
+export const SERMONS_DATA_VERSION = "2026-08-18-v8";
 
 export const INITIAL_SERMONS: Sermon[] = [
   {
@@ -114,7 +114,7 @@ export const INITIAL_SERMONS: Sermon[] = [
       "二、事奉的原則與態度 (路加福音 10:4-12)",
       "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
-    videoUrl: "https://us06web.zoom.us/rec/share/bs86Bo4nzLCBf0qV_MfnMECJLF1rzT5ZU3vtrXHP4YIZvHRJTdbThzgL9h",
+    videoUrl: "https://us06web.zoom.us/rec/share/jYgGyM75MC5uunPmFMHVqTVRW6vASafMEi_vY-dKTHEQQY19EC9zXzqeaQNKabMB.lgi1HEXebTIUS5x0?startTime=1785089659000",
     videoPasscode: "CLaQ$R13"
   },
   {
