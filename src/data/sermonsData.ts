@@ -66,7 +66,7 @@ export const INITIAL_SERMONS: Sermon[] = [
   {
     id: "sermon-3",
     title: "Those Who Are Well Do Not Need a Physician",
-    titleZh: "康健的人用不著醫生test",
+    titleZh: "康健的人用不著醫生",
     speaker: "Rev. Yijun Guo",
     speakerZh: "郭易君 牧師",
     date: "2026-08-02",
