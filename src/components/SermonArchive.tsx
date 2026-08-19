@@ -43,8 +43,8 @@ interface SermonProps {
 }
 
 export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenGlobalSync }) => {
-  // Sermons state initialized and deep-synced from compiled master & localStorage
-  const [sermons, setSermons] = useState<Sermon[]>(() => loadAndSyncSermons());
+  // Sermons state ALWAYS initialized directly from authoritative INITIAL_SERMONS
+  const [sermons, setSermons] = useState<Sermon[]>(() => INITIAL_SERMONS);
 
   const [selectedSermon, setSelectedSermon] = useState<Sermon | null>(null);
   const [activeTab, setActiveTab] = useState<'video' | 'audio' | 'notes'>('video');

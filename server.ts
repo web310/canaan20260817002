@@ -363,60 +363,6 @@ Strictly output your answer as a JSON object matching this schema:
         "四、他大擺筵席 （5:29-30）",
         "五、靈魂的醫生 （5:31）"
       ]
-    },
-    {
-      id: "sermon-4",
-      title: "The Lord Jesus Personally Teaches Service",
-      titleZh: "主耶穌親自教導事奉",
-      speaker: "Brother Shaoxin Li",
-      speakerZh: "李紹信 弟兄",
-      date: "2026-07-26",
-      scripture: "Luke 10:1-12, 17-21",
-      scriptureZh: "路加福音第 10 章第 1-12，17-21 節",
-      series: "Sunday Worship",
-      seriesZh: "主日崇拜",
-      summary: "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
-      summaryZh: "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
-      points: [
-        "The Lord Personally Sends Disciples (Luke 10:1-3)",
-        "Principles and Attitudes of Ministry (Luke 10:4-12)",
-        "Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
-      ],
-      pointsZh: [
-        "一、主親自差遣門徒 (路加福音 10:1-3)",
-        "二、事奉的原則與態度 (路加福音 10:4-12)",
-        "三、因名記在天上而歡喜 (路加福音 10:17-21)"
-      ],
-      videoUrl: "https://us06web.zoom.us/rec/share/jYgGyM75MC5uunPmFMHVqTVRW6vASafMEi_vY-dKTHEQQY19EC9zXzqeaQNKabMB.lgi1HEXebTIUS5x0?startTime=1785089659000",
-      videoPasscode: "CLaQ$R13"
-    },
-    {
-      id: "sermon-5",
-      title: "The Work That God Will Complete",
-      titleZh: "神要完成的工程",
-      speaker: "Brother Fengzhi Cai",
-      speakerZh: "蔡豐智 弟兄",
-      date: "2026-07-19",
-      scripture: "2 Peter 1:3-11",
-      scriptureZh: "彼得後書第 1 章第 3-11 節",
-      series: "Sunday Message",
-      seriesZh: "主日證道",
-      summary: "Brother Fengzhi Cai shares from 2 Peter 1:3-11 on the spiritual work and transformation God completes in us—exploring the dimensions of Christian maturity, their inner biblical connections, spiritual impact, and how to diligently pursue spiritual growth.",
-      summaryZh: "加南新生基督教會主日崇拜，蔡豐智弟兄透過彼得後書第 1 章第 3-11 節傳講《神要完成的工程》，深入剖析信徒邁向屬靈成熟的各個相度、其內涵與彼此關係、生命影響與果效，並勉勵大家在基督裡殷勤竭力，活出神所喜悅成熟豐盛的生命。",
-      points: [
-        "1. Dimensions of moving toward spiritual maturity (2 Peter 1:3-7)",
-        "2. Their essential biblical meaning and interconnections",
-        "3. Their spiritual impact and consequences (2 Peter 1:8-10)",
-        "4. How to pursue and attain maturity (2 Peter 1:11)"
-      ],
-      pointsZh: [
-        "1. 邁向成熟的幾個相度 (彼得後書 1:3-7)",
-        "2. 它們的內涵與關係",
-        "3. 它們的影響與後果 (彼得後書 1:8-10)",
-        "4. 如何邁向成熟 (彼得後書 1:11)"
-      ],
-      videoUrl: "https://us06web.zoom.us/rec/share/RzkXPscs-KnPGSOeeA5ybRRaVmn1EeMbLRb34EV1WfW2MkHqQ0xpHj-7-C",
-      videoPasscode: "=szKp5f9"
     }
   ];
   let inMemorySermons: any[] = [...INITIAL_DEFAULT_SERMONS];
@@ -1345,49 +1291,22 @@ export function getMasterDataFingerprint(): string {
 }
 
 /**
- * Robust sermon loader and data synchronization helper.
- * 
- * Guarantees that when a new build or GitHub commit is deployed to Cloudflare Pages:
- * 1. The compiled INITIAL_SERMONS is always authoritative for all visitors.
- * 2. If the compiled code changes on GitHub/Cloudflare or contains legacy test data,
- *    stale localStorage is immediately superseded by the newly deployed INITIAL_SERMONS.
- * 3. Any obsolete speaker/date mismatch (like old 7/19 record) is auto-repaired in real-time.
+ * Authoritative sermon loader.
+ * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
+ * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
  */
 export function loadAndSyncSermons(): Sermon[] {
   try {
-    const currentFingerprint = getMasterDataFingerprint();
-    const savedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
-    const saved = localStorage.getItem('canaan_sermons_data');
-
-    // Case 1: Fresh visit, new deployment on Cloudflare, or fingerprint mismatch
-    if (!saved || savedFingerprint !== currentFingerprint) {
-      return resetSermonsToDeployedMaster();
-    }
-
-    // Case 2: Check if cached data contains obsolete or mismatched records
-    let parsed: Sermon[] = [];
+    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     try {
-      parsed = JSON.parse(saved);
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
     } catch {
-      return resetSermonsToDeployedMaster();
+      // ignore storage errors
     }
-
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      return resetSermonsToDeployedMaster();
-    }
-
-    // Sanity check: Ensure 2026-07-19 matches our master (蔡豐智弟兄, not obsolete test record)
-    const target719 = parsed.find(s => s.date === '2026-07-19');
-    if (target719 && target719.speakerZh && target719.speakerZh.includes('陳嘉彰')) {
-      console.warn("Detected stale 2026-07-19 cache on client. Auto-purging to master version...");
-      return resetSermonsToDeployedMaster();
-    }
-
-    // Ensure sorted by date descending
-    parsed.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    return parsed;
-  } catch (err) {
-    console.warn("loadAndSyncSermons fallback to INITIAL_SERMONS:", err);
+    return list;
+  } catch {
     return INITIAL_SERMONS;
   }
 }
@@ -1396,17 +1315,7 @@ export function loadAndSyncSermons(): Sermon[] {
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  try {
-    const currentFingerprint = getMasterDataFingerprint();
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-    localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
-    localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    return list;
-  } catch (e) {
-    console.warn("Reset storage error:", e);
-    return INITIAL_SERMONS;
-  }
+  return loadAndSyncSermons();
 }
 `;
 

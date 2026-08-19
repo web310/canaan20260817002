@@ -3,10 +3,10 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Total Sermons: 5
+// Total Sermons: 3 (Recent 3 Sermons)
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "2026-08-18-v8";
+export const SERMONS_DATA_VERSION = "2026-08-19-top3-v9";
 
 export const INITIAL_SERMONS: Sermon[] = [
   {
@@ -89,60 +89,6 @@ export const INITIAL_SERMONS: Sermon[] = [
       "四、他大擺筵席 （5:29-30）",
       "五、靈魂的醫生 （5:31）"
     ]
-  },
-  {
-    id: "sermon-4",
-    title: "The Lord Jesus Personally Teaches Service",
-    titleZh: "主耶穌親自教導事奉",
-    speaker: "Brother Shaoxin Li",
-    speakerZh: "李紹信 弟兄",
-    date: "2026-07-26",
-    scripture: "Luke 10:1-12, 17-21",
-    scriptureZh: "路加福音第 10 章第 1-12，17-21 節",
-    series: "Sunday Worship",
-    seriesZh: "主日崇拜",
-    summary: "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
-    summaryZh: "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
-    points: [
-      "The Lord Personally Sends Disciples (Luke 10:1-3)",
-      "Principles and Attitudes of Ministry (Luke 10:4-12)",
-      "Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
-    ],
-    pointsZh: [
-      "一、主親自差遣門徒 (路加福音 10:1-3)",
-      "二、事奉的原則與態度 (路加福音 10:4-12)",
-      "三、因名記在天上而歡喜 (路加福音 10:17-21)"
-    ],
-    videoUrl: "https://us06web.zoom.us/rec/share/jYgGyM75MC5uunPmFMHVqTVRW6vASafMEi_vY-dKTHEQQY19EC9zXzqeaQNKabMB.lgi1HEXebTIUS5x0?startTime=1785089659000",
-    videoPasscode: "CLaQ$R13"
-  },
-  {
-    id: "sermon-5",
-    title: "The Work That God Will Complete",
-    titleZh: "神要完成的工程",
-    speaker: "Brother Fengzhi Cai",
-    speakerZh: "蔡豐智 弟兄",
-    date: "2026-07-19",
-    scripture: "2 Peter 1:3-11",
-    scriptureZh: "彼得後書第 1 章第 3-11 節",
-    series: "Sunday Message",
-    seriesZh: "主日證道",
-    summary: "Brother Fengzhi Cai shares from 2 Peter 1:3-11 on the spiritual work and transformation God completes in us—exploring the dimensions of Christian maturity, their inner biblical connections, spiritual impact, and how to diligently pursue spiritual growth.",
-    summaryZh: "加南新生基督教會主日崇拜，蔡豐智弟兄透過彼得後書第 1 章第 3-11 節傳講《神要完成的工程》，深入剖析信徒邁向屬靈成熟的各個相度、其內涵與彼此關係、生命影響與果效，並勉勵大家在基督裡殷勤竭力，活出神所喜悅成熟豐盛的生命。",
-    points: [
-      "1. Dimensions of moving toward spiritual maturity (2 Peter 1:3-7)",
-      "2. Their essential biblical meaning and interconnections",
-      "3. Their spiritual impact and consequences (2 Peter 1:8-10)",
-      "4. How to pursue and attain maturity (2 Peter 1:11)"
-    ],
-    pointsZh: [
-      "1. 邁向成熟的幾個相度 (彼得後書 1:3-7)",
-      "2. 它們的內涵與關係",
-      "3. 它們的影響與後果 (彼得後書 1:8-10)",
-      "4. 如何邁向成熟 (彼得後書 1:11)"
-    ],
-    videoUrl: "https://us06web.zoom.us/rec/share/RzkXPscs-KnPGSOeeA5ybRRaVmn1EeMbLRb34EV1WfW2MkHqQ0xpHj-7-C",
-    videoPasscode: "=szKp5f9"
   }
 ];
 

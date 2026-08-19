@@ -83,22 +83,8 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   // Load fresh data whenever modal opens
   useEffect(() => {
     if (isOpen) {
-      // 1. Sermons
-      try {
-        const savedSermons = localStorage.getItem('canaan_sermons_data');
-        if (savedSermons) {
-          const parsed = JSON.parse(savedSermons);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setAllSermons(parsed);
-          } else {
-            setAllSermons(INITIAL_SERMONS);
-          }
-        } else {
-          setAllSermons(INITIAL_SERMONS);
-        }
-      } catch {
-        setAllSermons(INITIAL_SERMONS);
-      }
+      // 1. Sermons - always initialize with authoritative INITIAL_SERMONS
+      setAllSermons(INITIAL_SERMONS);
 
       // 2. Photos
       try {
@@ -227,50 +213,22 @@ export function getMasterDataFingerprint(): string {
 }
 
 /**
- * Robust sermon loader and data synchronization helper.
- * 
- * Guarantees that when a new build or GitHub commit is deployed to Cloudflare Pages:
- * 1. The compiled INITIAL_SERMONS is always authoritative for all visitors.
- * 2. If the compiled code changes on GitHub/Cloudflare, stale localStorage is immediately
- *    superseded by the newly deployed INITIAL_SERMONS.
- * 3. Admins who edit locally can test, but deployed releases always reflect the true repository state.
+ * Authoritative sermon loader.
+ * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
+ * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
  */
 export function loadAndSyncSermons(): Sermon[] {
   try {
-    const currentFingerprint = getMasterDataFingerprint();
-    const savedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
-    const saved = localStorage.getItem('canaan_sermons_data');
-
-    // Case 1: Fresh visit, new deployment on Cloudflare, or fingerprint mismatch
-    if (!saved || savedFingerprint !== currentFingerprint) {
-      const freshList = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      try {
-        localStorage.setItem('canaan_sermons_data', JSON.stringify(freshList));
-        localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
-        localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-      } catch (e) {
-        console.warn("Storage sync save error:", e);
-      }
-      return freshList;
-    }
-
-    // Case 2: Matching fingerprint - load cached list
-    let parsed: Sermon[] = [];
+    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     try {
-      parsed = JSON.parse(saved);
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
     } catch {
-      return resetSermonsToDeployedMaster();
+      // ignore storage errors
     }
-
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      return resetSermonsToDeployedMaster();
-    }
-
-    // Ensure sorted by date descending
-    parsed.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    return parsed;
-  } catch (err) {
-    console.warn("loadAndSyncSermons fallback to INITIAL_SERMONS:", err);
+    return list;
+  } catch {
     return INITIAL_SERMONS;
   }
 }
@@ -279,17 +237,7 @@ export function loadAndSyncSermons(): Sermon[] {
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  try {
-    const currentFingerprint = getMasterDataFingerprint();
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-    localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
-    localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    return list;
-  } catch (e) {
-    console.warn("Reset storage error:", e);
-    return INITIAL_SERMONS;
-  }
+  return loadAndSyncSermons();
 }
 `;
   };
