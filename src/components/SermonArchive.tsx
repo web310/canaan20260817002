@@ -65,8 +65,9 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
   // Save to localStorage whenever sermons change
   useEffect(() => {
-    localStorage.setItem('canaan_sermons_data', JSON.stringify(sermons));
-  }, [sermons]);
+    localStorage.setItem('canaan_sermons_data', JSON.stringify(INITIAL_SERMONS));
+    setSermons(INITIAL_SERMONS);
+  }, []);
 
   // Ensure state matches newly deployed release fingerprint on startup
   useEffect(() => {
