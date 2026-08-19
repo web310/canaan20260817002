@@ -63,19 +63,18 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Save to localStorage whenever sermons change
+  // Hydrate state and check release fingerprint on initial mount
   useEffect(() => {
     localStorage.setItem('canaan_sermons_data', JSON.stringify(INITIAL_SERMONS));
-    setSermons(INITIAL_SERMONS);
-  }, []);
-
-  // Ensure state matches newly deployed release fingerprint on startup
-  useEffect(() => {
+    
     const currentFingerprint = getMasterDataFingerprint();
     const savedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
+    
     if (savedFingerprint !== currentFingerprint) {
       const fresh = resetSermonsToDeployedMaster();
       setSermons(fresh);
+    } else {
+      setSermons(INITIAL_SERMONS);
     }
   }, []);
 
@@ -104,8 +103,9 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       }
     };
 
-    window.removeEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
-    window.removeEventListener('storage', handleStorageChange);
+    // Attach event listeners
+    window.addEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
+    window.addEventListener('storage', handleStorageChange);
 
     // Initial check from server API
     fetch('/api/sermons')
@@ -123,6 +123,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       })
       .catch(() => {});
 
+    // Cleanup listeners on unmount
     return () => {
       window.removeEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
       window.removeEventListener('storage', handleStorageChange);
