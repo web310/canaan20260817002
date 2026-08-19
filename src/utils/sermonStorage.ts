@@ -1,52 +1,21 @@
 import { Sermon } from '../types';
-import * as SermonsData from '../data/sermonsData';
+import { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION } from '../data/sermonsData';
 
-export const INITIAL_SERMONS: Sermon[] = 
-  (SermonsData as any).INITIAL_SERMONS || 
-  (SermonsData as any).RECENT_SERMONS || 
-  [];
-
-export const SERMONS_DATA_VERSION: string = 
-  (SermonsData as any).SERMONS_DATA_VERSION || 
-  `2026-08-19-top3-v9`;
-
-/**
- * Generate a deterministic fingerprint of the compiled master sermons.
- */
-export function getMasterDataFingerprint(): string {
-  try {
-    return `${SERMONS_DATA_VERSION}::` + INITIAL_SERMONS.map(s => 
-      `${s.id}:${s.date}:${s.titleZh}:${s.speakerZh}:${s.videoUrl || ''}:${s.videoPasscode || ''}`
-    ).join('|');
-  } catch {
-    return `${SERMONS_DATA_VERSION}::${INITIAL_SERMONS.length}`;
-  }
-}
+export { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION };
 
 /**
  * Authoritative sermon loader.
- * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
- * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
+ * Always returns the static SERMON_CONTENT_LIST directly with zero LocalStorage or IndexedDB caching,
+ * ensuring 100% data consistency across Cloudflare Pages, GitHub, and preview.
  */
-export function loadAndSyncSermons(): Sermon[] {
-  try {
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    } catch {
-      // ignore storage errors
-    }
-    return list;
-  } catch {
-    return INITIAL_SERMONS;
-  }
+export function getAuthoritativeSermons(): Sermon[] {
+  return [...SERMON_CONTENT_LIST];
 }
 
-/**
- * Force reset cache to the latest deployed INITIAL_SERMONS version.
- */
+export function loadAndSyncSermons(): Sermon[] {
+  return [...SERMON_CONTENT_LIST];
+}
+
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  return loadAndSyncSermons();
+  return [...SERMON_CONTENT_LIST];
 }

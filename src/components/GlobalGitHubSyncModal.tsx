@@ -22,7 +22,7 @@ import {
   FolderSync
 } from 'lucide-react';
 import { Language, Sermon, GalleryPhoto, GalleryCategory, GoogleAlbum } from '../types';
-import { INITIAL_SERMONS } from '../data/sermonsData';
+import { SERMON_CONTENT_LIST } from '../data/sermonsData';
 import { INITIAL_GALLERY_PHOTOS, GALLERY_CATEGORIES, INITIAL_GOOGLE_ALBUMS } from '../data/galleryData';
 import { INITIAL_BULLETIN_DATA, BulletinData } from '../data/bulletinData';
 
@@ -74,7 +74,7 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   const [restoreStatus, setRestoreStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // All Current Local / Memory Data Aggregation
-  const [allSermons, setAllSermons] = useState<Sermon[]>([]);
+  const [allSermons, setAllSermons] = useState<Sermon[]>(() => SERMON_CONTENT_LIST);
   const [allPhotos, setAllPhotos] = useState<GalleryPhoto[]>([]);
   const [allCategories, setAllCategories] = useState<GalleryCategory[]>([]);
   const [allAlbums, setAllAlbums] = useState<GoogleAlbum[]>([]);
@@ -83,8 +83,8 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   // Load fresh data whenever modal opens
   useEffect(() => {
     if (isOpen) {
-      // 1. Sermons - always initialize with authoritative INITIAL_SERMONS
-      setAllSermons(INITIAL_SERMONS);
+      // 1. Sermons - always initialize with authoritative SERMON_CONTENT_LIST
+      setAllSermons(SERMON_CONTENT_LIST);
 
       // 2. Photos
       try {
@@ -167,77 +167,43 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
 
   // Helper generators for files
   const generateSermonsTs = (): string => {
-    const versionStr = `auto-${new Date().toISOString().slice(0, 10)}-${Date.now()}`;
+    const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
     return `import { Sermon } from '../types';
 
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
 // Updated at: ${new Date().toISOString()}
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: ${allSermons.length}
 // ============================================================================
 
 export const SERMONS_DATA_VERSION = "${versionStr}";
 
-export const INITIAL_SERMONS: Sermon[] = ${JSON.stringify(allSermons, null, 2)};
+export const SERMON_CONTENT_LIST: Sermon[] = ${JSON.stringify(allSermons, null, 2)};
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 `;
   };
 
   const generateSermonStorageTs = (): string => {
     return `import { Sermon } from '../types';
-import * as SermonsData from '../data/sermonsData';
+import { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION } from '../data/sermonsData';
 
-export const INITIAL_SERMONS: Sermon[] = 
-  (SermonsData as any).INITIAL_SERMONS || 
-  (SermonsData as any).RECENT_SERMONS || 
-  [];
+export { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION };
 
-export const SERMONS_DATA_VERSION: string = 
-  (SermonsData as any).SERMONS_DATA_VERSION || 
-  \`v-\${INITIAL_SERMONS.length}-\${INITIAL_SERMONS[0]?.date || 'master'}\`;
-
-/**
- * Generate a deterministic fingerprint of the compiled master sermons.
- * Any change in titles, dates, speakers, scriptures, passcodes or count in code triggers an immediate refresh.
- */
-export function getMasterDataFingerprint(): string {
-  try {
-    return \`\${SERMONS_DATA_VERSION}::\` + INITIAL_SERMONS.map(s => 
-      \`\${s.id}:\${s.date}:\${s.titleZh}:\${s.speakerZh}:\${s.videoUrl || ''}:\${s.videoPasscode || ''}\`
-    ).join('|');
-  } catch {
-    return \`\${SERMONS_DATA_VERSION}::\${INITIAL_SERMONS.length}\`;
-  }
+export function getAuthoritativeSermons(): Sermon[] {
+  return [...SERMON_CONTENT_LIST];
 }
 
-/**
- * Authoritative sermon loader.
- * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
- * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
- */
 export function loadAndSyncSermons(): Sermon[] {
-  try {
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    } catch {
-      // ignore storage errors
-    }
-    return list;
-  } catch {
-    return INITIAL_SERMONS;
-  }
+  return [...SERMON_CONTENT_LIST];
 }
 
-/**
- * Force reset cache to the latest deployed INITIAL_SERMONS version.
- */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  return loadAndSyncSermons();
+  return [...SERMON_CONTENT_LIST];
 }
 `;
   };
@@ -554,8 +520,12 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
 
         if (Array.isArray(data.sermons)) {
           setAllSermons(data.sermons);
-          localStorage.setItem('canaan_sermons_data', JSON.stringify(data.sermons));
           window.dispatchEvent(new CustomEvent('canaan_sermons_updated', { detail: { allSermons: data.sermons } }));
+          fetch('/api/sermons', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sermons: data.sermons })
+          }).catch(() => {});
           restoredCount += data.sermons.length;
         }
 

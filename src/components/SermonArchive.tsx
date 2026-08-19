@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Language, Sermon } from '../types';
-import { INITIAL_SERMONS, RECENT_SERMONS } from '../data/sermonsData';
-import { loadAndSyncSermons, resetSermonsToDeployedMaster, getMasterDataFingerprint } from '../utils/sermonStorage';
+import { SERMON_CONTENT_LIST } from '../data/sermonsData';
 import { SermonEditModal } from './SermonEditModal';
 import { SermonGitHubSyncModal } from './SermonGitHubSyncModal';
 import {
@@ -43,8 +42,8 @@ interface SermonProps {
 }
 
 export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenGlobalSync }) => {
-  // Sermons state ALWAYS initialized directly from authoritative INITIAL_SERMONS
-  const [sermons, setSermons] = useState<Sermon[]>(() => INITIAL_SERMONS);
+  // Sermons state ALWAYS initialized directly from authoritative SERMON_CONTENT_LIST
+  const [sermons, setSermons] = useState<Sermon[]>(() => SERMON_CONTENT_LIST);
 
   const [selectedSermon, setSelectedSermon] = useState<Sermon | null>(null);
   const [activeTab, setActiveTab] = useState<'video' | 'audio' | 'notes'>('video');
@@ -63,17 +62,16 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Hydrate state and enforce authoritative INITIAL_SERMONS on initial mount
+  // Purge any legacy LocalStorage cache on startup and enforce static SERMON_CONTENT_LIST
   useEffect(() => {
-    // Purge any stale or legacy localStorage cache
     try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(INITIAL_SERMONS));
-      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-      localStorage.setItem('canaan_sermons_data_version', '2026-08-19-top3-v9');
+      localStorage.removeItem('canaan_sermons_data');
+      localStorage.removeItem('canaan_sermons_master_fingerprint');
+      localStorage.removeItem('canaan_sermons_data_version');
     } catch (e) {
-      console.warn("Storage write notice:", e);
+      console.warn("Storage cleanup notice:", e);
     }
-    setSermons(INITIAL_SERMONS);
+    setSermons(SERMON_CONTENT_LIST);
   }, []);
 
   // Listen to external sermon updates (e.g. from PDF Bulletin upload or manual admin save)
@@ -88,27 +86,11 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       }
     };
 
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'canaan_sermons_data' && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setSermons(parsed);
-          }
-        } catch (err) {
-          console.warn("Storage sync error:", err);
-        }
-      }
-    };
-
-    // Attach event listeners
     window.addEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
-    window.addEventListener('storage', handleStorageChange);
 
     // Cleanup listeners on unmount
     return () => {
       window.removeEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
-      window.removeEventListener('storage', handleStorageChange);
     };
   }, [lang]);
 
@@ -119,11 +101,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
   const syncSermonList = (newList: Sermon[], msg?: string) => {
     setSermons(newList);
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(newList));
-    } catch (e) {
-      console.warn("Storage sync error:", e);
-    }
 
     fetch('/api/sermons', {
       method: 'POST',
@@ -199,11 +176,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
         // Prepend new sermon to top of list
         updatedList = [savedSermon, ...prev];
       }
-      try {
-        localStorage.setItem('canaan_sermons_data', JSON.stringify(updatedList));
-      } catch (e) {
-        console.warn("Storage sync error:", e);
-      }
       return updatedList;
     });
 
@@ -238,13 +210,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
     
     // Update React state
     setSermons(remainingSermons);
-    
-    // Persist to localStorage immediately
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(remainingSermons));
-    } catch (e) {
-      console.warn("Error persisting deletion to localStorage:", e);
-    }
 
     if (selectedSermon && selectedSermon.id === sermonId) {
       setSelectedSermon(null);
@@ -278,21 +243,20 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const handleResetToDefaults = () => {
-    const masterSermons = resetSermonsToDeployedMaster();
-    setSermons(masterSermons);
+    setSermons(SERMON_CONTENT_LIST);
     fetch('/api/sermons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sermons: masterSermons })
+      body: JSON.stringify({ sermons: SERMON_CONTENT_LIST })
     }).catch(e => console.warn(e));
 
     window.dispatchEvent(
       new CustomEvent('canaan_sermons_updated', {
-        detail: { allSermons: masterSermons }
+        detail: { allSermons: SERMON_CONTENT_LIST }
       })
     );
     setIsResetModalOpen(false);
-    showToast(lang === 'zh' ? '已成功同步並載入 GitHub 最新部署之講道與錄影！' : 'Reset and reloaded latest sermons from deployment.');
+    showToast(lang === 'zh' ? '已成功重置為系統最新主日講道！' : 'Reset and reloaded latest sermons from deployment.');
   };
 
   const filteredSermons = sermons.filter(s => {
@@ -1004,7 +968,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
           sermons={sermons}
           onImportBackup={(imported) => {
             setSermons(imported);
-            localStorage.setItem('canaan_sermons_data', JSON.stringify(imported));
             window.dispatchEvent(new CustomEvent('canaan_sermons_updated', {
               detail: { allSermons: imported }
             }));

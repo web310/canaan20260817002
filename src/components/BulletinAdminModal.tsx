@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Language, Sermon } from '../types';
-import { RECENT_SERMONS, WEEKLY_BIBLE_READING } from '../data/churchData';
+import { SERMON_CONTENT_LIST, WEEKLY_BIBLE_READING } from '../data/churchData';
 import { SermonEditModal } from './SermonEditModal';
 import {
   Mail,
@@ -159,27 +159,13 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
 
   const syncSermonToStore = (sermonToSave: Sermon) => {
     try {
-      const rawSermons = localStorage.getItem('canaan_sermons_data');
-      let currentSermons: Sermon[] = [];
-      if (rawSermons) {
-        try {
-          const parsed = JSON.parse(rawSermons);
-          if (Array.isArray(parsed)) currentSermons = parsed;
-        } catch (e) {
-          currentSermons = RECENT_SERMONS;
-        }
-      } else {
-        currentSermons = RECENT_SERMONS;
-      }
+      const currentSermons = SERMON_CONTENT_LIST;
 
       // Prepend or replace if same date or same id
       const filtered = currentSermons.filter(
         s => s.id !== sermonToSave.id && !(s.date === sermonToSave.date && s.titleZh === sermonToSave.titleZh)
       );
       const updatedSermons = [sermonToSave, ...filtered];
-
-      // Save to localStorage
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(updatedSermons));
 
       // Dispatch global events for instant reactive UI updates
       window.dispatchEvent(
@@ -199,7 +185,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
         onSermonAdded(sermonToSave);
       }
     } catch (err) {
-      console.warn("Could not save sermon to local storage:", err);
+      console.warn("Could not sync sermon:", err);
     }
   };
 
@@ -336,13 +322,12 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
   };
 
   const handleResetToDefault = () => {
-    if (window.confirm(lang === 'zh' ? '確定要重設為加南官方 2026-08-09 (孟蘇倫牧師) 週報與講道資料嗎？' : 'Reset to official default bulletin records?')) {
+    if (window.confirm(lang === 'zh' ? '確定要重設為加南官方最新週報與講道資料嗎？' : 'Reset to official default bulletin records?')) {
       setFormData(DEFAULT_OFFICIAL_BULLETIN);
       try {
         localStorage.setItem('canaan_bulletin_data', JSON.stringify(DEFAULT_OFFICIAL_BULLETIN));
-        localStorage.setItem('canaan_sermons_data', JSON.stringify(RECENT_SERMONS));
         window.dispatchEvent(new CustomEvent('canaan_bulletin_updated', { detail: DEFAULT_OFFICIAL_BULLETIN }));
-        window.dispatchEvent(new CustomEvent('canaan_sermons_updated', { detail: { allSermons: RECENT_SERMONS } }));
+        window.dispatchEvent(new CustomEvent('canaan_sermons_updated', { detail: { allSermons: SERMON_CONTENT_LIST } }));
       } catch (e) {
         console.warn(e);
       }

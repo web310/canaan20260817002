@@ -97,14 +97,17 @@ export const SermonGitHubSyncModal: React.FC<SermonGitHubSyncModalProps> = ({
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
 // Updated at: ${new Date().toISOString()}
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: ${sermons.length}
 // ============================================================================
 
 export const SERMONS_DATA_VERSION = "${versionStr}";
 
-export const INITIAL_SERMONS: Sermon[] = ${sermonsJson};
+export const SERMON_CONTENT_LIST: Sermon[] = ${sermonsJson};
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 `;
   };
 

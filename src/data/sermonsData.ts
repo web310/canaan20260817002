@@ -3,12 +3,12 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Total Sermons: 3 (Recent 3 Sermons)
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "2026-08-19-top3-v9";
+export const SERMONS_DATA_VERSION = "2026-08-19-top3-sermon-content-list";
 
-export const INITIAL_SERMONS: Sermon[] = [
+export const SERMON_CONTENT_LIST: Sermon[] = [
   {
     id: "sermon-1",
     title: "A Life That Never Disappoints",
@@ -92,4 +92,6 @@ export const INITIAL_SERMONS: Sermon[] = [
   }
 ];
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;

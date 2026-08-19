@@ -1,7 +1,7 @@
 import { Sermon, Ministry, ChurchEvent, PrayerRequest, StatementOfFaith } from '../types';
-import { INITIAL_SERMONS, RECENT_SERMONS, SERMONS_DATA_VERSION } from './sermonsData';
+import { SERMON_CONTENT_LIST, INITIAL_SERMONS, RECENT_SERMONS, SERMONS_DATA_VERSION } from './sermonsData';
 
-export { INITIAL_SERMONS, RECENT_SERMONS, SERMONS_DATA_VERSION };
+export { SERMON_CONTENT_LIST, INITIAL_SERMONS, RECENT_SERMONS, SERMONS_DATA_VERSION };
 
 export const CHURCH_INFO = {
   nameEn: "Canaan Shin Sheng Christian Church",
