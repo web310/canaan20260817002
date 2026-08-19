@@ -28,11 +28,11 @@ interface SermonEditModalProps {
 }
 
 const COMMON_SPEAKERS = [
-  { zh: "陳嘉彰 牧師", en: "Rev. Jiachang Chen" },
   { zh: "孟蘇倫 牧師", en: "Rev. Meng Sulun" },
+  { zh: "ITO 傳道", en: "Evangelist ITO" },
   { zh: "郭易君 牧師", en: "Rev. Yijun Guo" },
-  { zh: "Ito 傳道", en: "Evangelist Ito" },
   { zh: "李紹信 弟兄", en: "Brother Shaoxin Li" },
+  { zh: "蔡豐智 弟兄", en: "Brother Fengzhi Cai" },
 ];
 
 const COMMON_SERIES = [
@@ -56,8 +56,8 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
     id: sermon?.id || `sermon-${Date.now()}`,
     title: sermon?.title || '',
     titleZh: sermon?.titleZh || '',
-    speaker: sermon?.speaker || 'Rev. Jiachang Chen',
-    speakerZh: sermon?.speakerZh || '陳嘉彰 牧師',
+    speaker: sermon?.speaker || 'Rev. Meng Sulun',
+    speakerZh: sermon?.speakerZh || '孟蘇倫 牧師',
     date: sermon?.date || new Date().toISOString().slice(0, 10),
     scripture: sermon?.scripture || '',
     scriptureZh: sermon?.scriptureZh || '',
@@ -84,8 +84,8 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
         id: sermon.id || `sermon-${Date.now()}`,
         title: sermon.title || '',
         titleZh: sermon.titleZh || '',
-        speaker: sermon.speaker || 'Rev. Jiachang Chen',
-        speakerZh: sermon.speakerZh || '陳嘉彰 牧師',
+        speaker: sermon.speaker || 'Rev. Meng Sulun',
+        speakerZh: sermon.speakerZh || '孟蘇倫 牧師',
         date: sermon.date || new Date().toISOString().slice(0, 10),
         scripture: sermon.scripture || '',
         scriptureZh: sermon.scriptureZh || '',

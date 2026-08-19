@@ -63,22 +63,20 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Hydrate state and check release fingerprint on initial mount
+  // Hydrate state and enforce authoritative INITIAL_SERMONS on initial mount
   useEffect(() => {
-    localStorage.setItem('canaan_sermons_data', JSON.stringify(INITIAL_SERMONS));
-    
-    const currentFingerprint = getMasterDataFingerprint();
-    const savedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
-    
-    if (savedFingerprint !== currentFingerprint) {
-      const fresh = resetSermonsToDeployedMaster();
-      setSermons(fresh);
-    } else {
-      setSermons(INITIAL_SERMONS);
+    // Purge any stale or legacy localStorage cache
+    try {
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(INITIAL_SERMONS));
+      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+      localStorage.setItem('canaan_sermons_data_version', '2026-08-19-top3-v9');
+    } catch (e) {
+      console.warn("Storage write notice:", e);
     }
+    setSermons(INITIAL_SERMONS);
   }, []);
 
-  // Listen to external sermon updates (e.g. from PDF Bulletin upload or other tabs)
+  // Listen to external sermon updates (e.g. from PDF Bulletin upload or manual admin save)
   useEffect(() => {
     const handleSermonsUpdated = (e: any) => {
       if (e.detail?.allSermons && Array.isArray(e.detail.allSermons)) {
@@ -94,7 +92,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       if (e.key === 'canaan_sermons_data' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
-          if (Array.isArray(parsed)) {
+          if (Array.isArray(parsed) && parsed.length > 0) {
             setSermons(parsed);
           }
         } catch (err) {
@@ -106,22 +104,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
     // Attach event listeners
     window.addEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
     window.addEventListener('storage', handleStorageChange);
-
-    // Initial check from server API
-    fetch('/api/sermons')
-      .then(res => {
-        const ct = res.headers.get('content-type');
-        if (res.ok && ct && ct.includes('application/json')) {
-          return res.json();
-        }
-        return null;
-      })
-      .then(data => {
-        if (data && data.success && Array.isArray(data.sermons) && data.sermons.length > 0) {
-          setSermons(data.sermons);
-        }
-      })
-      .catch(() => {});
 
     // Cleanup listeners on unmount
     return () => {
