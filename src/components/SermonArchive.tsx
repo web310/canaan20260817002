@@ -103,8 +103,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       }
     };
 
-    window.addEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
-    window.addEventListener('storage', handleStorageChange);
+    window.removeEventListener('canaan_sermons_updated', handleSermonsUpdated as EventListener);
+    window.removeEventListener('storage', handleStorageChange);
 
     // Initial check from server API
     fetch('/api/sermons')
