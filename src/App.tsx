@@ -103,7 +103,12 @@ export default function App() {
         <GivingSection lang={lang} />
 
         {/* Intercessory Prayer Wall */}
-        <PrayerWall lang={lang} onOpenAI={() => setIsAIModalOpen(true)} />
+        <PrayerWall 
+          lang={lang} 
+          onOpenAI={() => setIsAIModalOpen(true)} 
+          adminEmail={adminEmail}
+          onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+        />
 
         {/* Contact, Directions & Ride Request */}
         <ContactSection 

@@ -118,4 +118,18 @@ export interface GoogleAlbum {
   photoCount?: number;
 }
 
+export interface PendingPrayerSubmission {
+  id: string;
+  author: string;
+  authorEmail?: string;
+  authorPhone?: string;
+  category: 'health' | 'family' | 'faith' | 'thanksgiving' | 'general';
+  title: string;
+  content: string;
+  submittedAt: string;
+  isConfidential: boolean;
+  status: 'pending' | 'approved' | 'rejected' | 'pastoral_handled';
+  adminNotes?: string;
+}
+
 

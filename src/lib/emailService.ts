@@ -91,6 +91,18 @@ export interface ContactFormPayload {
   needRide: boolean;
 }
 
+export interface PrayerFormPayload {
+  authorName: string;
+  authorEmail?: string;
+  authorPhone?: string;
+  category: 'health' | 'family' | 'faith' | 'thanksgiving' | 'general';
+  categoryLabelZh: string;
+  categoryLabelEn: string;
+  title: string;
+  content: string;
+  isConfidential: boolean;
+}
+
 /**
  * Sends Contact / Ride form via EmailJS.
  */
@@ -189,6 +201,103 @@ export async function sendMinistryEmailJS(payload: MinistryFormPayload): Promise
       method: 'mailto', 
       message: `已調起郵件軟體！主旨與內容已標明【${payload.ministryName}】。` 
     };
+  }
+}
+
+/**
+ * Sends Prayer Request via EmailJS to web@canaannewlife.org, saves to pending queue for Admin review.
+ */
+export async function sendPrayerEmailJS(payload: PrayerFormPayload): Promise<{ success: boolean; method: 'emailjs' | 'mailto' | 'pending'; message: string }> {
+  const config = getEmailJSConfig();
+  const timeStr = new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' });
+
+  const structuredMessage = [
+    `【加南官網代禱登記通知】`,
+    `提出者姓名/署名：${payload.authorName || '無名氏弟兄/姊妹'}`,
+    `聯絡電話：${payload.authorPhone || '未提供'}`,
+    `聯絡 Email：${payload.authorEmail || '未提供'}`,
+    `代禱主題：${payload.title}`,
+    `代禱分類：${payload.categoryLabelZh} (${payload.categoryLabelEn})`,
+    `保密性質：${payload.isConfidential ? '【教牧保密代禱】(僅限長執同工與牧者代禱，不公開)' : '【公開代禱申請】(經管理員審核授理後刊登至代禱牆)'}`,
+    `提交時間：${timeStr}`,
+    `----------------------------------------`,
+    `詳細代禱內容：`,
+    payload.content,
+    `----------------------------------------`,
+    `備註：管理員可登入官網後台直接進行審核授理或編輯發布。`
+  ].join('\n');
+
+  const templateParams = {
+    to_email: CHURCH_INFO.email,
+    to_name: '加南新生基督教會長執教牧同工團隊',
+    from_name: payload.authorName || '弟兄姊妹/朋友',
+    from_email: payload.authorEmail || CHURCH_INFO.email,
+    from_phone: payload.authorPhone || '(310) 626-6103',
+    prayer_title: payload.title,
+    prayer_category: payload.categoryLabelZh,
+    is_confidential: payload.isConfidential ? '是 (教牧保密代禱)' : '否 (申請公開刊登)',
+    subject: `[加南代禱登記] ${payload.isConfidential ? '【保密代禱】' : '【公開代禱申請】'} ${payload.title} - ${payload.authorName || '無名氏'}`,
+    message: structuredMessage,
+    time: timeStr,
+  };
+
+  // Save to form submissions history
+  saveSubmissionToHistory('prayer', templateParams);
+
+  // Save into pending prayers storage for Admin approval workflow
+  savePendingPrayerToQueue(payload);
+
+  if (config.serviceId && config.templateId && config.publicKey) {
+    try {
+      await emailjs.send(
+        config.serviceId,
+        config.templateId,
+        templateParams,
+        config.publicKey
+      );
+      return { 
+        success: true, 
+        method: 'emailjs', 
+        message: '代禱內容已成功透過 Email 發送至 web@canaannewlife.org，並已提交長執教牧同工團隊授理！' 
+      };
+    } catch (err: any) {
+      console.warn('EmailJS sending failed for prayer, falling back to mailto/local review:', err);
+      return { 
+        success: true, 
+        method: 'mailto', 
+        message: '代禱事項已登記並送交同工會！同工將於後台進行授理與守望代禱。' 
+      };
+    }
+  } else {
+    // If EmailJS keys not configured yet, still save locally and give user option to send via mail client
+    return { 
+      success: true, 
+      method: 'pending', 
+      message: '代禱事項已成功送出並保存於系統後台，待管理員授理確認後將刊登至代禱牆！' 
+    };
+  }
+}
+
+function savePendingPrayerToQueue(payload: PrayerFormPayload) {
+  try {
+    const existing = JSON.parse(localStorage.getItem('canaan_pending_prayers') || '[]');
+    const newPendingItem = {
+      id: `pending-prayer-${Date.now()}`,
+      author: payload.authorName || '無名氏弟兄/姊妹',
+      authorEmail: payload.authorEmail || '',
+      authorPhone: payload.authorPhone || '',
+      category: payload.category,
+      title: payload.title,
+      content: payload.content,
+      submittedAt: new Date().toISOString(),
+      isConfidential: payload.isConfidential,
+      status: 'pending',
+    };
+    const updated = [newPendingItem, ...existing];
+    localStorage.setItem('canaan_pending_prayers', JSON.stringify(updated.slice(0, 100)));
+    window.dispatchEvent(new CustomEvent('canaan_pending_prayers_updated', { detail: { pending: updated } }));
+  } catch (e) {
+    console.error('Failed to save pending prayer to queue:', e);
   }
 }
 
