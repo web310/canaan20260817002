@@ -7,9 +7,15 @@ import { Users, Music, BookOpen, HeartHandshake, HandHeart, Clock, MapPin, Check
 
 interface MinistryProps {
   lang: Language;
+  adminEmail?: string | null;
+  onOpenAdminLogin?: () => void;
 }
 
-export const MinistriesSection: React.FC<MinistryProps> = ({ lang }) => {
+export const MinistriesSection: React.FC<MinistryProps> = ({ 
+  lang,
+  adminEmail = null,
+  onOpenAdminLogin = () => {}
+}) => {
   const [selectedMinistry, setSelectedMinistry] = useState<Ministry | null>(null);
   const [joinSubmitted, setJoinSubmitted] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -276,6 +282,8 @@ export const MinistriesSection: React.FC<MinistryProps> = ({ lang }) => {
           isOpen={isConfigOpen}
           onClose={() => setIsConfigOpen(false)}
           lang={lang}
+          adminEmail={adminEmail}
+          onOpenAdminLogin={onOpenAdminLogin}
         />
 
       </div>

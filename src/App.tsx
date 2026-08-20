@@ -80,7 +80,11 @@ export default function App() {
         />
 
         {/* Church Ministries & Groups */}
-        <MinistriesSection lang={lang} />
+        <MinistriesSection 
+          lang={lang} 
+          adminEmail={adminEmail}
+          onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+        />
 
         {/* Events & Calendar */}
         <EventsCalendar lang={lang} />
@@ -99,7 +103,11 @@ export default function App() {
         <PrayerWall lang={lang} onOpenAI={() => setIsAIModalOpen(true)} />
 
         {/* Contact, Directions & Ride Request */}
-        <ContactSection lang={lang} />
+        <ContactSection 
+          lang={lang} 
+          adminEmail={adminEmail}
+          onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+        />
       </main>
 
       {/* Floating Admin Quick Bar when Logged In */}

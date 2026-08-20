@@ -8,9 +8,15 @@ import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Navigation, Sparkles, S
 
 interface ContactProps {
   lang: Language;
+  adminEmail?: string | null;
+  onOpenAdminLogin?: () => void;
 }
 
-export const ContactSection: React.FC<ContactProps> = ({ lang }) => {
+export const ContactSection: React.FC<ContactProps> = ({ 
+  lang,
+  adminEmail = null,
+  onOpenAdminLogin = () => {} 
+}) => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needRide, setNeedRide] = useState(false);
@@ -383,6 +389,8 @@ ${formData.message}
         isOpen={showConfigModal}
         onClose={() => setShowConfigModal(false)}
         lang={lang}
+        adminEmail={adminEmail}
+        onOpenAdminLogin={onOpenAdminLogin}
       />
     </section>
   );
