@@ -26,8 +26,8 @@ export const CHURCH_INFO = {
   phone1: "(310) 626-6103",
   phone2: "(310) 347-2010",
   email: "web@canaannewlife.org",
-  denominationEn: "Independent Christian Church",
-  denominationZh: "獨立基督教會 (Independent Church)",
+  denominationEn: "Christian Church",
+  denominationZh: "基督教會 (Christian Church)",
   zoomId: "310-626-6103",
   zoomPasscode: "25226",
   establishedYear: 1984,
@@ -294,10 +294,10 @@ export const CHURCH_HISTORY_MILESTONES = [
   },
   {
     year: "2012",
-    titleEn: "Independent Nondenominational Church",
-    titleZh: "自立獨立基督教會",
-    descEn: "Operating as an independent nondenominational Christian church led by the board of elders, deacons, and pastoral team.",
-    descZh: "成為獨立基督教會，由長執同工會與事工同工共同推動教牧與社區宣教事工。"
+    titleEn: "Established Christian Church",
+    titleZh: "自立基督教會",
+    descEn: "Operating as a Christian church led by the board of elders, deacons, and pastoral team.",
+    descZh: "成為基督教會，由長執同工會與事工同工共同推動教牧與社區宣教事工。"
   },
   {
     year: "2026",

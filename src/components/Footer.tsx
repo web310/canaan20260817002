@@ -37,8 +37,8 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenGiving, onOpenAI }) 
 
             <p className="text-xs text-slate-400 leading-relaxed font-light">
               {lang === 'zh'
-                ? '加南新生基督教會 (Canaan Shin Sheng Christian Church) 創立於 1984 年，為獨立基督教會 (Independent Christian Church)，由長執同工會與同工團隊共同帶領，致力於傳揚真理與服事 Harbor City 社區。'
-                : 'Established in 1984 as an independent Christian church. Serving Harbor City, CA through faithful Bible teaching, prayer, and community fellowship.'}
+                ? '加南新生基督教會 (Canaan Shin Sheng Christian Church) 創立於 1984 年，為基督教會 (Christian Church)，由長執同工會與同工團隊共同帶領，致力於傳揚真理與服事 Harbor City 社區。'
+                : 'Established in 1984 as a Christian church. Serving Harbor City, CA through faithful Bible teaching, prayer, and community fellowship.'}
             </p>
 
             <div className="text-xs text-amber-300 font-semibold flex items-center space-x-1">

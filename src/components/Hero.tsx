@@ -32,7 +32,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
           <div className="inline-flex items-center space-x-2 bg-amber-500/15 border border-amber-500/30 backdrop-blur-md px-3.5 py-1.5 rounded-full text-amber-300 text-xs sm:text-sm font-semibold tracking-wide">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
             <span>
-              {lang === 'zh' ? '獨立基督教會 • 創立於1984年' : 'Independent Christian Church • Est. 1984'}
+              {lang === 'zh' ? '基督教會 • 創立於1984年' : 'Christian Church • Est. 1984'}
             </span>
           </div>
 

@@ -28,8 +28,8 @@ export const AboutSection: React.FC<AboutProps> = ({ lang }) => {
 
           <p className="text-slate-600 text-base leading-relaxed">
             {lang === 'zh' 
-              ? '加南新生基督教會 (Canaan Shin Sheng Christian Church) 創立於 1984 年，為獨立基督教會 (Independent Christian Church)。四十多年來在 Harbor City 忠心敬拜神、培育信徒、廣傳福音。'
-              : 'Established in 1984 as an independent Christian church, Canaan Shin Sheng Christian Church serves the South Bay community with faithful Bible preaching and warm fellowship.'}
+              ? '加南新生基督教會 (Canaan Shin Sheng Christian Church) 創立於 1984 年，為基督教會 (Christian Church)。四十多年來在 Harbor City 忠心敬拜神、培育信徒、廣傳福音。'
+              : 'Established in 1984 as a Christian church, Canaan Shin Sheng Christian Church serves the South Bay community with faithful Bible preaching and warm fellowship.'}
           </p>
         </div>
 
@@ -115,8 +115,8 @@ export const AboutSection: React.FC<AboutProps> = ({ lang }) => {
                 </p>
                 <p>
                   {lang === 'zh'
-                    ? '作為獨立基督教會，我們由長執同工會與教牧同工團隊同心帶領，廣傳福音、深化教牧與肢體連結。無論您是尋求信仰真理的新朋友，或是尋找屬靈家園的弟兄姊妹，我們都竭誠歡迎您！'
-                    : 'As an independent Christian church, our leadership board and ministry teams operate in unity to preach the Gospel and care for our members. Whether you are seeking faith for the first time or looking for a church home, you are welcome here.'
+                    ? '作為基督教會，我們由長執同工會與教牧同工團隊同心帶領，廣傳福音、深化教牧與肢體連結。無論您是尋求信仰真理的新朋友，或是尋找屬靈家園的弟兄姊妹，我們都竭誠歡迎您！'
+                    : 'As a Christian church, our leadership board and ministry teams operate in unity to preach the Gospel and care for our members. Whether you are seeking faith for the first time or looking for a church home, you are welcome here.'
                   }
                 </p>
               </div>
@@ -132,7 +132,7 @@ export const AboutSection: React.FC<AboutProps> = ({ lang }) => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="font-medium text-slate-800">{lang === 'zh' ? '獨立基督教會 (Independent)' : 'Independent Church'}</span>
+                  <span className="font-medium text-slate-800">{lang === 'zh' ? '基督教會 (Christian Church)' : 'Christian Church'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
