@@ -47,13 +47,13 @@ export const WEEKLY_BIBLE_READING = {
   verseReference: "羅馬書 12:1 / Romans 12:1",
   readingRange: "8/17 - 8/23",
   schedule: [
-    { date: "8/17 (週一)", dateEn: "8/17 (Mon)", oldTestament: "詩篇 97-99", oldTestamentEn: "Psalms 97-99", newTestament: "羅馬書 16:1-16", newTestamentEn: "Romans 16:1-16" },
-    { date: "8/18 (週二)", dateEn: "8/18 (Tue)", oldTestament: "詩篇 100-101", oldTestamentEn: "Psalms 100-101", newTestament: "羅馬書 16:17-27", newTestamentEn: "Romans 16:17-27" },
-    { date: "8/19 (週三)", dateEn: "8/19 (Wed)", oldTestament: "詩篇 102", oldTestamentEn: "Psalms 102", newTestament: "哥林多前書 1:1-17", newTestamentEn: "1 Corinthians 1:1-17" },
-    { date: "8/20 (週四)", dateEn: "8/20 (Thu)", oldTestament: "詩篇 103", oldTestamentEn: "Psalms 103", newTestament: "哥林多前書 1:18-31", newTestamentEn: "1 Corinthians 1:18-31" },
-    { date: "8/21 (週五)", dateEn: "8/21 (Fri)", oldTestament: "詩篇 104", oldTestamentEn: "Psalms 104", newTestament: "哥林多前書 2", newTestamentEn: "1 Corinthians 2" },
-    { date: "8/22 (週六)", dateEn: "8/22 (Sat)", oldTestament: "詩篇 105", oldTestamentEn: "Psalms 105", newTestament: "哥林多前書 3", newTestamentEn: "1 Corinthians 3" },
-    { date: "8/23 (週日)", dateEn: "8/23 (Sun)", oldTestament: "詩篇 106", oldTestamentEn: "Psalms 106", newTestament: "哥林多前書 4", newTestamentEn: "1 Corinthians 4" },
+    { date: "8/17 (週一)", dateEn: "8/17 (Mon)", oldTestament: "詩篇 97-99", oldTestamentEn: "Psalms 97-99", newTestament: "羅馬書 16", newTestamentEn: "Romans 16" },
+    { date: "8/18 (週二)", dateEn: "8/18 (Tue)", oldTestament: "詩篇 100-102", oldTestamentEn: "Psalms 100-102", newTestament: "哥林多前書 1", newTestamentEn: "1 Corinthians 1" },
+    { date: "8/19 (週三)", dateEn: "8/19 (Wed)", oldTestament: "詩篇 103-104", oldTestamentEn: "Psalms 103-104", newTestament: "哥林多前書 2", newTestamentEn: "1 Corinthians 2" },
+    { date: "8/20 (週四)", dateEn: "8/20 (Thu)", oldTestament: "詩篇 105-106", oldTestamentEn: "Psalms 105-106", newTestament: "哥林多前書 3", newTestamentEn: "1 Corinthians 3" },
+    { date: "8/21 (週五)", dateEn: "8/21 (Fri)", oldTestament: "詩篇 107-109", oldTestamentEn: "Psalms 107-109", newTestament: "哥林多前書 4", newTestamentEn: "1 Corinthians 4" },
+    { date: "8/22 (週六)", dateEn: "8/22 (Sat)", oldTestament: "詩篇 110-112", oldTestamentEn: "Psalms 110-112", newTestament: "哥林多前書 5", newTestamentEn: "1 Corinthians 5" },
+    { date: "8/23 (週日)", dateEn: "8/23 (Sun)", oldTestament: "詩篇 113-115", oldTestamentEn: "Psalms 113-115", newTestament: "哥林多前書 6", newTestamentEn: "1 Corinthians 6" },
   ]
 };
 

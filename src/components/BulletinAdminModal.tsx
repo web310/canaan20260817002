@@ -84,13 +84,13 @@ const DEFAULT_OFFICIAL_BULLETIN: EditableBulletinForm = {
   memoryVerseRef: "羅馬書 12:1",
   weeklyReadingRange: "8/17 - 8/23",
   weeklyReadingSchedule: [
-    { date: "8/17 (週一)", oldTestament: "詩篇 97-99", newTestament: "羅馬書 16:1-16" },
-    { date: "8/18 (週二)", oldTestament: "詩篇 100-101", newTestament: "羅馬書 16:17-27" },
-    { date: "8/19 (週三)", oldTestament: "詩篇 102", newTestament: "哥林多前書 1:1-17" },
-    { date: "8/20 (週四)", oldTestament: "詩篇 103", newTestament: "哥林多前書 1:18-31" },
-    { date: "8/21 (週五)", oldTestament: "詩篇 104", newTestament: "哥林多前書 2" },
-    { date: "8/22 (週六)", oldTestament: "詩篇 105", newTestament: "哥林多前書 3" },
-    { date: "8/23 (週日)", oldTestament: "詩篇 106", newTestament: "哥林多前書 4" }
+    { date: "8/17 (週一)", oldTestament: "詩篇 97-99", newTestament: "羅馬書 16" },
+    { date: "8/18 (週二)", oldTestament: "詩篇 100-102", newTestament: "哥林多前書 1" },
+    { date: "8/19 (週三)", oldTestament: "詩篇 103-104", newTestament: "哥林多前書 2" },
+    { date: "8/20 (週四)", oldTestament: "詩篇 105-106", newTestament: "哥林多前書 3" },
+    { date: "8/21 (週五)", oldTestament: "詩篇 107-109", newTestament: "哥林多前書 4" },
+    { date: "8/22 (週六)", oldTestament: "詩篇 110-112", newTestament: "哥林多前書 5" },
+    { date: "8/23 (週日)", oldTestament: "詩篇 113-115", newTestament: "哥林多前書 6" }
   ],
   prayerRequests: [
     "為教會冷氣安裝工程與招牌設計製作代禱",

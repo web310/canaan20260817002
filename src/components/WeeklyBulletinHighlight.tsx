@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO, WEEKLY_BIBLE_READING } from '../data/churchData';
-import { BookOpen, Bookmark, Phone, Sparkles, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Bookmark, Phone, Sparkles, CheckCircle2, ChevronLeft, ChevronRight, Calendar, Compass } from 'lucide-react';
 import { translateDateWeekdayToEn, translateScriptureToEn } from '../utils/translationHelper';
+import { getWeekScheduleFromAnnual } from '../data/annualBibleReading';
+import { AnnualBibleReadingModal } from './AnnualBibleReadingModal';
 
 interface WeeklyHighlightProps {
   lang: Language;
 }
 
 export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }) => {
+  const [weekOffset, setWeekOffset] = useState<number>(0);
+  const [isAnnualModalOpen, setIsAnnualModalOpen] = useState(false);
+
   const [bulletinData, setBulletinData] = useState<any>(() => {
     try {
       const saved = localStorage.getItem('canaan_bulletin_data');
@@ -36,10 +41,10 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
     ? (bulletinData?.memoryVerseRef || WEEKLY_BIBLE_READING.verseReferenceZh || WEEKLY_BIBLE_READING.verseReference)
     : (bulletinData?.memoryVerseRefEn || WEEKLY_BIBLE_READING.verseReferenceEn || translateScriptureToEn(bulletinData?.memoryVerseRef || WEEKLY_BIBLE_READING.verseReference));
 
-  const readingSchedule = (Array.isArray(bulletinData?.weeklyReadingSchedule) && bulletinData.weeklyReadingSchedule.length > 0)
-    ? bulletinData.weeklyReadingSchedule
-    : WEEKLY_BIBLE_READING.schedule;
-  const readingRange = bulletinData?.weeklyReadingRange || WEEKLY_BIBLE_READING.readingRange || '8/17 - 8/23';
+  // Automatically derive reading from the fixed 365-day annual schedule according to current calendar date & week offset
+  const autoWeeklyPlan = getWeekScheduleFromAnnual(new Date(), weekOffset);
+  const readingSchedule = autoWeeklyPlan.schedule;
+  const readingRange = lang === 'zh' ? autoWeeklyPlan.rangeZh : autoWeeklyPlan.rangeEn;
 
   return (
     <section className="py-16 bg-gradient-to-b from-amber-50/80 via-white to-slate-50 border-y border-amber-200/60 text-slate-800">
@@ -60,7 +65,7 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
           </p>
         </div>
 
-        {/* 3 Grid Column Layout derived from the Weekly Bulletin */}
+        {/* 3 Grid Column Layout derived from the Weekly Bulletin & 365-Day Bible Plan */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Card 1: Memory Verse of the Week (背誦經文) */}
@@ -89,38 +94,107 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
             </div>
           </div>
 
-          {/* Card 2: Weekly Bible Reading Progress (本週讀經進度) */}
-          <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center space-x-2">
-                <BookOpen className="w-5 h-5 text-amber-700" />
-                <h3 className="font-serif text-lg font-bold text-slate-900">
-                  {lang === 'zh' ? '【本週讀經進度】' : 'Weekly Bible Reading Plan'}
-                </h3>
-              </div>
-              <span className="text-xs text-slate-500 font-medium font-mono">{readingRange}</span>
-            </div>
-
-            <div className="divide-y divide-slate-100 text-xs sm:text-sm">
-              {readingSchedule.map((day: any, idx: number) => {
-                const dateDisplay = lang === 'zh' ? day.date : (day.dateEn || translateDateWeekdayToEn(day.date));
-                const oldTestamentDisplay = lang === 'zh' ? day.oldTestament : (day.oldTestamentEn || translateScriptureToEn(day.oldTestament));
-                const newTestamentDisplay = lang === 'zh' ? day.newTestament : (day.newTestamentEn || translateScriptureToEn(day.newTestament));
-
-                return (
-                  <div key={idx} className="py-2 flex items-center justify-between">
-                    <span className="font-bold text-slate-800 w-24 shrink-0">{dateDisplay}</span>
-                    <div className="flex items-center space-x-3 text-slate-600 font-mono">
-                      <span className="bg-amber-50 text-amber-900 px-2 py-0.5 rounded border border-amber-200/80">
-                        {oldTestamentDisplay}
-                      </span>
-                      <span className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">
-                        {newTestamentDisplay}
-                      </span>
+          {/* Card 2: Weekly Bible Reading Progress (本週讀經進度 - 自動依 365 天進度表循環) */}
+          <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center space-x-2">
+                  <BookOpen className="w-5 h-5 text-amber-700" />
+                  <div>
+                    <h3 className="font-serif text-lg font-bold text-slate-900 leading-tight">
+                      {lang === 'zh' ? '【每日讀經進度】' : 'Daily Bible Reading Plan'}
+                    </h3>
+                    <div className="text-[10px] text-amber-800 font-medium">
+                      {lang === 'zh' ? '《靈命日糧》全年通讀聖經' : 'Daily Bread 365 Plan'}
                     </div>
                   </div>
-                );
-              })}
+                </div>
+
+                {/* Week Navigator */}
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={() => setWeekOffset(prev => prev - 1)}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition"
+                    title={lang === 'zh' ? '上一週' : 'Previous Week'}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <span className="text-xs text-amber-900 font-bold font-mono px-2 py-0.5 bg-amber-50 border border-amber-200/80 rounded-md">
+                    {readingRange}
+                  </span>
+
+                  <button
+                    onClick={() => setWeekOffset(prev => prev + 1)}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition"
+                    title={lang === 'zh' ? '下一週' : 'Next Week'}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  {weekOffset !== 0 && (
+                    <button
+                      onClick={() => setWeekOffset(0)}
+                      className="ml-1 text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-semibold transition"
+                      title={lang === 'zh' ? '返回本週' : 'Back to Current Week'}
+                    >
+                      {lang === 'zh' ? '本週' : 'Today'}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* 7-Day Reading List */}
+              <div className="divide-y divide-slate-100 text-xs sm:text-sm">
+                {readingSchedule.map((day, idx) => {
+                  const dateDisplay = lang === 'zh' ? day.date : day.dateEn;
+                  const oldTestamentDisplay = lang === 'zh' ? day.oldTestament : day.oldTestamentEn;
+                  const newTestamentDisplay = lang === 'zh' ? day.newTestament : day.newTestamentEn;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`py-2 px-2 rounded-xl flex items-center justify-between transition-colors ${
+                        day.isToday ? 'bg-amber-50/90 font-medium text-amber-950 border border-amber-200/70' : 'hover:bg-slate-50/80'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 w-28 shrink-0">
+                        <span className={`font-bold ${day.isToday ? 'text-amber-900' : 'text-slate-800'}`}>
+                          {dateDisplay}
+                        </span>
+                        {day.isToday && (
+                          <span className="bg-amber-600 text-white text-[9px] px-1.5 py-0.2 rounded font-bold uppercase">
+                            {lang === 'zh' ? '今日' : 'Today'}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center space-x-2 text-slate-600 font-mono text-[11px] sm:text-xs">
+                        <span className="bg-amber-50 text-amber-900 px-2 py-0.5 rounded border border-amber-200/80 font-medium">
+                          {oldTestamentDisplay}
+                        </span>
+                        <span className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200 font-medium">
+                          {newTestamentDisplay}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Button to Open Full Year 365 Days Plan */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-[11px] text-slate-400">
+                {lang === 'zh' ? '每日同步舊約與新約' : 'Old & New Testament Daily'}
+              </span>
+              <button
+                onClick={() => setIsAnnualModalOpen(true)}
+                className="inline-flex items-center space-x-1.5 text-xs font-semibold text-amber-800 hover:text-amber-950 hover:underline transition"
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{lang === 'zh' ? '查閱全年 365 天讀經表' : 'View Full 365-Day Plan'}</span>
+              </button>
             </div>
           </div>
 
@@ -174,7 +248,15 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
         </div>
 
       </div>
+
+      {/* Full Year 365-Day Bible Reading Modal */}
+      <AnnualBibleReadingModal
+        isOpen={isAnnualModalOpen}
+        onClose={() => setIsAnnualModalOpen(false)}
+        lang={lang}
+      />
     </section>
   );
 };
+
 
