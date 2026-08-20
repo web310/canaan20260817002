@@ -17,7 +17,8 @@ import { PastoralAIAssistant } from './components/PastoralAIAssistant';
 import { BulletinAdminModal } from './components/BulletinAdminModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { GlobalGitHubSyncModal } from './components/GlobalGitHubSyncModal';
-import { Github, FileText, ShieldCheck } from 'lucide-react';
+import { EmailJSConfigModal } from './components/EmailJSConfigModal';
+import { Github, FileText, ShieldCheck, Mail } from 'lucide-react';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('zh'); // Default to Traditional Chinese as naturally appropriate for Formosan/Chinese-American church!
@@ -26,6 +27,7 @@ export default function App() {
   const [isBulletinAdminOpen, setIsBulletinAdminOpen] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
   const [isGlobalGitHubSyncOpen, setIsGlobalGitHubSyncOpen] = useState(false);
+  const [isEmailJSConfigOpen, setIsEmailJSConfigOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState<string | null>(() => {
     return localStorage.getItem('canaan_admin_email');
   });
@@ -53,6 +55,7 @@ export default function App() {
         onLogoutAdmin={handleLogout}
         onOpenBulletinAdmin={() => setIsBulletinAdminOpen(true)}
         onOpenGlobalGitHubSync={() => setIsGlobalGitHubSyncOpen(true)}
+        onOpenEmailJSConfig={() => setIsEmailJSConfigOpen(true)}
       />
 
       <main className="flex-1">
@@ -138,6 +141,15 @@ export default function App() {
             <FileText className="w-3.5 h-3.5 text-amber-400" />
             <span>{lang === 'zh' ? '週報' : 'Bulletin'}</span>
           </button>
+
+          <button
+            onClick={() => setIsEmailJSConfigOpen(true)}
+            className="flex items-center space-x-1 bg-slate-800 hover:bg-slate-750 text-amber-300 hover:text-white px-2.5 py-2 rounded-xl text-xs font-semibold border border-amber-500/40 transition-colors"
+            title={lang === 'zh' ? "EmailJS 前端自動寄信服務金鑰設定" : "EmailJS Settings"}
+          >
+            <Mail className="w-3.5 h-3.5 text-amber-400" />
+            <span>EmailJS</span>
+          </button>
         </aside>
       )}
 
@@ -184,6 +196,15 @@ export default function App() {
         lang={lang}
         isOpen={isGlobalGitHubSyncOpen}
         onClose={() => setIsGlobalGitHubSyncOpen(false)}
+      />
+
+      {/* Admin-only EmailJS Config Modal */}
+      <EmailJSConfigModal
+        isOpen={isEmailJSConfigOpen}
+        onClose={() => setIsEmailJSConfigOpen(false)}
+        lang={lang}
+        adminEmail={adminEmail}
+        onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
       />
     </div>
   );

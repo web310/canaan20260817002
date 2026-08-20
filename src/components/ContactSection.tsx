@@ -219,15 +219,17 @@ ${formData.message}
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setShowConfigModal(true)}
-                className="self-start sm:self-center inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-xl text-xs text-amber-900 font-medium transition"
-                title="啟用背景自動寄信服務"
-              >
-                <Settings className="w-3.5 h-3.5 text-amber-800" />
-                <span>{lang === 'zh' ? 'EmailJS 設定' : 'EmailJS Config'}</span>
-              </button>
+              {adminEmail && (
+                <button
+                  type="button"
+                  onClick={() => setShowConfigModal(true)}
+                  className="self-start sm:self-center inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-xl text-xs text-amber-900 font-medium transition"
+                  title="啟用背景自動寄信服務 (管理員專用)"
+                >
+                  <Settings className="w-3.5 h-3.5 text-amber-800" />
+                  <span>{lang === 'zh' ? 'EmailJS 設定' : 'EmailJS Config'}</span>
+                </button>
+              )}
             </div>
 
             {submitted ? (
@@ -246,12 +248,14 @@ ${formData.message}
                   <div className="pt-2 p-4 bg-white rounded-xl border border-emerald-200 text-left space-y-2 text-xs text-slate-700">
                     <div className="font-bold text-slate-900 border-b pb-1 text-sm flex items-center justify-between">
                       <span>{lang === 'zh' ? '💡 如何確保信件 100% 寄達教會：' : '💡 Guaranteed Delivery Steps:'}</span>
-                      <button
-                        onClick={() => setShowConfigModal(true)}
-                        className="text-amber-800 hover:underline text-[11px] font-normal"
-                      >
-                        {lang === 'zh' ? '⚙️ 設定 EmailJS 背景自動寄信' : '⚙️ Setup EmailJS Auto-Send'}
-                      </button>
+                      {adminEmail && (
+                        <button
+                          onClick={() => setShowConfigModal(true)}
+                          className="text-amber-800 hover:underline text-[11px] font-normal"
+                        >
+                          {lang === 'zh' ? '⚙️ 設定 EmailJS 背景自動寄信' : '⚙️ Setup EmailJS Auto-Send'}
+                        </button>
+                      )}
                     </div>
                     <p className="text-slate-600">
                       若您的手機或電腦畫面已彈出郵件應用程式 (Gmail / Outlook / Apple Mail)，請直接點擊 <span className="font-bold text-slate-900">「寄出」</span> 按鈕即可！

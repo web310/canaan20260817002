@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
 import { ChurchLogo } from './ChurchLogo';
-import { Globe, Heart, Phone, MapPin, Calendar, Clock, Menu, X, Sparkles, FileText, ShieldCheck, LogOut, Lock, Github } from 'lucide-react';
+import { Globe, Heart, Phone, MapPin, Calendar, Clock, Menu, X, Sparkles, FileText, ShieldCheck, LogOut, Lock, Github, Mail } from 'lucide-react';
 
 interface NavbarProps {
   lang: Language;
@@ -14,6 +14,7 @@ interface NavbarProps {
   onLogoutAdmin?: () => void;
   onOpenBulletinAdmin?: () => void;
   onOpenGlobalGitHubSync?: () => void;
+  onOpenEmailJSConfig?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogoutAdmin,
   onOpenBulletinAdmin,
   onOpenGlobalGitHubSync,
+  onOpenEmailJSConfig,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -97,7 +99,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                     title="週報 PDF 上傳與 Email 自動更新設定"
                   >
                     <FileText className="w-3 h-3 mr-1 text-amber-400" />
-                    <span>{lang === 'zh' ? '週報 PDF / Email' : 'Bulletin Sync'}</span>
+                    <span>{lang === 'zh' ? '週報 PDF' : 'Bulletin'}</span>
+                  </button>
+                )}
+                {onOpenEmailJSConfig && (
+                  <button
+                    onClick={onOpenEmailJSConfig}
+                    className="flex items-center text-amber-300 hover:text-white bg-slate-800/90 hover:bg-slate-700/90 px-2.5 py-0.5 rounded-full border border-amber-500/40 transition-all text-xs"
+                    title="EmailJS 自動寄信服務金鑰設定"
+                  >
+                    <Mail className="w-3 h-3 mr-1 text-amber-400" />
+                    <span>EmailJS</span>
                   </button>
                 )}
                 <button
@@ -295,6 +307,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <FileText className="w-4 h-4 text-amber-400" />
                       <span>{lang === 'zh' ? '週報 PDF / Email 自動更新' : 'Bulletin PDF Sync'}</span>
+                    </button>
+                  )}
+                  {onOpenEmailJSConfig && (
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onOpenEmailJSConfig();
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-amber-300 py-2.5 rounded-xl text-xs font-bold border border-amber-500/40"
+                    >
+                      <Mail className="w-4 h-4 text-amber-400" />
+                      <span>{lang === 'zh' ? 'EmailJS 自動寄信設定' : 'EmailJS Configuration'}</span>
                     </button>
                   )}
                   <button

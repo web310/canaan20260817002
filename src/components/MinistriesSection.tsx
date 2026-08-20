@@ -94,13 +94,15 @@ export const MinistriesSection: React.FC<MinistryProps> = ({
           <div className="pt-1 flex items-center justify-center space-x-2 text-xs text-slate-500">
             <Mail className="w-3.5 h-3.5 text-amber-700" />
             <span>{lang === 'zh' ? `表單意願將自動發送至：${CHURCH_INFO.email}` : `Submissions sent automatically to: ${CHURCH_INFO.email}`}</span>
-            <button
-              onClick={() => setIsConfigOpen(true)}
-              className="p-1 text-slate-400 hover:text-amber-800 transition-colors"
-              title={lang === 'zh' ? 'EmailJS 設定' : 'EmailJS Settings'}
-            >
-              <Settings className="w-3.5 h-3.5" />
-            </button>
+            {adminEmail && (
+              <button
+                onClick={() => setIsConfigOpen(true)}
+                className="p-1 text-slate-400 hover:text-amber-800 transition-colors"
+                title={lang === 'zh' ? 'EmailJS 設定 (管理員專用)' : 'EmailJS Settings (Admin)'}
+              >
+                <Settings className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
