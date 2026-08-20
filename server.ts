@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import mammoth from "mammoth";
 
 async function startServer() {
   const app = express();
@@ -367,19 +368,51 @@ Strictly output your answer as a JSON object matching this schema:
   ];
   let inMemorySermons: any[] = [...INITIAL_DEFAULT_SERMONS];
 
-  // Weekly Sunday Bulletin PDF Processing Endpoint (Fast & AI-Powered)
-  app.post("/api/process-bulletin-pdf", async (req: express.Request, res: express.Response) => {
-    try {
-      const { pdfBase64, emailSubject, filename } = req.body;
-
-      if (!pdfBase64) {
-        return res.status(400).json({ error: "No PDF data provided" });
+  // Helper to extract text from DOCX, DOC, TXT, MD or mark as PDF
+  async function extractTextFromBulletinFile(buffer: Buffer, filename: string, mimeType?: string): Promise<{ text?: string; isPdf: boolean }> {
+    const lowerName = (filename || "").toLowerCase();
+    
+    if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
+      return { isPdf: true };
+    }
+    
+    if (lowerName.endsWith(".docx") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      try {
+        const result = await mammoth.extractRawText({ buffer });
+        return { text: result.value || "", isPdf: false };
+      } catch (e) {
+        console.warn("Mammoth docx extraction notice:", e);
       }
+    }
 
-      // Extract raw Base64 data
-      let cleanBase64 = pdfBase64;
-      if (cleanBase64.includes(",")) {
-        cleanBase64 = cleanBase64.split(",")[1];
+    if (lowerName.endsWith(".doc") || mimeType === "application/msword") {
+      try {
+        const result = await mammoth.extractRawText({ buffer });
+        if (result.value && result.value.trim().length > 10) {
+          return { text: result.value, isPdf: false };
+        }
+      } catch {
+        // fallback to binary string extraction
+      }
+      // Extract readable strings from binary .doc
+      const rawStr = buffer.toString("utf-8");
+      const cleaned = rawStr.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ");
+      return { text: cleaned, isPdf: false };
+    }
+
+    // Default text formats (.txt, .md, .rtf, .text, or plain text)
+    const textContent = buffer.toString("utf-8");
+    return { text: textContent, isPdf: false };
+  }
+
+  // Weekly Sunday Bulletin Multi-Format Processing Endpoint (PDF, Word DOC/DOCX, TXT, Fast AI-Powered)
+  const handleBulletinFileProcessing = async (req: express.Request, res: express.Response) => {
+    try {
+      const { pdfBase64, fileBase64, fileText, emailSubject, filename, fileType } = req.body;
+      const rawBase64 = fileBase64 || pdfBase64;
+
+      if (!rawBase64 && !fileText) {
+        return res.status(400).json({ error: "No bulletin file data or text provided" });
       }
 
       const defaultBulletin = {
@@ -432,6 +465,21 @@ Strictly output your answer as a JSON object matching this schema:
         zoomPasscode: "25226"
       };
 
+      // Extract raw Base64 data if available
+      let cleanBase64 = "";
+      let buffer: Buffer | null = null;
+      if (rawBase64) {
+        cleanBase64 = rawBase64.includes(",") ? rawBase64.split(",")[1] : rawBase64;
+        buffer = Buffer.from(cleanBase64, "base64");
+      }
+
+      let extractedInfo: { text?: string; isPdf: boolean } = { isPdf: false };
+      if (fileText) {
+        extractedInfo = { text: fileText, isPdf: false };
+      } else if (buffer) {
+        extractedInfo = await extractTextFromBulletinFile(buffer, filename || "bulletin.pdf", fileType);
+      }
+
       const ai = getAI();
       if (!ai) {
         const defaultSermon = {
@@ -463,14 +511,14 @@ Strictly output your answer as a JSON object matching this schema:
       try {
         const promptText = `
 You are the AI Church Secretary for Canaan Shin Sheng Christian Church (加南新生基督教會) located in Harbor City, CA (25226 S. Western Ave, Harbor City, CA 90710).
-Carefully read and extract the EXACT church bulletin data from this uploaded Sunday service bulletin PDF file.
+Carefully read and extract the EXACT church bulletin data from this uploaded Sunday service bulletin document (PDF / Word DOC/DOCX / TXT).
 
 Known Church Context:
 - Pastors/Preachers often include: 孟蘇倫 牧師 (Rev. Meng Sulun), 郭易君 牧師 (Rev. Yijun Guo), Ito 傳道 (Evangelist Ito), 李紹信 弟兄 (Brother Shaoxin Li), 陳嘉彰 牧師 (Rev. Jiachang Chen).
 - Presiders (司會) often include: 鄭育青 弟兄, 萬四 長老, 張文辛 長老, 馬新民 執事.
 - Zoom Passcode is typically: 25226 or as noted in the bulletin.
 
-Extract the following information faithfully from the PDF:
+Extract the following information faithfully from the document:
 1. "serviceDate": Exact Sunday date in YYYY-MM-DD format (e.g. "2026-08-09" or "2026-08-16").
 2. "presider": Exact name and title of the service presider (司會), e.g. "鄭育青 弟兄".
 3. "speaker": Exact name and title of the preacher/speaker in Chinese (講員/證道), e.g. "孟蘇倫 牧師".
@@ -499,20 +547,32 @@ Extract the following information faithfully from the PDF:
 Return ONLY valid JSON matching this schema.
 `;
 
+        let contentsParts: any[] = [];
+        if (extractedInfo.isPdf && cleanBase64) {
+          contentsParts = [
+            {
+              inlineData: {
+                data: cleanBase64,
+                mimeType: "application/pdf"
+              }
+            },
+            { text: promptText }
+          ];
+        } else {
+          contentsParts = [
+            {
+              text: `=== UPLOADED WEEKLY BULLETIN CONTENT (${filename || 'bulletin document'}) ===\n\n${extractedInfo.text || ''}`
+            },
+            { text: promptText }
+          ];
+        }
+
         const response = await ai.models.generateContent({
           model: "gemini-3.7-flash",
           contents: [
             {
               role: "user",
-              parts: [
-                {
-                  inlineData: {
-                    data: cleanBase64,
-                    mimeType: "application/pdf"
-                  }
-                },
-                { text: promptText }
-              ]
+              parts: contentsParts
             }
           ],
           config: {
@@ -573,7 +633,7 @@ Return ONLY valid JSON matching this schema.
           newSermon: newSermon
         });
       } catch (aiErr: any) {
-        console.warn("AI PDF extraction encountered issue, returning official bulletin data:", aiErr?.message || aiErr);
+        console.warn("AI document extraction encountered issue, returning official bulletin data:", aiErr?.message || aiErr);
         const fallbackSermon = {
           id: `sermon-${Date.now()}`,
           title: defaultBulletin.sermonTitleEn,
@@ -601,10 +661,14 @@ Return ONLY valid JSON matching this schema.
         });
       }
     } catch (err: any) {
-      console.error("PDF processing error:", err);
-      return res.status(500).json({ error: err.message || "Failed to process PDF" });
+      console.error("Bulletin file processing error:", err);
+      return res.status(500).json({ error: err.message || "Failed to process bulletin file" });
     }
-  });
+  };
+
+  app.post("/api/process-bulletin-pdf", handleBulletinFileProcessing);
+  app.post("/api/process-bulletin-file", handleBulletinFileProcessing);
+  app.post("/api/process-bulletin-text", handleBulletinFileProcessing);
 
   // Batch Auto-Sync & AI Ingestion for Google Photos from web@canaannewlife.org
   app.post("/api/gallery/auto-sync-all", async (req: express.Request, res: express.Response) => {

@@ -116,6 +116,8 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
   onSermonAdded,
 }) => {
   const [activeTab, setActiveTab] = useState<'upload' | 'edit-form' | 'email-guide'>('upload');
+  const [inputMode, setInputMode] = useState<'file' | 'text'>('file');
+  const [rawText, setRawText] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -189,96 +191,191 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
     }
   };
 
-  const handleProcessPdf = async () => {
+  const applyParsedDataToForm = (rawBulletin: any, isFallback?: boolean) => {
+    const updatedForm: EditableBulletinForm = {
+      serviceDate: rawBulletin.serviceDate || DEFAULT_OFFICIAL_BULLETIN.serviceDate,
+      presider: rawBulletin.presider || DEFAULT_OFFICIAL_BULLETIN.presider,
+      speaker: rawBulletin.speaker || DEFAULT_OFFICIAL_BULLETIN.speaker,
+      speakerEn: rawBulletin.speakerEn || DEFAULT_OFFICIAL_BULLETIN.speakerEn,
+      sermonTitle: rawBulletin.sermonTitle || DEFAULT_OFFICIAL_BULLETIN.sermonTitle,
+      sermonTitleEn: rawBulletin.sermonTitleEn || DEFAULT_OFFICIAL_BULLETIN.sermonTitleEn,
+      sermonScripture: rawBulletin.sermonScripture || DEFAULT_OFFICIAL_BULLETIN.sermonScripture,
+      sermonScriptureEn: rawBulletin.sermonScriptureEn || DEFAULT_OFFICIAL_BULLETIN.sermonScriptureEn,
+      sermonSummary: rawBulletin.sermonSummary || DEFAULT_OFFICIAL_BULLETIN.sermonSummary,
+      sermonSummaryEn: rawBulletin.sermonSummaryEn || DEFAULT_OFFICIAL_BULLETIN.sermonSummaryEn,
+      sermonPointsZh: Array.isArray(rawBulletin.sermonPointsZh) && rawBulletin.sermonPointsZh.length > 0 ? rawBulletin.sermonPointsZh : DEFAULT_OFFICIAL_BULLETIN.sermonPointsZh,
+      sermonPoints: Array.isArray(rawBulletin.sermonPoints) && rawBulletin.sermonPoints.length > 0 ? rawBulletin.sermonPoints : DEFAULT_OFFICIAL_BULLETIN.sermonPoints,
+      memoryVerse: rawBulletin.memoryVerse || DEFAULT_OFFICIAL_BULLETIN.memoryVerse,
+      memoryVerseRef: rawBulletin.memoryVerseRef || DEFAULT_OFFICIAL_BULLETIN.memoryVerseRef,
+      weeklyReadingRange: rawBulletin.weeklyReadingRange || DEFAULT_OFFICIAL_BULLETIN.weeklyReadingRange,
+      weeklyReadingSchedule: Array.isArray(rawBulletin.weeklyReadingSchedule) && rawBulletin.weeklyReadingSchedule.length > 0 ? rawBulletin.weeklyReadingSchedule : DEFAULT_OFFICIAL_BULLETIN.weeklyReadingSchedule,
+      prayerRequests: Array.isArray(rawBulletin.prayerRequests) && rawBulletin.prayerRequests.length > 0 ? rawBulletin.prayerRequests : DEFAULT_OFFICIAL_BULLETIN.prayerRequests,
+      announcements: Array.isArray(rawBulletin.announcements) && rawBulletin.announcements.length > 0 ? rawBulletin.announcements : DEFAULT_OFFICIAL_BULLETIN.announcements,
+      zoomPasscode: rawBulletin.zoomPasscode || DEFAULT_OFFICIAL_BULLETIN.zoomPasscode,
+      videoUrl: rawBulletin.videoUrl || ""
+    };
+
+    setFormData(updatedForm);
+    setActiveTab('edit-form');
+    if (isFallback) {
+      setSuccessMsg(lang === 'zh' ? '✅ 已成功載入教會最新主日資訊（8/16 ITO傳道《永不失望的人生》），請在下方確認或微調後點擊「發布更新」。' : 'Loaded latest official bulletin data (8/16 Evangelist ITO: A Life That Never Disappoints). Please review below and click Publish.');
+    } else {
+      setSuccessMsg(lang === 'zh' ? '✅ AI 已自動擷取週報資訊！請在下方檢查並確認各欄位，確認無誤後點擊「發布更新」。' : 'AI extracted bulletin data! Please review and confirm below.');
+    }
+  };
+
+  const handleProcessFile = async () => {
+    if (inputMode === 'text') {
+      if (!rawText.trim()) {
+        setErrorMsg(lang === 'zh' ? '請先貼上週報文字內容' : 'Please paste bulletin text content first.');
+        return;
+      }
+
+      setLoading(true);
+      setLoadingStep(lang === 'zh' ? 'Gemini AI 正在智能解析週報文字內容...' : 'AI parsing bulletin text content...');
+      setErrorMsg(null);
+      setSuccessMsg(null);
+
+      try {
+        const res = await fetch('/api/process-bulletin-file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileText: rawText,
+            filename: "pasted-bulletin.txt",
+            emailSubject: "website update"
+          })
+        });
+        const data = await res.json();
+        setLoading(false);
+        setLoadingStep('');
+
+        if (data.success && data.data) {
+          applyParsedDataToForm(data.data, data.isFallback);
+        } else {
+          setErrorMsg(data.error || (lang === 'zh' ? '解析週報文字失敗，請手動填寫或重試。' : 'Failed to parse bulletin text.'));
+        }
+      } catch (err: any) {
+        setLoading(false);
+        setLoadingStep('');
+        setErrorMsg(err.message || (lang === 'zh' ? '解析週報文字發生錯誤' : 'Error processing bulletin text.'));
+      }
+      return;
+    }
+
     if (!selectedFile) {
-      setErrorMsg(lang === 'zh' ? '請先選擇週報 PDF 檔案' : 'Please select a PDF bulletin file first.');
+      setErrorMsg(lang === 'zh' ? '請先選擇週報檔案 (PDF / Word / TXT)' : 'Please select a bulletin file (PDF / DOC / TXT) first.');
       return;
     }
 
     setLoading(true);
-    setLoadingStep(lang === 'zh' ? '正在讀取週報 PDF 檔案...' : 'Reading PDF file...');
+    const fileNameLower = selectedFile.name.toLowerCase();
+    const isTxt = fileNameLower.endsWith('.txt') || fileNameLower.endsWith('.text') || fileNameLower.endsWith('.md');
+    
+    setLoadingStep(lang === 'zh' ? `正在讀取 ${selectedFile.name}...` : `Reading ${selectedFile.name}...`);
     setErrorMsg(null);
     setSuccessMsg(null);
     setAddedSermon(null);
 
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onload = async () => {
-        const base64Data = reader.result as string;
-        setLoadingStep(lang === 'zh' ? 'Gemini AI 正在智能解析週報經文、講員與讀經進度...' : 'AI parsing bulletin & creating sermon...');
+      if (isTxt) {
+        const reader = new FileReader();
+        reader.readAsText(selectedFile);
+        reader.onload = async () => {
+          const textContent = reader.result as string;
+          setLoadingStep(lang === 'zh' ? 'Gemini AI 正在智能解析 TXT 週報內容...' : 'AI parsing TXT bulletin content...');
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 25000);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-        try {
-          const res = await fetch('/api/process-bulletin-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              pdfBase64: base64Data,
-              emailSubject: "website update",
-              filename: selectedFile.name
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
+          try {
+            const res = await fetch('/api/process-bulletin-file', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fileText: textContent,
+                filename: selectedFile.name,
+                fileType: selectedFile.type,
+                emailSubject: "website update"
+              }),
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
 
-          const data = await res.json();
-          setLoading(false);
-          setLoadingStep('');
+            const data = await res.json();
+            setLoading(false);
+            setLoadingStep('');
 
-          if (data.success && data.data) {
-            const rawBulletin = data.data;
-            const updatedForm: EditableBulletinForm = {
-              serviceDate: rawBulletin.serviceDate || DEFAULT_OFFICIAL_BULLETIN.serviceDate,
-              presider: rawBulletin.presider || DEFAULT_OFFICIAL_BULLETIN.presider,
-              speaker: rawBulletin.speaker || DEFAULT_OFFICIAL_BULLETIN.speaker,
-              speakerEn: rawBulletin.speakerEn || DEFAULT_OFFICIAL_BULLETIN.speakerEn,
-              sermonTitle: rawBulletin.sermonTitle || DEFAULT_OFFICIAL_BULLETIN.sermonTitle,
-              sermonTitleEn: rawBulletin.sermonTitleEn || DEFAULT_OFFICIAL_BULLETIN.sermonTitleEn,
-              sermonScripture: rawBulletin.sermonScripture || DEFAULT_OFFICIAL_BULLETIN.sermonScripture,
-              sermonScriptureEn: rawBulletin.sermonScriptureEn || DEFAULT_OFFICIAL_BULLETIN.sermonScriptureEn,
-              sermonSummary: rawBulletin.sermonSummary || DEFAULT_OFFICIAL_BULLETIN.sermonSummary,
-              sermonSummaryEn: rawBulletin.sermonSummaryEn || DEFAULT_OFFICIAL_BULLETIN.sermonSummaryEn,
-              sermonPointsZh: Array.isArray(rawBulletin.sermonPointsZh) && rawBulletin.sermonPointsZh.length > 0 ? rawBulletin.sermonPointsZh : DEFAULT_OFFICIAL_BULLETIN.sermonPointsZh,
-              sermonPoints: Array.isArray(rawBulletin.sermonPoints) && rawBulletin.sermonPoints.length > 0 ? rawBulletin.sermonPoints : DEFAULT_OFFICIAL_BULLETIN.sermonPoints,
-              memoryVerse: rawBulletin.memoryVerse || DEFAULT_OFFICIAL_BULLETIN.memoryVerse,
-              memoryVerseRef: rawBulletin.memoryVerseRef || DEFAULT_OFFICIAL_BULLETIN.memoryVerseRef,
-              weeklyReadingRange: rawBulletin.weeklyReadingRange || DEFAULT_OFFICIAL_BULLETIN.weeklyReadingRange,
-              weeklyReadingSchedule: Array.isArray(rawBulletin.weeklyReadingSchedule) && rawBulletin.weeklyReadingSchedule.length > 0 ? rawBulletin.weeklyReadingSchedule : DEFAULT_OFFICIAL_BULLETIN.weeklyReadingSchedule,
-              prayerRequests: Array.isArray(rawBulletin.prayerRequests) && rawBulletin.prayerRequests.length > 0 ? rawBulletin.prayerRequests : DEFAULT_OFFICIAL_BULLETIN.prayerRequests,
-              announcements: Array.isArray(rawBulletin.announcements) && rawBulletin.announcements.length > 0 ? rawBulletin.announcements : DEFAULT_OFFICIAL_BULLETIN.announcements,
-              zoomPasscode: rawBulletin.zoomPasscode || DEFAULT_OFFICIAL_BULLETIN.zoomPasscode,
-              videoUrl: rawBulletin.videoUrl || ""
-            };
-
-            setFormData(updatedForm);
-            setActiveTab('edit-form');
-            if (data.isFallback) {
-              setSuccessMsg(lang === 'zh' ? '✅ 已成功載入教會最新主日資訊（8/16 ITO傳道《永不失望的人生》），請在下方確認或微調後點擊「發布更新」。' : 'Loaded latest official bulletin data (8/16 Evangelist ITO: A Life That Never Disappoints). Please review below and click Publish.');
+            if (data.success && data.data) {
+              applyParsedDataToForm(data.data, data.isFallback);
             } else {
-              setSuccessMsg(lang === 'zh' ? '✅ AI 已自動擷取週報資訊！請在下方檢查並確認各欄位，確認無誤後點擊「發布更新」。' : 'AI extracted bulletin data! Please review and confirm below.');
+              setErrorMsg(data.error || (lang === 'zh' ? '解析 TXT 檔案失敗，請手動填寫或重試。' : 'Failed to parse TXT file.'));
             }
-          } else {
-            setErrorMsg(data.error || (lang === 'zh' ? '解析 PDF 失敗，請手動填寫或重試。' : 'Failed to parse PDF.'));
+          } catch (fetchErr: any) {
+            clearTimeout(timeoutId);
+            setLoading(false);
+            setLoadingStep('');
+            setErrorMsg(fetchErr.message || (lang === 'zh' ? '解析 TXT 發生錯誤' : 'Error processing TXT file.'));
           }
-        } catch (fetchErr: any) {
-          clearTimeout(timeoutId);
+        };
+        reader.onerror = () => {
           setLoading(false);
           setLoadingStep('');
-          setErrorMsg(fetchErr.message || (lang === 'zh' ? '解析 PDF 發生錯誤' : 'Error processing PDF.'));
-        }
-      };
-      reader.onerror = () => {
-        setLoading(false);
-        setLoadingStep('');
-        setErrorMsg(lang === 'zh' ? '讀取 PDF 檔案發生錯誤' : 'Error reading PDF file.');
-      };
+          setErrorMsg(lang === 'zh' ? '讀取 TXT 檔案發生錯誤' : 'Error reading TXT file.');
+        };
+      } else {
+        // PDF, DOC, DOCX
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
+        reader.onload = async () => {
+          const base64Data = reader.result as string;
+          const formatLabel = fileNameLower.endsWith('.doc') || fileNameLower.endsWith('.docx') ? 'Word' : 'PDF';
+          setLoadingStep(lang === 'zh' ? `Gemini AI 正在智能解析 ${formatLabel} 週報經文、講員與讀經進度...` : `AI parsing ${formatLabel} bulletin & creating sermon...`);
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+          try {
+            const res = await fetch('/api/process-bulletin-file', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fileBase64: base64Data,
+                pdfBase64: base64Data,
+                filename: selectedFile.name,
+                fileType: selectedFile.type,
+                emailSubject: "website update"
+              }),
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            const data = await res.json();
+            setLoading(false);
+            setLoadingStep('');
+
+            if (data.success && data.data) {
+              applyParsedDataToForm(data.data, data.isFallback);
+            } else {
+              setErrorMsg(data.error || (lang === 'zh' ? '解析檔案失敗，請手動填寫或重試。' : 'Failed to parse bulletin file.'));
+            }
+          } catch (fetchErr: any) {
+            clearTimeout(timeoutId);
+            setLoading(false);
+            setLoadingStep('');
+            setErrorMsg(fetchErr.message || (lang === 'zh' ? '解析檔案發生錯誤' : 'Error processing bulletin file.'));
+          }
+        };
+        reader.onerror = () => {
+          setLoading(false);
+          setLoadingStep('');
+          setErrorMsg(lang === 'zh' ? '讀取檔案發生錯誤' : 'Error reading bulletin file.');
+        };
+      }
     } catch (err: any) {
       setLoading(false);
       setLoadingStep('');
-      setErrorMsg(err.message || 'Error uploading PDF');
+      setErrorMsg(err.message || 'Error uploading file');
     }
   };
 
@@ -382,12 +479,12 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
               </div>
               <div>
                 <h3 className="font-serif text-lg sm:text-2xl font-bold">
-                  {lang === 'zh' ? '週報 PDF 解析與主日資料更新管理' : 'Weekly Bulletin & Sunday Message Manager'}
+                  {lang === 'zh' ? '週報檔案解析與主日資料更新管理' : 'Weekly Bulletin & Sunday Message Manager'}
                 </h3>
                 <p className="text-xs text-amber-300">
                   {lang === 'zh'
-                    ? 'AI 智慧擷取週報資訊，並提供即時核對、修正與一鍵同步發布'
-                    : 'AI Bulletin Ingestion, Instant Verification & Live Publishing'}
+                    ? 'AI 智慧解析週報 (支援 PDF、Word DOC/DOCX、TXT)，即時核對修正並發布'
+                    : 'AI Bulletin Ingestion for PDF, Word DOC/DOCX & TXT, Instant Verification & Publishing'}
                 </p>
               </div>
             </div>
@@ -411,7 +508,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
               }`}
             >
               <Upload className="w-4 h-4" />
-              <span>{lang === 'zh' ? '1. 上傳週報 PDF' : '1. Upload PDF'}</span>
+              <span>{lang === 'zh' ? '1. 上傳週報 (PDF / DOC / TXT)' : '1. Upload Bulletin (PDF/DOC/TXT)'}</span>
             </button>
 
             <button
@@ -456,65 +553,144 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
 
           <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
 
-            {/* TAB 1: Upload PDF */}
+            {/* TAB 1: Upload Bulletin */}
             {activeTab === 'upload' && (
               <div className="space-y-6">
-                <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-1">
-                  <div className="font-bold flex items-center space-x-1.5">
+                <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-2">
+                  <div className="font-bold flex items-center space-x-1.5 text-sm">
                     <Sparkles className="w-4 h-4 text-amber-700" />
-                    <span>{lang === 'zh' ? 'AI 智能解析週報 PDF' : 'AI Intelligent PDF Ingestion'}</span>
+                    <span>{lang === 'zh' ? 'AI 智能解析週報 (支援 PDF / DOC / DOCX / TXT)' : 'AI Intelligent Bulletin Ingestion (PDF / DOC / DOCX / TXT)'}</span>
                   </div>
                   <p>
                     {lang === 'zh'
-                      ? '上傳主日週報 PDF 檔案，AI 將自動辨識日期、講員、講道題目、經文、背誦經文與讀經進度，並帶入核對表單供您確認。'
-                      : 'Upload your Sunday bulletin PDF. AI will automatically extract the date, speaker, sermon title, scripture, and weekly reading schedule.'}
+                      ? '上傳主日週報檔案（支援 PDF、Word DOC/DOCX 或純文字 TXT 檔），AI 將自動辨識日期、主日講員、講道題目、經文、背誦經文與讀經進度，並自動帶入表單供您核對。'
+                      : 'Upload your Sunday bulletin document (PDF, Word DOC/DOCX, or TXT). AI will automatically extract the date, speaker, sermon title, scripture, and weekly reading schedule.'}
                   </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <span className="px-2.5 py-1 bg-red-100 text-red-800 rounded-lg font-bold text-[11px] border border-red-200">
+                      PDF (.pdf)
+                    </span>
+                    <span className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-lg font-bold text-[11px] border border-blue-200">
+                      Word (.doc / .docx)
+                    </span>
+                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg font-bold text-[11px] border border-emerald-200">
+                      TXT (.txt / .md)
+                    </span>
+                    <span className="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-lg font-bold text-[11px] border border-purple-200">
+                      {lang === 'zh' ? '或直接貼上文字' : 'Direct Text Paste'}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Upload Input Box */}
-                <div className="border-2 border-dashed border-slate-300 hover:border-amber-600 rounded-2xl p-8 text-center space-y-4 bg-slate-50 transition-colors">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
-                    <FileText className="w-6 h-6" />
-                  </div>
+                {/* Sub-mode selector (File upload vs Direct text paste) */}
+                <div className="flex bg-slate-100 p-1 rounded-xl w-fit">
+                  <button
+                    type="button"
+                    onClick={() => setInputMode('file')}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      inputMode === 'file'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {lang === 'zh' ? '📁 檔案上傳 (PDF / DOC / TXT)' : '📁 File Upload (PDF/DOC/TXT)'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInputMode('text')}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      inputMode === 'text'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {lang === 'zh' ? '📝 直接貼上週報文字' : '📝 Paste Text Directly'}
+                  </button>
+                </div>
 
-                  <div>
-                    <label htmlFor="bulletin-pdf-input" className="cursor-pointer font-bold text-slate-900 hover:text-amber-800 text-sm">
-                      {selectedFile ? selectedFile.name : (lang === 'zh' ? '點擊此處選擇週報 PDF 檔案，或拖曳至此' : 'Click to select PDF or drag & drop file here')}
-                    </label>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {selectedFile 
-                        ? `${(selectedFile.size / 1024).toFixed(1)} KB` 
-                        : (lang === 'zh' ? '支援標準週報 PDF 格式 (例如 2026-08-09.pdf)' : 'Supports standard Sunday bulletin PDF files')}
-                    </p>
-                    <input
-                      id="bulletin-pdf-input"
-                      type="file"
-                      accept="application/pdf"
-                      onChange={handleFileChange}
-                      className="hidden"
+                {/* Upload Input Box or Textarea */}
+                {inputMode === 'file' ? (
+                  <div className="border-2 border-dashed border-slate-300 hover:border-amber-600 rounded-2xl p-8 text-center space-y-4 bg-slate-50 transition-colors">
+                    <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
+                      <FileText className="w-6 h-6" />
+                    </div>
+
+                    <div>
+                      <label htmlFor="bulletin-file-input" className="cursor-pointer font-bold text-slate-900 hover:text-amber-800 text-sm block">
+                        {selectedFile ? selectedFile.name : (lang === 'zh' ? '點擊此處選擇週報檔案 (PDF / DOC / TXT)，或拖曳檔案至此' : 'Click to select bulletin file (PDF / DOC / TXT) or drag & drop here')}
+                      </label>
+                      <p className="text-xs text-slate-500 mt-1">
+                        {selectedFile 
+                          ? `${(selectedFile.size / 1024).toFixed(1)} KB — ${selectedFile.name}` 
+                          : (lang === 'zh' ? '支援標準週報格式：PDF、Word (.doc / .docx) 及 TXT 純文字檔' : 'Supports PDF, Word (.doc / .docx) and TXT plain text')}
+                      </p>
+                      <input
+                        id="bulletin-file-input"
+                        type="file"
+                        accept=".pdf,.doc,.docx,.txt,.text,.md,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {selectedFile && (
+                      <div className="pt-2">
+                        <button
+                          onClick={handleProcessFile}
+                          disabled={loading}
+                          className="px-6 py-3 bg-slate-900 hover:bg-amber-800 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-all inline-flex items-center space-x-2 disabled:opacity-50"
+                        >
+                          {loading ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                              <span>{loadingStep || (lang === 'zh' ? 'AI 正在解析檔案...' : 'AI Processing File...')}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-4 h-4 text-amber-400" />
+                              <span>{lang === 'zh' ? `開始 AI 自動解析 ${selectedFile.name}` : 'Parse File with AI'}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="border border-slate-300 rounded-2xl p-4 bg-slate-50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-700">
+                        {lang === 'zh' ? '貼上週報文字內容 (例如從郵件、Word 或記事本複製)' : 'Paste Bulletin Text Content:'}
+                      </label>
+                      <span className="text-[11px] text-slate-400">{rawText.length} 字</span>
+                    </div>
+                    <textarea
+                      value={rawText}
+                      onChange={(e) => setRawText(e.target.value)}
+                      placeholder={lang === 'zh' ? "在此處貼上週報文字內容（包含日期、講員、講道題目、經文、本週讀經進度、代禱事項等）..." : "Paste bulletin content here (including date, speaker, title, scripture, reading schedule)..."}
+                      rows={8}
+                      className="w-full text-xs font-mono p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none"
                     />
+                    <div className="flex justify-end">
+                      <button
+                        onClick={handleProcessFile}
+                        disabled={loading || !rawText.trim()}
+                        className="px-6 py-2.5 bg-slate-900 hover:bg-amber-800 text-white font-bold rounded-xl text-xs shadow-md transition-all inline-flex items-center space-x-2 disabled:opacity-50"
+                      >
+                        {loading ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                            <span>{loadingStep || (lang === 'zh' ? 'AI 正在解析文字...' : 'AI Processing Text...')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                            <span>{lang === 'zh' ? '開始 AI 自動解析文字並帶入表單' : 'Parse Text with AI'}</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-
-                  {selectedFile && (
-                    <button
-                      onClick={handleProcessPdf}
-                      disabled={loading}
-                      className="px-6 py-3 bg-slate-900 hover:bg-amber-800 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-all inline-flex items-center space-x-2 disabled:opacity-50"
-                    >
-                      {loading ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
-                          <span>{loadingStep || (lang === 'zh' ? 'AI 正在解析 PDF...' : 'AI Processing PDF...')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4 text-amber-400" />
-                          <span>{lang === 'zh' ? '開始 AI 自動解析並帶入表單' : 'Parse PDF with AI'}</span>
-                        </>
-                      )}
-                    </button>
-                  )}
-                </div>
+                )}
 
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                   <button
@@ -523,7 +699,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
                     className="text-xs font-semibold text-slate-600 hover:text-amber-800 inline-flex items-center space-x-1.5"
                   >
                     <Edit3 className="w-4 h-4" />
-                    <span>{lang === 'zh' ? '不使用 PDF，直接手動修改週報表單' : 'Skip PDF, edit bulletin form directly'}</span>
+                    <span>{lang === 'zh' ? '不使用檔案，直接手動修改週報表單' : 'Skip file, edit bulletin form directly'}</span>
                   </button>
 
                   <button
@@ -532,7 +708,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
                     className="text-xs font-semibold text-rose-700 hover:text-rose-900 inline-flex items-center space-x-1.5 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '重設為官方預設週報與講道 (2026-08-09)' : 'Reset to official defaults'}</span>
+                    <span>{lang === 'zh' ? '重設為官方預設週報與講道 (2026-08-16)' : 'Reset to official defaults'}</span>
                   </button>
                 </div>
               </div>

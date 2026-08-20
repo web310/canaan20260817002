@@ -83,7 +83,7 @@ export const AboutSection: React.FC<AboutProps> = ({ lang }) => {
               </div>
               
               <div className="absolute -bottom-4 -right-2 bg-amber-900 text-white p-4 rounded-2xl shadow-xl max-w-xs border border-amber-700 hidden sm:block">
-                <div className="text-xs text-amber-300 font-semibold uppercase">{CHURCH_INFO.denominationZh}</div>
+                <div className="text-xs text-amber-300 font-semibold uppercase">{lang === 'zh' ? CHURCH_INFO.denominationZh : CHURCH_INFO.denominationEn}</div>
                 <div className="text-sm font-bold">{lang === 'zh' ? '長執同工會與團契團隊' : 'Elders & Deacons Board'}</div>
                 <div className="text-xs text-amber-200">{lang === 'zh' ? '加南新生基督教會' : 'Canaan Shin Sheng Church'}</div>
               </div>

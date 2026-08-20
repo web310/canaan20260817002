@@ -174,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className={`text-xs font-medium tracking-wide whitespace-nowrap ${
                 scrolled ? 'text-amber-800' : 'text-amber-300'
               }`}>
-                {CHURCH_INFO.nameZh}
+                {lang === 'zh' ? CHURCH_INFO.nameZh : 'Harbor City, CA • Founded 1984'}
               </div>
             </div>
           </a>

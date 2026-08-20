@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO, WEEKLY_BIBLE_READING } from '../data/churchData';
-import { BookOpen, Bookmark, Phone, Award, Sparkles, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Bookmark, Phone, Sparkles, CheckCircle2 } from 'lucide-react';
+import { translateDateWeekdayToEn, translateScriptureToEn } from '../utils/translationHelper';
 
 interface WeeklyHighlightProps {
   lang: Language;
@@ -27,8 +28,14 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
     return () => window.removeEventListener('canaan_bulletin_updated', handleBulletinUpdated as EventListener);
   }, []);
 
-  const memoryVerse = bulletinData?.memoryVerse || (lang === 'zh' ? WEEKLY_BIBLE_READING.memoryVerseZh : WEEKLY_BIBLE_READING.memoryVerseEn);
-  const memoryVerseRef = bulletinData?.memoryVerseRef || WEEKLY_BIBLE_READING.verseReference;
+  const memoryVerse = lang === 'zh'
+    ? (bulletinData?.memoryVerse || WEEKLY_BIBLE_READING.memoryVerseZh)
+    : (bulletinData?.memoryVerseEn || WEEKLY_BIBLE_READING.memoryVerseEn || bulletinData?.memoryVerse);
+
+  const memoryVerseRef = lang === 'zh'
+    ? (bulletinData?.memoryVerseRef || WEEKLY_BIBLE_READING.verseReferenceZh || WEEKLY_BIBLE_READING.verseReference)
+    : (bulletinData?.memoryVerseRefEn || WEEKLY_BIBLE_READING.verseReferenceEn || translateScriptureToEn(bulletinData?.memoryVerseRef || WEEKLY_BIBLE_READING.verseReference));
+
   const readingSchedule = (Array.isArray(bulletinData?.weeklyReadingSchedule) && bulletinData.weeklyReadingSchedule.length > 0)
     ? bulletinData.weeklyReadingSchedule
     : WEEKLY_BIBLE_READING.schedule;
@@ -46,10 +53,10 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
           </div>
 
           <h2 className="font-serif text-2xl sm:text-4xl font-bold text-amber-950">
-            {CHURCH_INFO.annualThemeZh}
+            {lang === 'zh' ? CHURCH_INFO.annualThemeZh : CHURCH_INFO.annualThemeEn}
           </h2>
           <p className="text-amber-800 font-serif italic text-sm sm:text-base">
-            "{CHURCH_INFO.annualThemeEn}"
+            {lang === 'zh' ? `"${CHURCH_INFO.annualThemeEn}"` : `"${CHURCH_INFO.annualThemeZh}"`}
           </p>
         </div>
 
@@ -95,19 +102,25 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
             </div>
 
             <div className="divide-y divide-slate-100 text-xs sm:text-sm">
-              {readingSchedule.map((day: any, idx: number) => (
-                <div key={idx} className="py-2 flex items-center justify-between">
-                  <span className="font-bold text-slate-800 w-24 shrink-0">{day.date}</span>
-                  <div className="flex items-center space-x-3 text-slate-600 font-mono">
-                    <span className="bg-amber-50 text-amber-900 px-2 py-0.5 rounded border border-amber-200/80">
-                      {day.oldTestament}
-                    </span>
-                    <span className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">
-                      {day.newTestament}
-                    </span>
+              {readingSchedule.map((day: any, idx: number) => {
+                const dateDisplay = lang === 'zh' ? day.date : (day.dateEn || translateDateWeekdayToEn(day.date));
+                const oldTestamentDisplay = lang === 'zh' ? day.oldTestament : (day.oldTestamentEn || translateScriptureToEn(day.oldTestament));
+                const newTestamentDisplay = lang === 'zh' ? day.newTestament : (day.newTestamentEn || translateScriptureToEn(day.newTestament));
+
+                return (
+                  <div key={idx} className="py-2 flex items-center justify-between">
+                    <span className="font-bold text-slate-800 w-24 shrink-0">{dateDisplay}</span>
+                    <div className="flex items-center space-x-3 text-slate-600 font-mono">
+                      <span className="bg-amber-50 text-amber-900 px-2 py-0.5 rounded border border-amber-200/80">
+                        {oldTestamentDisplay}
+                      </span>
+                      <span className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">
+                        {newTestamentDisplay}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -164,3 +177,4 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
     </section>
   );
 };
+

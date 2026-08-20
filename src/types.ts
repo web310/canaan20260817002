@@ -54,9 +54,15 @@ export interface ChurchEvent {
 export interface PrayerRequest {
   id: string;
   author: string;
+  authorZh?: string;
+  authorEn?: string;
   category: 'health' | 'family' | 'faith' | 'thanksgiving' | 'general';
   title: string;
+  titleZh?: string;
+  titleEn?: string;
   content: string;
+  contentZh?: string;
+  contentEn?: string;
   date: string;
   isConfidential: boolean;
   prayedCount: number;

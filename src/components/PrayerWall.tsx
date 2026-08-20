@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Language, PrayerRequest } from '../types';
 import { INITIAL_PRAYERS, CHURCH_INFO } from '../data/churchData';
 import { Heart, Plus, ShieldCheck, Lock, Check, Send, Filter, X, Sparkles, MessageSquare, RotateCcw } from 'lucide-react';
+import { translateAuthorToEn, translatePrayerTitleToEn, translatePrayerContentToEn } from '../utils/translationHelper';
 
 interface PrayerProps {
   lang: Language;
@@ -15,7 +16,21 @@ export const PrayerWall: React.FC<PrayerProps> = ({ lang, onOpenAI }) => {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map((p: PrayerRequest) => {
+            const matchedInit = INITIAL_PRAYERS.find(init => init.id === p.id);
+            if (matchedInit) {
+              return {
+                ...p,
+                authorEn: p.authorEn || matchedInit.authorEn,
+                authorZh: p.authorZh || matchedInit.authorZh,
+                titleEn: p.titleEn || matchedInit.titleEn,
+                titleZh: p.titleZh || matchedInit.titleZh,
+                contentEn: p.contentEn || matchedInit.contentEn,
+                contentZh: p.contentZh || matchedInit.contentZh,
+              };
+            }
+            return p;
+          });
         }
       }
     } catch {
@@ -242,50 +257,62 @@ export const PrayerWall: React.FC<PrayerProps> = ({ lang, onOpenAI }) => {
 
         {/* Prayer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredPrayers.map((prayer) => (
-            <div 
-              key={prayer.id}
-              className="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/80 hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-amber-400 bg-amber-950/80 px-2.5 py-0.5 rounded-md border border-amber-500/30">
-                    {prayer.author}
-                  </span>
-                  <span className="text-slate-400 font-mono">{prayer.date}</span>
+          {filteredPrayers.map((prayer) => {
+            const authorDisplay = lang === 'zh'
+              ? (prayer.authorZh || prayer.author)
+              : (prayer.authorEn || translateAuthorToEn(prayer.author));
+            const titleDisplay = lang === 'zh'
+              ? (prayer.titleZh || prayer.title)
+              : (prayer.titleEn || translatePrayerTitleToEn(prayer.title));
+            const contentDisplay = lang === 'zh'
+              ? (prayer.contentZh || prayer.content)
+              : (prayer.contentEn || translatePrayerContentToEn(prayer.content));
+
+            return (
+              <div 
+                key={prayer.id}
+                className="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/80 hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-amber-400 bg-amber-950/80 px-2.5 py-0.5 rounded-md border border-amber-500/30">
+                      {authorDisplay}
+                    </span>
+                    <span className="text-slate-400 font-mono">{prayer.date}</span>
+                  </div>
+
+                  <h3 className="font-serif text-lg font-bold text-white">
+                    {titleDisplay}
+                  </h3>
+
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-light">
+                    {contentDisplay}
+                  </p>
                 </div>
 
-                <h3 className="font-serif text-lg font-bold text-white">
-                  {prayer.title}
-                </h3>
+                {/* Bottom Pray Counter */}
+                <div className="pt-4 border-t border-slate-700/60 flex items-center justify-between">
+                  <div className="text-xs text-slate-400 flex items-center space-x-1">
+                    <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{prayer.prayedCount} {lang === 'zh' ? '人已代禱' : 'Prayers offered'}</span>
+                  </div>
 
-                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-light">
-                  {prayer.content}
-                </p>
-              </div>
-
-              {/* Bottom Pray Counter */}
-              <div className="pt-4 border-t border-slate-700/60 flex items-center justify-between">
-                <div className="text-xs text-slate-400 flex items-center space-x-1">
-                  <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{prayer.prayedCount} {lang === 'zh' ? '人已代禱' : 'Prayers offered'}</span>
+                  <button
+                    onClick={() => handlePrayClick(prayer.id)}
+                    disabled={prayedIds[prayer.id]}
+                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      prayedIds[prayer.id]
+                        ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-500/40'
+                        : 'bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/40'
+                    }`}
+                  >
+                    <Heart className={`w-3.5 h-3.5 ${prayedIds[prayer.id] ? 'fill-emerald-400' : 'fill-amber-400/40'}`} />
+                    <span>{prayedIds[prayer.id] ? (lang === 'zh' ? '已同心禱告' : 'Prayed') : (lang === 'zh' ? '我為此禱告' : 'I Prayed')}</span>
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => handlePrayClick(prayer.id)}
-                  disabled={prayedIds[prayer.id]}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    prayedIds[prayer.id]
-                      ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-500/40'
-                      : 'bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/40'
-                  }`}
-                >
-                  <Heart className={`w-3.5 h-3.5 ${prayedIds[prayer.id] ? 'fill-emerald-400' : 'fill-amber-400/40'}`} />
-                  <span>{prayedIds[prayer.id] ? (lang === 'zh' ? '已同心禱告' : 'Prayed') : (lang === 'zh' ? '我為此禱告' : 'I Prayed')}</span>
-                </button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Submit Prayer Modal */}

@@ -42,16 +42,18 @@ export const CHURCH_INFO = {
 export const WEEKLY_BIBLE_READING = {
   memoryVerseZh: "所以，弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。（羅馬書 12:1）",
   memoryVerseEn: "Therefore, I urge you, brothers and sisters, in view of God’s mercy, to offer your bodies as a living sacrifice, holy and pleasing to God—this is your true and proper worship. (Romans 12:1)",
+  verseReferenceZh: "羅馬書 12:1",
+  verseReferenceEn: "Romans 12:1",
   verseReference: "羅馬書 12:1 / Romans 12:1",
   readingRange: "8/17 - 8/23",
   schedule: [
-    { date: "8/17 (週一)", oldTestament: "詩篇 97-99", newTestament: "羅馬書 16:1-16" },
-    { date: "8/18 (週二)", oldTestament: "詩篇 100-101", newTestament: "羅馬書 16:17-27" },
-    { date: "8/19 (週三)", oldTestament: "詩篇 102", newTestament: "哥林多前書 1:1-17" },
-    { date: "8/20 (週四)", oldTestament: "詩篇 103", newTestament: "哥林多前書 1:18-31" },
-    { date: "8/21 (週五)", oldTestament: "詩篇 104", newTestament: "哥林多前書 2" },
-    { date: "8/22 (週六)", oldTestament: "詩篇 105", newTestament: "哥林多前書 3" },
-    { date: "8/23 (週日)", oldTestament: "詩篇 106", newTestament: "哥林多前書 4" },
+    { date: "8/17 (週一)", dateEn: "8/17 (Mon)", oldTestament: "詩篇 97-99", oldTestamentEn: "Psalms 97-99", newTestament: "羅馬書 16:1-16", newTestamentEn: "Romans 16:1-16" },
+    { date: "8/18 (週二)", dateEn: "8/18 (Tue)", oldTestament: "詩篇 100-101", oldTestamentEn: "Psalms 100-101", newTestament: "羅馬書 16:17-27", newTestamentEn: "Romans 16:17-27" },
+    { date: "8/19 (週三)", dateEn: "8/19 (Wed)", oldTestament: "詩篇 102", oldTestamentEn: "Psalms 102", newTestament: "哥林多前書 1:1-17", newTestamentEn: "1 Corinthians 1:1-17" },
+    { date: "8/20 (週四)", dateEn: "8/20 (Thu)", oldTestament: "詩篇 103", oldTestamentEn: "Psalms 103", newTestament: "哥林多前書 1:18-31", newTestamentEn: "1 Corinthians 1:18-31" },
+    { date: "8/21 (週五)", dateEn: "8/21 (Fri)", oldTestament: "詩篇 104", oldTestamentEn: "Psalms 104", newTestament: "哥林多前書 2", newTestamentEn: "1 Corinthians 2" },
+    { date: "8/22 (週六)", dateEn: "8/22 (Sat)", oldTestament: "詩篇 105", oldTestamentEn: "Psalms 105", newTestament: "哥林多前書 3", newTestamentEn: "1 Corinthians 3" },
+    { date: "8/23 (週日)", dateEn: "8/23 (Sun)", oldTestament: "詩篇 106", oldTestamentEn: "Psalms 106", newTestament: "哥林多前書 4", newTestamentEn: "1 Corinthians 4" },
   ]
 };
 
@@ -310,9 +312,15 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
     id: "prayer-1",
     author: "教會同工會",
+    authorZh: "教會同工會",
+    authorEn: "Church Board",
     category: "general",
     title: "為教會冷氣安裝工程與招牌設計製作代禱",
+    titleZh: "為教會冷氣安裝工程與招牌設計製作代禱",
+    titleEn: "Prayer for Sanctuary A/C Installation & Signboard Project",
     content: "感謝神恩領！大堂冷氣已順利完成安裝，目前正進行外牆與主招牌之設計規劃，求主賜下設計與施工同工智慧，使一切工程順暢安全、榮神益人。",
+    contentZh: "感謝神恩領！大堂冷氣已順利完成安裝，目前正進行外牆與主招牌之設計規劃，求主賜下設計與施工同工智慧，使一切工程順暢安全、榮神益人。",
+    contentEn: "Thank God for His grace! Sanctuary A/C installation is smoothly completed. Exterior wall and main signboard design are underway. Pray for wisdom and safety for all designers and contractors.",
     date: "2026-08-16",
     isConfidential: false,
     prayedCount: 38
@@ -320,9 +328,15 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
     id: "prayer-2",
     author: "教育部同工",
+    authorZh: "教育部同工",
+    authorEn: "Christian Education Team",
     category: "faith",
     title: "為青年事工與主日學備課同工守望代禱",
+    titleZh: "為青年事工與主日學備課同工守望代禱",
+    titleEn: "Prayer for Youth Ministry & Sunday School Teachers",
     content: "求主聖靈動工，帶領更多年輕弟兄姊妹來到教會在真理中扎根，在團契中彼此相愛；並賜智慧與愛心給主日學講師與備課同工，同心渴慕神的話語。",
+    contentZh: "求主聖靈動工，帶領更多年輕弟兄姊妹來到教會在真理中扎根，在團契中彼此相愛；並賜智慧與愛心給主日學講師與備課同工，同心渴慕神的話語。",
+    contentEn: "May the Holy Spirit work mightily to bring more young adults and youth to root deeply in biblical truth and fellowship; and grant wisdom and love to Sunday School teachers in preparing lessons.",
     date: "2026-08-15",
     isConfidential: false,
     prayedCount: 32
@@ -330,9 +344,15 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
     id: "prayer-3",
     author: "關懷同工小組",
+    authorZh: "關懷同工小組",
+    authorEn: "Member Care Team",
     category: "health",
     title: "為長老執事與全體會友身體健康關懷代禱",
+    titleZh: "為長老執事與全體會友身體健康關懷代禱",
+    titleEn: "Prayer for Elders, Deacons & Congregational Health",
     content: "請為萬四長老、張文辛長老、馬新民執事及年長、身體欠安的弟兄姊妹代禱，求主施恩醫治，賜下出人意外的平安、充沛體力與喜樂心靈。",
+    contentZh: "請為萬四長老、張文辛長老、馬新民執事及年長、身體欠安的弟兄姊妹代禱，求主施恩醫治，賜下出人意外的平安、充沛體力與喜樂心靈。",
+    contentEn: "Please pray for Elder Wan, Elder Chang, Deacon Ma, and all elderly or ailing members. May the Lord grant divine healing, extraordinary peace, strength, and joy.",
     date: "2026-08-14",
     isConfidential: false,
     prayedCount: 29
@@ -340,9 +360,15 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
     id: "prayer-4",
     author: "教務同工",
+    authorZh: "教務同工",
+    authorEn: "Pastoral Ministry Team",
     category: "thanksgiving",
     title: "為每週四晚上 8:00 線上 Zoom 禱告會守望",
+    titleZh: "為每週四晚上 8:00 線上 Zoom 禱告會守望",
+    titleEn: "Prayer for Thursday 8:00 PM Online Zoom Prayer Meeting",
     content: "邀請全體弟兄姊妹同心參加週四線上禱告會 (Zoom ID: 310-626-6103 / 密碼: 25226)，同心為教會聖工、家庭和宣教事工代求。",
+    contentZh: "邀請全體弟兄姊妹同心參加週四線上禱告會 (Zoom ID: 310-626-6103 / 密碼: 25226)，同心為教會聖工、家庭和宣教事工代求。",
+    contentEn: "Inviting all brothers and sisters to join our Thursday online prayer meeting (Zoom ID: 310-626-6103 / Passcode: 25226) to intercede for church ministries, families, and kingdom missions.",
     date: "2026-08-13",
     isConfidential: false,
     prayedCount: 25
@@ -350,9 +376,15 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
     id: "prayer-5",
     author: "宣教外展組",
+    authorZh: "宣教外展組",
+    authorEn: "Outreach & Missions Team",
     category: "family",
     title: "為每月兩次細胞小組與健行團契外展代禱",
+    titleZh: "為每月兩次細胞小組與健行團契外展代禱",
+    titleEn: "Prayer for Bi-weekly Cell Groups & Hiking Outreach",
     content: "為週六下午細胞小組生活聚會與南灣步道健行小組代禱，願透過愛心交通與大自然健走，接觸更多慕道朋友與家庭，傳揚主愛。",
+    contentZh: "為週六下午細胞小組生活聚會與南灣步道健行小組代禱，願透過愛心交通與大自然健走，接觸更多慕道朋友與家庭，傳揚主愛。",
+    contentEn: "Pray for our Saturday afternoon Cell Groups and South Bay trail hiking gatherings, reaching seekers and families with God's love and caring fellowship in nature.",
     date: "2026-08-12",
     isConfidential: false,
     prayedCount: 21

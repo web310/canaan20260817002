@@ -772,7 +772,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                           {selectedSermon.videoPasscode && (
                             <div className="bg-slate-900/90 border border-amber-500/40 rounded-xl p-3 text-left space-y-1">
                               <div className="text-[11px] text-amber-300 font-semibold flex items-center justify-between">
-                                <span>🔐 觀看密碼 (Passcode)</span>
+                                <span>{lang === 'zh' ? '🔐 觀看密碼 (Passcode)' : '🔐 Video Passcode'}</span>
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -783,7 +783,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                                   className="text-xs text-amber-300 hover:text-amber-200 flex items-center space-x-1 underline"
                                 >
                                   {copiedPasscode ? <Check className="w-3 h-3 text-emerald-400" /> : null}
-                                  <span>{copiedPasscode ? '已複製！' : '複製密碼'}</span>
+                                  <span>{copiedPasscode ? (lang === 'zh' ? '已複製！' : 'Copied!') : (lang === 'zh' ? '複製密碼' : 'Copy Code')}</span>
                                 </button>
                               </div>
                               <div className="font-mono font-bold text-white tracking-widest text-base select-all bg-black/50 px-2.5 py-1 rounded border border-slate-700">
@@ -820,7 +820,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                           {selectedSermon.videoPasscode && (
                             <div className="bg-slate-900/90 border border-amber-500/40 rounded-xl p-3 text-left space-y-1">
                               <div className="text-[11px] text-amber-300 font-semibold flex items-center justify-between">
-                                <span>🔐 觀看密碼 (Passcode)</span>
+                                <span>{lang === 'zh' ? '🔐 觀看密碼 (Passcode)' : '🔐 Video Passcode'}</span>
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -831,7 +831,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                                   className="text-xs text-amber-300 hover:text-amber-200 flex items-center space-x-1 underline"
                                 >
                                   {copiedPasscode ? <Check className="w-3 h-3 text-emerald-400" /> : null}
-                                  <span>{copiedPasscode ? '已複製！' : '複製密碼'}</span>
+                                  <span>{copiedPasscode ? (lang === 'zh' ? '已複製！' : 'Copied!') : (lang === 'zh' ? '複製密碼' : 'Copy Code')}</span>
                                 </button>
                               </div>
                               <div className="font-mono font-bold text-white tracking-widest text-base select-all bg-black/50 px-2.5 py-1 rounded border border-slate-700">
@@ -1113,7 +1113,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     type="button"
                     onClick={() => handleSortByDate('desc')}
                     className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors"
-                    title="新日期排在最前"
+                    title={lang === 'zh' ? "新日期排在最前" : "Newest date first"}
                   >
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{lang === 'zh' ? '按日期新至舊（推薦）' : 'Date Newest First'}</span>
@@ -1123,7 +1123,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     type="button"
                     onClick={() => handleSortByDate('asc')}
                     className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-colors"
-                    title="舊日期排在最前"
+                    title={lang === 'zh' ? "舊日期排在最前" : "Oldest date first"}
                   >
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{lang === 'zh' ? '按日期舊至新' : 'Date Oldest First'}</span>

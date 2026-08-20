@@ -105,18 +105,18 @@ export default function App() {
       {/* Floating Admin Quick Bar when Logged In */}
       {adminEmail && (
         <aside 
-          aria-label="管理員快速控制列"
+          aria-label={lang === 'zh' ? "管理員快速控制列" : "Admin Quick Bar"}
           className="fixed bottom-5 right-5 z-40 bg-slate-900/95 text-white border-2 border-amber-500/60 shadow-2xl rounded-2xl p-2.5 flex items-center space-x-2.5 backdrop-blur-md animate-in slide-in-from-bottom-5 duration-300"
         >
           <div className="flex items-center space-x-1.5 px-2 py-1 bg-amber-500/20 rounded-lg border border-amber-500/30 text-amber-300 text-xs font-semibold">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">管理員已登入</span>
+            <span className="hidden sm:inline">{lang === 'zh' ? '管理員已登入' : 'Admin Logged In'}</span>
           </div>
 
           <button
             onClick={() => setIsGlobalGitHubSyncOpen(true)}
             className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-lg hover:shadow-amber-500/30 transition-all transform hover:scale-105"
-            title="一鍵將主日講道、相簿走廊、週報讀經等全站資料同步至 GitHub 並觸發 Cloudflare 自動建置"
+            title={lang === 'zh' ? "一鍵將主日講道、相簿走廊、週報讀經等全站資料同步至 GitHub 並觸發 Cloudflare 自動建置" : "Sync all sermons, gallery, bulletins to GitHub"}
           >
             <Github className="w-4 h-4 text-slate-950" />
             <span>{lang === 'zh' ? '🚀 一鍵和 GitHub 同步' : '🚀 Sync All to GitHub'}</span>
@@ -125,10 +125,10 @@ export default function App() {
           <button
             onClick={() => setIsBulletinAdminOpen(true)}
             className="hidden md:flex items-center space-x-1 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white px-2.5 py-2 rounded-xl text-xs font-medium border border-slate-700 transition-colors"
-            title="週報 PDF 上傳與 Email 自動更新"
+            title={lang === 'zh' ? "週報檔案 (PDF/Word/TXT) 上傳與 Email 自動更新" : "Bulletin Upload & Sync"}
           >
             <FileText className="w-3.5 h-3.5 text-amber-400" />
-            <span>週報</span>
+            <span>{lang === 'zh' ? '週報' : 'Bulletin'}</span>
           </button>
         </aside>
       )}
