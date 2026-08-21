@@ -58,51 +58,49 @@ interface EditableBulletinForm {
 }
 
 const DEFAULT_OFFICIAL_BULLETIN: EditableBulletinForm = {
-  serviceDate: "2026-08-16",
+  serviceDate: "2026-08-23",
   presider: "鄭育青 弟兄",
-  speaker: "ITO 傳道",
-  speakerEn: "Evangelist ITO",
-  sermonTitle: "永不失望的人生",
-  sermonTitleEn: "A Life That Never Disappoints",
-  sermonScripture: "使徒行傳第 27 章第 20-25 節、使徒行傳第 28 章第 4-8 節",
-  sermonScriptureEn: "Acts 27:20-25; Acts 28:4-8",
-  sermonSummary: "加南新生基督教會主日崇拜，ITO 傳道透過使徒行傳第 27 章 20-25 節與第 28 章 4-8 節傳講《永不失望的人生》，勉勵弟兄姊妹在風浪中堅定信靠神：在主裡面有平安、挺身來關愛鄰舍、深信主恩典是夠用的，並專心尋求神引領。",
-  sermonSummaryEn: "Reflecting on Acts 27:20-25 and Acts 28:4-8 on experiencing peace in the Lord during life's storms, reaching out to care for neighbors, trusting in God's sufficient grace, and wholeheartedly seeking God's guidance.",
+  speaker: "談妮 傳道",
+  speakerEn: "Evangelist Tanni",
+  sermonTitle: "曠野裡的微聲——從疲憊到更新",
+  sermonTitleEn: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
+  sermonScripture: "列王記上第 19 章第 1-18 節",
+  sermonScriptureEn: "1 Kings 19:1-18",
+  sermonSummary: "加南新生基督教會主日崇拜，談妮傳道透過列王記上第 19 章第 1-18 節傳講《曠野裡的微聲——從疲憊到更新》，分享先知以利亞在低潮與疲憊中的經歷。勉勵弟兄姊妹：即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的微聲，重新得著力量與盼望。",
+  sermonSummaryEn: "Evangelist Tanni shared the journey of Prophet Elijah in exhaustion and despair. Even in our deepest weakness and wilderness, God is present to provide, comfort, and guide us to listen to His gentle whisper and regain strength and heavenly hope.",
   sermonPointsZh: [
-    "1. 在主裡面有平安 (使徒行傳 27:20-25)",
-    "2. 挺身來關愛鄰舍 (使徒行傳 28:4-8)",
-    "3. 主恩典是夠用的",
-    "4. 專心尋求神引領"
+    "一、曠野低谷中的疲憊與求死 （列王記上 19:1-4）",
+    "二、神親自的供應、撫摸與撫慰 （列王記上 19:5-8）",
+    "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
+    "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
   ],
   sermonPoints: [
-    "1. Peace in the Lord — Acts 27:20-25",
-    "2. Stepping forward to love and care for neighbors — Acts 28:4-8",
-    "3. God's grace is sufficient",
-    "4. Wholeheartedly seeking God's guidance"
+    "1. Weariness in the Wilderness — 1 Kings 19:1-4",
+    "2. God's Gentle Provision and Touch — 1 Kings 19:5-8",
+    "3. Listening to the Gentle Whisper on Mount Horeb — 1 Kings 19:9-14",
+    "4. Commissioned Anew with Seven Thousand Faithful — 1 Kings 19:15-18"
   ],
-  memoryVerse: "所以，弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。（羅馬書 12:1）",
-  memoryVerseRef: "羅馬書 12:1",
-  weeklyReadingRange: "8/17 - 8/23",
+  memoryVerse: "凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。（馬太福音 11:28）",
+  memoryVerseRef: "馬太福音 11:28",
+  weeklyReadingRange: "8/24 - 8/30",
   weeklyReadingSchedule: [
-    { date: "8/17 (週一)", oldTestament: "詩篇 97-99", newTestament: "羅馬書 16" },
-    { date: "8/18 (週二)", oldTestament: "詩篇 100-102", newTestament: "哥林多前書 1" },
-    { date: "8/19 (週三)", oldTestament: "詩篇 103-104", newTestament: "哥林多前書 2" },
-    { date: "8/20 (週四)", oldTestament: "詩篇 105-106", newTestament: "哥林多前書 3" },
-    { date: "8/21 (週五)", oldTestament: "詩篇 107-109", newTestament: "哥林多前書 4" },
-    { date: "8/22 (週六)", oldTestament: "詩篇 110-112", newTestament: "哥林多前書 5" },
-    { date: "8/23 (週日)", oldTestament: "詩篇 113-115", newTestament: "哥林多前書 6" }
+    { date: "8/24 (週一)", oldTestament: "詩篇 116-118", newTestament: "哥林多前書 7:1-19" },
+    { date: "8/25 (週二)", oldTestament: "詩篇 119:1-88", newTestament: "哥林多前書 7:20-40" },
+    { date: "8/26 (週三)", oldTestament: "詩篇 119:89-176", newTestament: "哥林多前書 8" },
+    { date: "8/27 (週四)", oldTestament: "詩篇 120-122", newTestament: "哥林多前書 9" },
+    { date: "8/28 (週五)", oldTestament: "詩篇 123-125", newTestament: "哥林多前書 10:1-18" },
+    { date: "8/29 (週六)", oldTestament: "詩篇 126-128", newTestament: "哥林多前書 10:19-33" },
+    { date: "8/30 (週日)", oldTestament: "詩篇 129-131", newTestament: "哥林多前書 11:1-16" }
   ],
   prayerRequests: [
-    "為教會冷氣安裝工程與招牌設計製作代禱",
-    "為青年事工與主日學備課同工守望代禱",
-    "為長老執事與全體會友身體健康關懷代禱",
-    "為每週四晚上 8:00 線上 Zoom 禱告會守望",
-    "為每月兩次細胞小組與健行團契外展代禱"
+    "因 C3 教會總部方面的規劃，我們教會與 C3 教會的租約將於 9/6 結束。求主親自帶領後續各項安排，也求主使這次的變動對 C3 教會及我們教會都有所助益，並為我們教會未來的聚會場地與發展預備合適的道路。",
+    "求主帶領發展年輕事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。求主賜下智慧與力量，使年輕事工穩健發展，成為教會的祝福。",
+    "為近日跌倒的會友，包括 Lois、談妮傳道的母親及先生代禱，求主親自保守、醫治與扶持，使他們身體得著恢復，減少疼痛與不適，也保守後續的檢查、治療及休養都順利。",
+    "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
   ],
   announcements: [
-    "歡迎初次來到加南新生基督教會的弟兄姊妹與新朋友，會後備有愛筵交通。",
-    "週四晚上 8:00 於線上 Zoom 舉行全教會禱告會 (ID: 310-626-6103, 密碼: 25226)。",
-    "禮拜天上午 10:00 於副堂進行主日學，11:00 於主堂舉行主日崇拜。"
+    "感謝談妮傳道今天帶來的訊息，分享先知以利亞在低潮與疲憊中的經歷。提醒我們，即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的聲音，重新得著力量與盼望。",
+    "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
   ],
   zoomPasscode: "25226",
   videoUrl: ""

@@ -6,11 +6,38 @@ import { Sermon } from '../types';
 // Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "2026-08-19-top3-sermon-content-list";
+export const SERMONS_DATA_VERSION = "2026-08-23-tanni-wilderness-renewal";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
     id: "sermon-1",
+    title: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
+    titleZh: "曠野裡的微聲——從疲憊到更新",
+    speaker: "Evangelist Tanni",
+    speakerZh: "談妮 傳道",
+    date: "2026-08-23",
+    scripture: "1 Kings 19:1-18",
+    scriptureZh: "列王記上第 19 章第 1-18 節",
+    series: "Sunday Message",
+    seriesZh: "主日證道",
+    summary: "Evangelist Tanni shared the journey of Prophet Elijah in exhaustion and despair. Even in our deepest weakness and wilderness, God is present to provide, comfort, and guide us to listen to His gentle whisper and regain strength and heavenly hope.",
+    summaryZh: "加南新生基督教會主日崇拜，談妮傳道透過列王記上第 19 章第 1-18 節傳講《曠野裡的微聲——從疲憊到更新》，分享先知以利亞在低潮與疲憊中的經歷。勉勵弟兄姊妹：即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的微聲，重新得著力量與盼望。",
+    points: [
+      "1. Weariness in the Wilderness — 1 Kings 19:1-4",
+      "2. God's Gentle Provision and Touch — 1 Kings 19:5-8",
+      "3. Listening to the Gentle Whisper on Mount Horeb — 1 Kings 19:9-14",
+      "4. Commissioned Anew with Seven Thousand Faithful — 1 Kings 19:15-18"
+    ],
+    pointsZh: [
+      "一、曠野低谷中的疲憊與求死 （列王記上 19:1-4）",
+      "二、神親自的供應、撫摸與撫慰 （列王記上 19:5-8）",
+      "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
+      "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
+    ],
+    videoPasscode: "25226"
+  },
+  {
+    id: "sermon-2",
     title: "A Life That Never Disappoints",
     titleZh: "永不失望的人生",
     speaker: "Evangelist ITO",
@@ -37,7 +64,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     videoPasscode: "25226"
   },
   {
-    id: "sermon-2",
+    id: "sermon-3",
     title: "Is Life Really Gone in the Blink of an Eye?",
     titleZh: "人生真的轉眼成空嗎？",
     speaker: "Rev. Meng Sulun",
@@ -61,34 +88,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     videoUrl: "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
     videoPasscode: "8s4y?JHX"
-  },
-  {
-    id: "sermon-3",
-    title: "Those Who Are Well Do Not Need a Physician",
-    titleZh: "康健的人用不著醫生",
-    speaker: "Rev. Yijun Guo",
-    speakerZh: "郭易君 牧師",
-    date: "2026-08-02",
-    scripture: "Luke 5:27-32",
-    scriptureZh: "路加福音第 5 章第 27-32 節",
-    series: "Sunday Worship",
-    seriesZh: "主日崇拜",
-    summary: "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
-    summaryZh: "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
-    points: [
-      "1. Sitting at the Tax Booth (5:27a)",
-      "2. Follow Me (5:27b)",
-      "3. Followed Jesus (5:28)",
-      "4. Hosted a Great Feast (5:29-30)",
-      "5. Physician of Souls (5:31)"
-    ],
-    pointsZh: [
-      "一、坐在稅關上 （5:27上）",
-      "二、你跟從我來 （5:27下）",
-      "三、跟從了耶穌 （5:28）",
-      "四、他大擺筵席 （5:29-30）",
-      "五、靈魂的醫生 （5:31）"
-    ]
   }
 ];
 
