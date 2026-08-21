@@ -35,13 +35,8 @@ export const PrayerWall: React.FC<PrayerProps> = ({
             const matchedInit = INITIAL_PRAYERS.find(init => init.id === p.id);
             if (matchedInit) {
               return {
-                ...p,
-                authorEn: p.authorEn || matchedInit.authorEn,
-                authorZh: p.authorZh || matchedInit.authorZh,
-                titleEn: p.titleEn || matchedInit.titleEn,
-                titleZh: p.titleZh || matchedInit.titleZh,
-                contentEn: p.contentEn || matchedInit.contentEn,
-                contentZh: p.contentZh || matchedInit.contentZh,
+                ...matchedInit,
+                prayedCount: Math.max(p.prayedCount || 0, matchedInit.prayedCount || 0),
               };
             }
             return p;
