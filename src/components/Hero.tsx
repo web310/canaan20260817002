@@ -109,7 +109,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               className="flex items-center space-x-2 bg-amber-950/60 hover:bg-amber-900/80 text-amber-200 hover:text-white px-5 py-3.5 rounded-xl font-semibold text-base border border-amber-500/40 transition-all"
             >
               <Heart className="w-4 h-4 fill-amber-400/30 text-amber-400" />
-              <span>{lang === 'zh' ? '線上奉獻' : 'Online Giving'}</span>
+              <span>{lang === 'zh' ? '奉獻支持' : 'Give'}</span>
             </button>
 
             <button

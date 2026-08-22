@@ -215,7 +215,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3.5 py-1.5 xl:px-4 xl:py-2 rounded-lg font-semibold text-xs xl:text-sm whitespace-nowrap shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex-shrink-0"
             >
               <Heart className="w-4 h-4 fill-white/20 flex-shrink-0" />
-              <span className="whitespace-nowrap">{lang === 'zh' ? '奉獻支持' : 'Online Give'}</span>
+              <span className="whitespace-nowrap">{lang === 'zh' ? '奉獻支持' : 'Give'}</span>
             </button>
 
             {/* Language Switcher for mobile/tablet when top bar is hidden */}
@@ -355,7 +355,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full flex items-center justify-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-semibold shadow-md"
               >
                 <Heart className="w-4 h-4 fill-white/20" />
-                <span>{lang === 'zh' ? '線上奉獻 Online Giving' : 'Online Giving'}</span>
+                <span>{lang === 'zh' ? '奉獻支持' : 'Give'}</span>
               </button>
 
               <a

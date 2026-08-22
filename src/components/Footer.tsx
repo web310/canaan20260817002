@@ -109,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenGiving, onOpenAI }) 
                 className="w-full flex items-center justify-center space-x-2 bg-amber-700 hover:bg-amber-800 text-white py-2 rounded-xl text-xs font-bold transition-colors"
               >
                 <Heart className="w-3.5 h-3.5 fill-white" />
-                <span>{lang === 'zh' ? '線上奉獻渠道' : 'Online Giving'}</span>
+                <span>{lang === 'zh' ? '奉獻支持渠道' : 'Give'}</span>
               </button>
             </div>
           </div>
@@ -126,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenGiving, onOpenAI }) 
               <a href="#ministries" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '事工團契' : 'Ministries'}</a>
               <a href="#events" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '最新活動' : 'Events'}</a>
               <a href="#prayer" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '代禱牆' : 'Prayer Wall'}</a>
-              <a href="#giving" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '線上奉獻' : 'Giving'}</a>
+              <a href="#giving" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '奉獻支持' : 'Give'}</a>
               <a href="#contact" className="hover:text-amber-300 transition-colors">{lang === 'zh' ? '聯絡導航' : 'Contact'}</a>
             </div>
 
