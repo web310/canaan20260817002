@@ -220,13 +220,12 @@ export const GivingSection: React.FC<GivingProps> = ({ lang, isOpenModal = false
 
             <div className="p-4 sm:p-5 bg-purple-50 rounded-2xl border border-purple-200 space-y-3">
               <div className="text-xs font-semibold text-purple-900 uppercase tracking-wider">
-                {lang === 'zh' ? '教會 Zelle 收款帳號 (Recipient Email / Phone):' : 'Zelle Recipient Account:'}
+                {lang === 'zh' ? '教會 Zelle 收款 Email (Recipient Email):' : 'Zelle Recipient Email:'}
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-purple-300">
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <div className="text-sm sm:text-base font-mono font-bold text-slate-900 break-all">{CHURCH_INFO.zelleEmail}</div>
-                  <div className="text-xs text-slate-500">{lang === 'zh' ? '備用電話號碼：' : 'Alt Phone:'} {CHURCH_INFO.zellePhone}</div>
                   <div className="text-xs text-slate-600 font-medium">{lang === 'zh' ? '戶名：' : 'Recipient Name:'} {CHURCH_INFO.nameEn}</div>
                 </div>
 
