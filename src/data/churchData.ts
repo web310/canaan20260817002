@@ -34,6 +34,8 @@ export const CHURCH_INFO = {
   zelleEmail: "ShinShengChurch@Gmail.com",
   zellePhone: "(310) 626-6103",
   checkPayableTo: "Canaan Shin Sheng Christian Church",
+  inPersonGivingLocationZh: "禮拜天到教會作禮拜時，在禮拜堂的後面，左右各有一個奉獻箱，可以將奉獻放進裏面，也是教會最鼓勵的方式。",
+  inPersonGivingLocationEn: "When attending Sunday service, offering boxes are located at the back of the sanctuary on both the left and right sides. This is our most encouraged way to give.",
   googleMapsUrl: "https://maps.google.com/?q=25226+S.+Western+Ave,+Harbor+City,+CA+90710",
   parkingEntranceZh: "專屬停車場入口位於 W 253rd St（由 Western Ave 轉進 W 253rd St 即可駛入免費停車場）",
   parkingEntranceEn: "Dedicated parking lot entrance is on W 253rd St (Turn into W 253rd St from Western Ave for free on-site parking)",
