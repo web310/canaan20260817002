@@ -130,6 +130,18 @@ export function translateAuthorToEn(author: string): string {
 
 export function translatePrayerTitleToEn(title: string): string {
   if (!title) return '';
+  if (title.includes('談妮') && title.includes('手術')) {
+    return "Prayer for Evangelist Tanni's Surgery on 8/24 & Smooth Recovery";
+  }
+  if (title.includes('租約') || title.includes('聚會發展')) {
+    return 'Prayer for Lease Transition & Future Gathering Path';
+  }
+  if (title.includes('萬志俠')) {
+    return "Prayer for Rev. Zhixia Wan's Preaching Ministry Next Sunday";
+  }
+  if (title.includes('跌倒') || (title.includes('談妮') && title.includes('母親'))) {
+    return 'Prayer for Healing & Recovery for Fall-Injured Members and Families';
+  }
   if (title.includes('冷氣') || title.includes('招牌')) {
     return 'Prayer for Sanctuary A/C Installation & Signboard Project';
   }
@@ -150,6 +162,18 @@ export function translatePrayerTitleToEn(title: string): string {
 
 export function translatePrayerContentToEn(content: string): string {
   if (!content) return '';
+  if (content.includes('談妮') && (content.includes('手術') || content.includes('8/24'))) {
+    return "Please pray for Evangelist Tanni as she undergoes surgery on August 24. Pray that the Lord guides the medical team with wisdom and skill, and grants peace and strength to her family. May the Lord care for all needs at home so she can rest with peace of mind. Pray for a smooth recovery, restoring her body and spirit as she experiences God's grace and presence.";
+  }
+  if (content.includes('租約') || content.includes('C3')) {
+    return "Due to plans from C3 headquarters, our lease with C3 will end on September 6. Pray that the Lord leads all subsequent arrangements, making this change beneficial to both churches, and paving the right path for future venues and ministry growth.";
+  }
+  if (content.includes('萬志俠')) {
+    return "Next week we have invited Rev. Zhixia Wan to preach. Pray that the Lord blesses her ministry with wisdom and power, faithfully preaching God's Word, and prepares our hearts to understand and obey His will.";
+  }
+  if (content.includes('跌倒') || (content.includes('談妮') && content.includes('母親'))) {
+    return "Please pray for members and families who recently experienced falls, including Lois, Evangelist Tanni's mother, and her husband. May the Lord grant healing, relieve pain, and bless all upcoming medical care and rehabilitation.";
+  }
   if (content.includes('冷氣') || content.includes('招牌')) {
     return 'Thank God for His grace! Sanctuary A/C installation is smoothly completed. Exterior wall and main signboard design are underway. Pray for wisdom and safety for all designers and contractors.';
   }

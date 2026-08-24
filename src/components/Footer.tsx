@@ -2,7 +2,7 @@ import React from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
 import { ChurchLogo } from './ChurchLogo';
-import { MapPin, Phone, Mail, Clock, Heart, ShieldCheck, ArrowUp } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Heart, ShieldCheck, ArrowUp, Youtube } from 'lucide-react';
 
 interface FooterProps {
   lang: Language;
@@ -101,9 +101,31 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenGiving, onOpenAI }) 
                   {CHURCH_INFO.email}
                 </a>
               </li>
+              <li className="flex items-center space-x-2">
+                <Youtube className="w-4 h-4 text-rose-400 shrink-0" />
+                <a 
+                  href={CHURCH_INFO.youtubeUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-rose-300 hover:text-white hover:underline transition-colors font-medium truncate"
+                  title="YouTube 官方頻道: @CanaanShinShengChristianChurch"
+                >
+                  YouTube 官方頻道
+                </a>
+              </li>
             </ul>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
+              <a
+                href={CHURCH_INFO.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center space-x-2 bg-rose-950/80 hover:bg-rose-900 text-rose-200 hover:text-white py-2 rounded-xl text-xs font-semibold border border-rose-500/40 transition-colors shadow-sm"
+              >
+                <Youtube className="w-3.5 h-3.5 text-rose-400" />
+                <span>YouTube 官方頻道</span>
+              </a>
+
               <button
                 onClick={onOpenGiving}
                 className="w-full flex items-center justify-center space-x-2 bg-amber-700 hover:bg-amber-800 text-white py-2 rounded-xl text-xs font-bold transition-colors"

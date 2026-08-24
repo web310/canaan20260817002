@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, PrayerRequest, PendingPrayerSubmission } from '../types';
 import { INITIAL_PRAYERS, CHURCH_INFO } from '../data/churchData';
+import { deduplicatePrayers } from '../utils/prayerHelper';
 import { 
   X, Check, Trash2, Edit3, ShieldAlert, Plus, 
   RotateCcw, Mail, Eye, Sparkles, Inbox, CheckCircle2, 
@@ -93,7 +94,7 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
       prayedCount: 1,
     };
 
-    const updatedPrayers = [newPrayer, ...prayers];
+    const updatedPrayers = deduplicatePrayers([newPrayer, ...prayers]);
     onUpdatePrayers(updatedPrayers);
 
     // Update pending status
@@ -164,7 +165,7 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
       prayedCount: 5,
     };
 
-    const updated = [newPrayer, ...prayers];
+    const updated = deduplicatePrayers([newPrayer, ...prayers]);
     onUpdatePrayers(updated);
 
     setNewAuthor('');
@@ -177,8 +178,8 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
   // Action: Reset to official default prayers
   const handleResetToOfficialPrayers = () => {
     if (!window.confirm(lang === 'zh' ? '確定要將代禱牆重設為教會官方預設代禱事項嗎？' : 'Reset prayer wall to default official prayers?')) return;
-    onUpdatePrayers(INITIAL_PRAYERS);
-    showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項！' : 'Synced with latest official church prayer requests!');
+    onUpdatePrayers(deduplicatePrayers(INITIAL_PRAYERS));
+    showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項並完成去重！' : 'Synced with latest official church prayer requests!');
   };
 
   const pendingCount = pendingList.filter(p => p.status === 'pending').length;

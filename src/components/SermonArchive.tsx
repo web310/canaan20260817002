@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, Sermon } from '../types';
 import { SERMON_CONTENT_LIST } from '../data/sermonsData';
+import { CHURCH_INFO } from '../data/churchData';
 import { SermonEditModal } from './SermonEditModal';
 import { SermonGitHubSyncModal } from './SermonGitHubSyncModal';
 import {
@@ -32,7 +33,8 @@ import {
   Cloud,
   Lock,
   ExternalLink,
-  Copy
+  Copy,
+  Youtube
 } from 'lucide-react';
 
 interface SermonProps {
@@ -297,6 +299,18 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                 <BookOpen className="w-4 h-4 text-amber-400" />
                 <span>{lang === 'zh' ? '主日講道影音' : 'Sermons & Messages'}</span>
               </div>
+
+              <a
+                href={CHURCH_INFO.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 hover:text-white hover:bg-rose-500/30 text-xs font-semibold uppercase tracking-wider border border-rose-500/40 transition-colors shadow-sm"
+                title="加南新生 YouTube 官方頻道: @CanaanShinShengChristianChurch"
+              >
+                <Youtube className="w-4 h-4 text-rose-400" />
+                <span>{lang === 'zh' ? 'YouTube 官方頻道' : 'YouTube Channel'}</span>
+                <ExternalLink className="w-3 h-3 text-rose-400/80" />
+              </a>
 
               {adminEmail && (
                 <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/40 animate-pulse">
@@ -625,36 +639,50 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
               </div>
 
               {/* Modal Tabs */}
-              <div className="px-6 flex space-x-2 border-b border-slate-800">
-                <button
-                  onClick={() => setActiveTab('video')}
-                  className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
-                    activeTab === 'video' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Video className="w-3.5 h-3.5" />
-                  <span>{lang === 'zh' ? '影音播放' : 'Video Player'}</span>
-                </button>
+              <div className="px-6 flex items-center justify-between border-b border-slate-800 flex-wrap gap-2">
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setActiveTab('video')}
+                    className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
+                      activeTab === 'video' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>{lang === 'zh' ? '影音播放' : 'Video Player'}</span>
+                  </button>
 
-                <button
-                  onClick={() => setActiveTab('audio')}
-                  className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
-                    activeTab === 'audio' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>{lang === 'zh' ? '錄音廣播' : 'Audio Stream'}</span>
-                </button>
+                  <button
+                    onClick={() => setActiveTab('audio')}
+                    className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
+                      activeTab === 'audio' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>{lang === 'zh' ? '錄音廣播' : 'Audio Stream'}</span>
+                  </button>
 
-                <button
-                  onClick={() => setActiveTab('notes')}
-                  className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
-                    activeTab === 'notes' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  <button
+                    onClick={() => setActiveTab('notes')}
+                    className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
+                      activeTab === 'notes' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{lang === 'zh' ? '證道講義大綱' : 'Sermon Notes'}</span>
+                  </button>
+                </div>
+
+                <a
+                  href={CHURCH_INFO.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-1 inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 hover:text-white text-xs font-semibold border border-rose-500/40 transition-colors shadow-sm"
+                  title="前往加南新生 YouTube 官方頻道"
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>{lang === 'zh' ? '證道講義大綱' : 'Sermon Notes'}</span>
-                </button>
+                  <Youtube className="w-3.5 h-3.5 text-rose-400" />
+                  <span>{lang === 'zh' ? '加南 YouTube 頻道' : 'YouTube Channel'}</span>
+                  <ExternalLink className="w-3 h-3 text-rose-400/80" />
+                </a>
               </div>
 
               {/* Tab Content */}

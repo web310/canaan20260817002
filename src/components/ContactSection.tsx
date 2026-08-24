@@ -4,7 +4,7 @@ import { CHURCH_INFO } from '../data/churchData';
 import { sendContactEmailJS, getEmailJSConfig } from '../lib/emailService';
 import { EmailJSConfigModal } from './EmailJSConfigModal';
 import { ParkingMapGuide } from './ParkingMapGuide';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Navigation, Sparkles, Settings, ExternalLink, Car } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Navigation, Sparkles, Settings, ExternalLink, Car, Youtube } from 'lucide-react';
 
 interface ContactProps {
   lang: Language;
@@ -182,6 +182,24 @@ ${formData.message}
                     <div className="font-bold text-slate-900 mb-0.5">{lang === 'zh' ? '電子郵件 (Email)' : 'Email Contact'}</div>
                     <a href={`mailto:${CHURCH_INFO.email}`} className="text-amber-800 hover:underline font-mono">
                       {CHURCH_INFO.email}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <div className="p-2.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 shrink-0 mt-0.5">
+                    <Youtube className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900 mb-0.5">{lang === 'zh' ? 'YouTube 官方影音頻道' : 'Official YouTube Channel'}</div>
+                    <a 
+                      href={CHURCH_INFO.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1 text-rose-700 hover:text-rose-900 hover:underline font-medium"
+                    >
+                      <span>{CHURCH_INFO.youtubeHandle}</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>

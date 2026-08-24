@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
 import { ChurchLogo } from './ChurchLogo';
-import { Globe, Heart, Phone, MapPin, Calendar, Clock, Menu, X, Sparkles, FileText, ShieldCheck, LogOut, Lock, Github, Mail } from 'lucide-react';
+import { Globe, Heart, Phone, MapPin, Calendar, Clock, Menu, X, Sparkles, FileText, ShieldCheck, LogOut, Lock, Github, Mail, Youtube } from 'lucide-react';
 
 interface NavbarProps {
   lang: Language;
@@ -133,6 +133,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               )
             )}
+
+            <a
+              href={CHURCH_INFO.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-rose-200 hover:text-white bg-rose-950/70 hover:bg-rose-900/90 px-2.5 py-0.5 rounded-full border border-rose-500/40 transition-all text-xs"
+              title="加南新生 YouTube 官方頻道: @CanaanShinShengChristianChurch"
+            >
+              <Youtube className="w-3.5 h-3.5 mr-1 text-rose-400" />
+              <span>YouTube</span>
+            </a>
 
             <button
               onClick={onOpenAI}
@@ -346,6 +357,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 )
               )}
+
+              <a
+                href={CHURCH_INFO.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center space-x-2 bg-rose-950/80 hover:bg-rose-900/90 text-rose-200 py-2.5 rounded-xl text-xs font-semibold border border-rose-500/40 shadow-sm transition-colors"
+              >
+                <Youtube className="w-4 h-4 text-rose-400" />
+                <span>{lang === 'zh' ? 'YouTube 官方頻道 (@CanaanShinShengChristianChurch)' : 'Official YouTube Channel'}</span>
+              </a>
 
               <button
                 onClick={() => {

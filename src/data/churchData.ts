@@ -31,6 +31,8 @@ export const CHURCH_INFO = {
   zoomId: "310-626-6103",
   zoomPasscode: "25226",
   establishedYear: 1984,
+  youtubeUrl: "https://www.youtube.com/@CanaanShinShengChristianChurch",
+  youtubeHandle: "@CanaanShinShengChristianChurch",
   zelleEmail: "ShinShengChurch@Gmail.com",
   zellePhone: "(310) 626-6103",
   checkPayableTo: "Canaan Shin Sheng Christian Church",
@@ -311,6 +313,22 @@ export const CHURCH_HISTORY_MILESTONES = [
 ];
 
 export const INITIAL_PRAYERS: PrayerRequest[] = [
+  {
+    id: "prayer-tanni-surgery-824",
+    author: "教牧關懷同工",
+    authorZh: "教牧關懷同工",
+    authorEn: "Pastoral Care Team",
+    category: "health",
+    title: "為談妮傳道 8/24 手術順利與身心康復代禱",
+    titleZh: "為談妮傳道 8/24 手術順利與身心康復代禱",
+    titleEn: "Prayer for Evangelist Tanni's Surgery on 8/24 & Smooth Recovery",
+    content: "談妮傳道即將於 8/24接受手術代禱，求主親自保守手術過程順利，賜給醫療團隊智慧與能力，也賜給她的家人平安與力量。求主親自看顧她的家人及家中各樣需要，使一切事務都有妥善的安排，讓她可以安心接受手術與休養，無後顧之憂。也求主保守她術後恢復順利，身心逐漸康復，在整個過程中經歷主的恩典與同在。",
+    contentZh: "談妮傳道即將於 8/24接受手術代禱，求主親自保守手術過程順利，賜給醫療團隊智慧與能力，也賜給她的家人平安與力量。求主親自看顧她的家人及家中各樣需要，使一切事務都有妥善的安排，讓她可以安心接受手術與休養，無後顧之憂。也求主保守她術後恢復順利，身心逐漸康復，在整個過程中經歷主的恩典與同在。",
+    contentEn: "Please pray for Evangelist Tanni as she undergoes surgery on August 24. Pray that the Lord guides the medical team with wisdom and skill, and grants peace and strength to her family. May the Lord care for all needs at home so she can rest with peace of mind. Pray for a smooth recovery, restoring her body and spirit as she experiences God's grace and presence.",
+    date: "2026-08-24",
+    isConfidential: false,
+    prayedCount: 38
+  },
   {
     id: "prayer-1",
     author: "教會同工會",

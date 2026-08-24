@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, PrayerRequest, PendingPrayerSubmission } from '../types';
 import { INITIAL_PRAYERS, CHURCH_INFO } from '../data/churchData';
+import { deduplicatePrayers } from '../utils/prayerHelper';
 import { 
   Heart, Plus, ShieldCheck, Lock, Check, Send, 
   Filter, X, Sparkles, MessageSquare, RotateCcw, 
@@ -31,7 +32,7 @@ export const PrayerWall: React.FC<PrayerProps> = ({
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((p: PrayerRequest) => {
+          const merged = parsed.map((p: PrayerRequest) => {
             const matchedInit = INITIAL_PRAYERS.find(init => init.id === p.id);
             if (matchedInit) {
               return {
@@ -41,12 +42,14 @@ export const PrayerWall: React.FC<PrayerProps> = ({
             }
             return p;
           });
+          // Merge with initial prayers and deduplicate by keeping newest date
+          return deduplicatePrayers([...INITIAL_PRAYERS, ...merged]);
         }
       }
     } catch {
       // fallback
     }
-    return INITIAL_PRAYERS;
+    return deduplicatePrayers(INITIAL_PRAYERS);
   });
 
   const [filterCategory, setFilterCategory] = useState<string>('all');
@@ -92,7 +95,7 @@ export const PrayerWall: React.FC<PrayerProps> = ({
   useEffect(() => {
     const handlePrayersUpdated = (e: any) => {
       if (e.detail?.prayers && Array.isArray(e.detail.prayers)) {
-        setPrayers(e.detail.prayers);
+        setPrayers(deduplicatePrayers(e.detail.prayers));
       }
     };
 
@@ -123,10 +126,11 @@ export const PrayerWall: React.FC<PrayerProps> = ({
         
         setPrayers(prev => {
           const merged = [...bulletinPrayers, ...prev.filter(p => !p.id.startsWith('bulletin-prayer'))];
+          const deduped = deduplicatePrayers(merged);
           try {
-            localStorage.setItem('canaan_prayers_data', JSON.stringify(merged));
+            localStorage.setItem('canaan_prayers_data', JSON.stringify(deduped));
           } catch {}
-          return merged;
+          return deduped;
         });
       }
     };
@@ -135,7 +139,7 @@ export const PrayerWall: React.FC<PrayerProps> = ({
       if (e.key === 'canaan_prayers_data' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
-          if (Array.isArray(parsed)) setPrayers(parsed);
+          if (Array.isArray(parsed)) setPrayers(deduplicatePrayers(parsed));
         } catch {}
       }
       if (e.key === 'canaan_pending_prayers' && e.newValue) {
@@ -178,12 +182,13 @@ export const PrayerWall: React.FC<PrayerProps> = ({
       onOpenAdminLogin();
       return;
     }
-    setPrayers(INITIAL_PRAYERS);
+    const cleanList = deduplicatePrayers(INITIAL_PRAYERS);
+    setPrayers(cleanList);
     try {
-      localStorage.setItem('canaan_prayers_data', JSON.stringify(INITIAL_PRAYERS));
+      localStorage.setItem('canaan_prayers_data', JSON.stringify(cleanList));
     } catch {}
-    window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: INITIAL_PRAYERS } }));
-    showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項！' : 'Synced with latest official church prayer requests!');
+    window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: cleanList } }));
+    showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項並完成去重！' : 'Synced with latest official church prayer requests!');
   };
 
   const categoryLabelMap = {
