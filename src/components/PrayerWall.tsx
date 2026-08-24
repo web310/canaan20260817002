@@ -5,11 +5,13 @@ import { deduplicatePrayers } from '../utils/prayerHelper';
 import { 
   Heart, Plus, ShieldCheck, Lock, Check, Send, 
   Filter, X, Sparkles, MessageSquare, RotateCcw, 
-  Mail, Phone, ShieldAlert, Inbox, CheckCircle2, UserCheck, Edit3 
+  Mail, Phone, ShieldAlert, Inbox, CheckCircle2, UserCheck, Edit3,
+  Github, FolderGit2
 } from 'lucide-react';
 import { translateAuthorToEn, translatePrayerTitleToEn, translatePrayerContentToEn } from '../utils/translationHelper';
 import { sendPrayerEmailJS } from '../lib/emailService';
 import { AdminPrayerManagementModal } from './AdminPrayerManagementModal';
+import { PrayerGitHubSyncModal } from './PrayerGitHubSyncModal';
 
 interface PrayerProps {
   lang: Language;
@@ -56,6 +58,7 @@ export const PrayerWall: React.FC<PrayerProps> = ({
   const [prayedIds, setPrayedIds] = useState<Record<string, boolean>>({});
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isAdminManageOpen, setIsAdminManageOpen] = useState(false);
+  const [isPrayerSyncModalOpen, setIsPrayerSyncModalOpen] = useState(false);
 
   // Form State
   const [authorName, setAuthorName] = useState('');
@@ -296,7 +299,7 @@ export const PrayerWall: React.FC<PrayerProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 self-end sm:self-auto">
+            <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
               <button
                 onClick={() => setIsAdminManageOpen(true)}
                 className="flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-extrabold shadow transition-all transform hover:scale-105"
@@ -311,12 +314,21 @@ export const PrayerWall: React.FC<PrayerProps> = ({
               </button>
 
               <button
+                onClick={() => setIsPrayerSyncModalOpen(true)}
+                title={lang === 'zh' ? '將所有最新代禱事項同步至 GitHub 與 Cloudflare Pages' : 'Sync all prayer requests to GitHub and Cloudflare Pages'}
+                className="flex items-center space-x-1.5 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow transition-all transform hover:scale-105"
+              >
+                <Github className="w-3.5 h-3.5" />
+                <span>{lang === 'zh' ? 'GitHub 同步代禱' : 'GitHub Sync'}</span>
+              </button>
+
+              <button
                 onClick={handleResetToOfficialPrayers}
                 title={lang === 'zh' ? '管理員專屬：同步並還原為最新官方代禱' : 'Admin only: Sync latest official prayers'}
                 className="flex items-center space-x-1 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition-colors"
               >
                 <RotateCcw className="w-3 h-3 text-amber-400" />
-                <span>{lang === 'zh' ? '同步最新代禱' : 'Sync Latest'}</span>
+                <span>{lang === 'zh' ? '還原官方預設' : 'Reset Default'}</span>
               </button>
             </div>
           </div>
@@ -350,16 +362,26 @@ export const PrayerWall: React.FC<PrayerProps> = ({
               <span>{lang === 'zh' ? '提出代禱事項' : 'Submit Prayer Request'}</span>
             </button>
 
-            {/* If Admin is logged in, show sync button; if not logged in, clicking prompts admin login */}
+            {/* If Admin is logged in, show sync buttons; if not logged in, clicking prompts admin login */}
             {isAdmin ? (
-              <button
-                onClick={handleResetToOfficialPrayers}
-                title={lang === 'zh' ? '管理員專屬：同步最新官方代禱事項' : 'Admin: Sync latest official prayer requests'}
-                className="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white px-4 py-3 rounded-xl text-xs font-semibold border border-amber-500/30 transition-all"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>{lang === 'zh' ? '同步最新代禱' : 'Sync Latest'}</span>
-              </button>
+              <>
+                <button
+                  onClick={() => setIsPrayerSyncModalOpen(true)}
+                  title={lang === 'zh' ? '管理員專屬：同步代禱事項至 GitHub 倉庫' : 'Admin: Sync prayer requests to GitHub repository'}
+                  className="flex items-center space-x-1.5 bg-rose-700 hover:bg-rose-600 text-white px-4 py-3 rounded-xl text-xs font-bold border border-rose-500/40 shadow-sm transition-all transform hover:scale-102"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  <span>{lang === 'zh' ? 'GitHub 同步代禱' : 'GitHub Sync'}</span>
+                </button>
+                <button
+                  onClick={handleResetToOfficialPrayers}
+                  title={lang === 'zh' ? '管理員專屬：同步最新官方代禱事項' : 'Admin: Sync latest official prayer requests'}
+                  className="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white px-3.5 py-3 rounded-xl text-xs font-semibold border border-amber-500/30 transition-all"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>{lang === 'zh' ? '還原預設' : 'Reset'}</span>
+                </button>
+              </>
             ) : (
               <button
                 onClick={onOpenAdminLogin}
@@ -702,8 +724,24 @@ export const PrayerWall: React.FC<PrayerProps> = ({
               window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: newPrayers } }));
             }}
             showToast={showToast}
+            onOpenGitHubSync={() => setIsPrayerSyncModalOpen(true)}
           />
         )}
+
+        {/* GitHub Direct Prayer Sync Modal */}
+        <PrayerGitHubSyncModal
+          lang={lang}
+          isOpen={isPrayerSyncModalOpen}
+          onClose={() => setIsPrayerSyncModalOpen(false)}
+          prayers={prayers}
+          onUpdatePrayers={(newPrayers) => {
+            setPrayers(newPrayers);
+            try {
+              localStorage.setItem('canaan_prayers_data', JSON.stringify(newPrayers));
+            } catch {}
+            window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: newPrayers } }));
+          }}
+        />
 
       </div>
     </section>

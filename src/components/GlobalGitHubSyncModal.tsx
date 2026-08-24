@@ -21,10 +21,12 @@ import {
   AlertCircle,
   FolderSync
 } from 'lucide-react';
-import { Language, Sermon, GalleryPhoto, GalleryCategory, GoogleAlbum } from '../types';
+import { Language, Sermon, GalleryPhoto, GalleryCategory, GoogleAlbum, PrayerRequest } from '../types';
 import { SERMON_CONTENT_LIST } from '../data/sermonsData';
 import { INITIAL_GALLERY_PHOTOS, GALLERY_CATEGORIES, INITIAL_GOOGLE_ALBUMS } from '../data/galleryData';
 import { INITIAL_BULLETIN_DATA, BulletinData } from '../data/bulletinData';
+import { INITIAL_PRAYERS } from '../data/prayersData';
+import { deduplicatePrayers } from '../utils/prayerHelper';
 
 interface GlobalGitHubSyncModalProps {
   lang: Language;
@@ -79,6 +81,7 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   const [allCategories, setAllCategories] = useState<GalleryCategory[]>([]);
   const [allAlbums, setAllAlbums] = useState<GoogleAlbum[]>([]);
   const [allBulletin, setAllBulletin] = useState<BulletinData>(INITIAL_BULLETIN_DATA);
+  const [allPrayers, setAllPrayers] = useState<PrayerRequest[]>(() => deduplicatePrayers(INITIAL_PRAYERS));
 
   // Load fresh data whenever modal opens
   useEffect(() => {
@@ -149,6 +152,23 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
         }
       } catch {
         setAllBulletin(INITIAL_BULLETIN_DATA);
+      }
+
+      // 6. Prayers
+      try {
+        const savedPrayers = localStorage.getItem('canaan_prayers_data');
+        if (savedPrayers) {
+          const parsed = JSON.parse(savedPrayers);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAllPrayers(deduplicatePrayers(parsed));
+          } else {
+            setAllPrayers(deduplicatePrayers(INITIAL_PRAYERS));
+          }
+        } else {
+          setAllPrayers(deduplicatePrayers(INITIAL_PRAYERS));
+        }
+      } catch {
+        setAllPrayers(deduplicatePrayers(INITIAL_PRAYERS));
       }
 
       // Reset feedback
@@ -315,6 +335,23 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
 `;
   };
 
+  const generatePrayersTs = (): string => {
+    const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
+    return `import { PrayerRequest } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - PRAYER WALL MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Active Prayers: ${allPrayers.length}
+// ============================================================================
+
+export const PRAYERS_DATA_VERSION = "${versionStr}";
+
+export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, null, 2)};
+`;
+  };
+
   const generateMasterBackupJson = (): string => {
     const payload = {
       app: "Canaan Shin Sheng Christian Church",
@@ -325,13 +362,15 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
         totalPhotos: allPhotos.length,
         totalCategories: allCategories.length,
         totalAlbums: allAlbums.length,
+        totalPrayers: allPrayers.length,
       },
       data: {
         sermons: allSermons,
         photos: allPhotos,
         categories: allCategories,
         albums: allAlbums,
-        bulletin: allBulletin
+        bulletin: allBulletin,
+        prayers: allPrayers
       }
     };
     return JSON.stringify(payload, null, 2);
@@ -358,6 +397,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
       { path: 'src/utils/sermonStorage.ts', content: generateSermonStorageTs(), nameZh: '講道資料存儲與同步器' },
       { path: 'src/data/galleryData.ts', content: generateGalleryTs(), nameZh: '照片走廊與相簿' },
       { path: 'src/data/bulletinData.ts', content: generateBulletinTs(), nameZh: '主日週報與讀經靈修' },
+      { path: 'src/data/prayersData.ts', content: generatePrayersTs(), nameZh: '代禱牆代禱事項' },
       { path: 'public/canaan_master_data.json', content: generateMasterBackupJson(), nameZh: '全站綜合備份快照' }
     ];
 
@@ -378,7 +418,8 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
             photos: allPhotos,
             categories: allCategories,
             albums: allAlbums,
-            bulletin: allBulletin
+            bulletin: allBulletin,
+            prayers: allPrayers
           }
         })
       });
@@ -551,6 +592,13 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
           window.dispatchEvent(new CustomEvent('canaan_bulletin_updated', { detail: data.bulletin }));
         }
 
+        if (Array.isArray(data.prayers)) {
+          const deduped = deduplicatePrayers(data.prayers);
+          setAllPrayers(deduped);
+          localStorage.setItem('canaan_prayers_data', JSON.stringify(deduped));
+          window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: deduped }));
+        }
+
         if (onDataRestored) {
           onDataRestored();
         }
@@ -558,7 +606,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
         setRestoreStatus({
           type: 'success',
           message: lang === 'zh'
-            ? `🎉 成功還原全站資料！包括 ${data.sermons?.length || 0} 篇講道、${data.photos?.length || 0} 張相片、${data.albums?.length || 0} 本相簿與週報讀經進度。`
+            ? `🎉 成功還原全站資料！包括 ${data.sermons?.length || 0} 篇講道、${data.photos?.length || 0} 張相片、${data.albums?.length || 0} 本相簿、${data.prayers?.length || 0} 項代禱事項與週報讀經進度。`
             : `🎉 Successfully restored all church datasets!`
         });
       } catch (err: any) {
@@ -667,7 +715,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
             <div className="space-y-6">
               
               {/* Data Summary Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {/* Sermons Card */}
                 <div className="bg-slate-950/80 p-4 rounded-xl border border-amber-500/30 flex items-start space-x-3">
                   <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-400 border border-amber-500/20">
@@ -687,7 +735,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
                   </div>
                   <div>
                     <div className="text-xs text-slate-400">{lang === 'zh' ? '照片走廊與相簿' : 'Gallery & Albums'}</div>
-                    <div className="text-lg font-bold text-sky-300 mt-0.5">{allPhotos.length} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '張相片' : 'photos'}</span> / {allAlbums.length} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '本相簿' : 'albums'}</span></div>
+                    <div className="text-lg font-bold text-sky-300 mt-0.5">{allPhotos.length} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '張' : 'photos'}</span> / {allAlbums.length} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '本' : 'albums'}</span></div>
                     <div className="text-[11px] text-slate-500 font-mono mt-1">src/data/galleryData.ts</div>
                   </div>
                 </div>
@@ -698,9 +746,21 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">{lang === 'zh' ? '主日週報與讀經靈修' : 'Bulletin & Reading'}</div>
-                    <div className="text-sm font-bold text-emerald-300 mt-0.5">{allBulletin.readingRange || '8/17 - 8/23'} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '本週進度' : 'plan'}</span></div>
+                    <div className="text-xs text-slate-400">{lang === 'zh' ? '主日週報與讀經' : 'Bulletin & Reading'}</div>
+                    <div className="text-sm font-bold text-emerald-300 mt-0.5">{allBulletin.readingRange || '8/17 - 8/23'}</div>
                     <div className="text-[11px] text-slate-500 font-mono mt-1">src/data/bulletinData.ts</div>
+                  </div>
+                </div>
+
+                {/* Prayers Card */}
+                <div className="bg-slate-950/80 p-4 rounded-xl border border-rose-500/30 flex items-start space-x-3">
+                  <div className="p-2.5 bg-rose-500/10 rounded-lg text-rose-400 border border-rose-500/20">
+                    <FolderSync className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-400">{lang === 'zh' ? '禱告牆代禱事項' : 'Prayer Requests'}</div>
+                    <div className="text-lg font-bold text-rose-300 mt-0.5">{allPrayers.length} <span className="text-xs font-normal text-slate-400">{lang === 'zh' ? '項代禱' : 'prayers'}</span></div>
+                    <div className="text-[11px] text-slate-500 font-mono mt-1">src/data/prayersData.ts</div>
                   </div>
                 </div>
               </div>
@@ -957,6 +1017,33 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin,
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>{lang === 'zh' ? '下載 bulletinData.ts' : 'Download'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. prayersData.ts */}
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center space-x-2">
+                    <FileCode className="w-4 h-4 text-rose-400" />
+                    <span className="font-mono text-xs font-bold text-rose-300">src/data/prayersData.ts</span>
+                    <span className="text-[11px] text-slate-400">({allPrayers.length} 項代禱事項)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleCopyCode('prayers', generatePrayersTs())}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg text-slate-200 flex items-center space-x-1 border border-slate-700 transition-colors"
+                    >
+                      {copiedFile === 'prayers' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedFile === 'prayers' ? (lang === 'zh' ? '已複製' : 'Copied') : (lang === 'zh' ? '複製代碼' : 'Copy Code')}</span>
+                    </button>
+                    <button
+                      onClick={() => triggerDownload('prayersData.ts', generatePrayersTs(), 'text/typescript')}
+                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-xs font-semibold rounded-lg text-white flex items-center space-x-1 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '下載 prayersData.ts' : 'Download'}</span>
                     </button>
                   </div>
                 </div>

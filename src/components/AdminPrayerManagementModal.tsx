@@ -5,7 +5,7 @@ import { deduplicatePrayers } from '../utils/prayerHelper';
 import { 
   X, Check, Trash2, Edit3, ShieldAlert, Plus, 
   RotateCcw, Mail, Eye, Sparkles, Inbox, CheckCircle2, 
-  Clock, AlertCircle, Phone, Lock, Globe 
+  Clock, AlertCircle, Phone, Lock, Globe, Github 
 } from 'lucide-react';
 import { translateAuthorToEn, translatePrayerTitleToEn, translatePrayerContentToEn } from '../utils/translationHelper';
 
@@ -16,6 +16,7 @@ interface AdminPrayerManagementModalProps {
   prayers: PrayerRequest[];
   onUpdatePrayers: (newPrayers: PrayerRequest[]) => void;
   showToast: (msg: string) => void;
+  onOpenGitHubSync?: () => void;
 }
 
 export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProps> = ({
@@ -25,6 +26,7 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
   prayers,
   onUpdatePrayers,
   showToast,
+  onOpenGitHubSync
 }) => {
   const [activeTab, setActiveTab] = useState<'pending' | 'published' | 'add_new'>('pending');
   const [pendingList, setPendingList] = useState<PendingPrayerSubmission[]>(() => {
@@ -268,14 +270,30 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
             </button>
           </div>
 
-          <button
-            onClick={handleResetToOfficialPrayers}
-            className="mb-2 text-xs text-slate-400 hover:text-amber-300 flex items-center space-x-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-colors"
-            title={lang === 'zh' ? '同步並還原為最新官方代禱事項' : 'Sync latest official prayers'}
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span className="hidden sm:inline">{lang === 'zh' ? '同步最新代禱' : 'Sync Latest'}</span>
-          </button>
+          <div className="flex items-center space-x-2 mb-2">
+            {onOpenGitHubSync && (
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenGitHubSync();
+                }}
+                className="text-xs text-white hover:bg-rose-500 bg-rose-600 flex items-center space-x-1 px-3 py-1 rounded-lg border border-rose-500/50 shadow transition-colors font-bold"
+                title={lang === 'zh' ? '將所有代禱事項同步提交至 GitHub 倉庫' : 'Sync prayers to GitHub repository'}
+              >
+                <Github className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{lang === 'zh' ? 'GitHub 同步' : 'GitHub Sync'}</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleResetToOfficialPrayers}
+              className="text-xs text-slate-400 hover:text-amber-300 flex items-center space-x-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-colors"
+              title={lang === 'zh' ? '同步並還原為最新官方代禱事項' : 'Sync latest official prayers'}
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span className="hidden sm:inline">{lang === 'zh' ? '還原預設' : 'Reset'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Content Body */}

@@ -1507,6 +1507,7 @@ Return ONLY valid JSON.
       const categoriesList = Array.isArray(data?.categories) ? data.categories : [];
       const albumsList = Array.isArray(data?.albums) ? data.albums : [];
       const bulletinData = data?.bulletin || {};
+      const prayersList = Array.isArray(data?.prayers) ? data.prayers : [];
 
       // Update in-memory sermons
       if (Array.isArray(data?.sermons)) {
@@ -1685,6 +1686,20 @@ export interface BulletinData {
 export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(bulletinData, null, 2)};
 `;
 
+      const prayersTs = `import { PrayerRequest } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - PRAYER WALL MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Active Prayers: ${prayersList.length}
+// ============================================================================
+
+export const PRAYERS_DATA_VERSION = "${versionStr}";
+
+export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, null, 2)};
+`;
+
       const masterBackupJson = JSON.stringify({
         app: "Canaan Shin Sheng Christian Church",
         exportedAt: new Date().toISOString(),
@@ -1694,13 +1709,15 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(bulletinData
           totalPhotos: photosList.length,
           totalCategories: categoriesList.length,
           totalAlbums: albumsList.length,
+          totalPrayers: prayersList.length,
         },
         data: {
           sermons: sermonsList,
           photos: photosList,
           categories: categoriesList,
           albums: albumsList,
-          bulletin: bulletinData
+          bulletin: bulletinData,
+          prayers: prayersList
         }
       }, null, 2);
 
@@ -1709,6 +1726,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(bulletinData
         { path: "src/utils/sermonStorage.ts", content: sermonStorageTs },
         { path: "src/data/galleryData.ts", content: galleryTs },
         { path: "src/data/bulletinData.ts", content: bulletinTs },
+        ...(prayersList.length > 0 ? [{ path: "src/data/prayersData.ts", content: prayersTs }] : []),
         { path: "public/canaan_master_data.json", content: masterBackupJson }
       ];
 
