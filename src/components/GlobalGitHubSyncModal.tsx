@@ -434,6 +434,11 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, nul
         });
         setIsPushing(false);
         return;
+      } else {
+        const backendErr = await backendRes.json().catch(() => ({}));
+        if (backendErr && backendErr.error) {
+          throw new Error(backendErr.error);
+        }
       }
 
       // If backend was not reached or returned an error, fallback to direct GitHub REST API
@@ -495,7 +500,11 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, nul
 
         if (!putRes.ok) {
           const errData = await putRes.json().catch(() => ({}));
-          throw new Error(errData.message || `GitHub error updating ${file.path} (${putRes.status})`);
+          const errMsg = errData.message || `GitHub error updating ${file.path} (${putRes.status})`;
+          if (errMsg.includes("Resource not accessible") || putRes.status === 403) {
+            throw new Error(`GitHub 權限不足 (Resource not accessible by personal access token)。\n💡 請確認您的 GitHub Personal Access Token (PAT) 是否具有對倉庫「${owner}/${repo}」的寫入權限：\n1. 若為 Classic Token (ghp_...)：需勾選「repo」完整權限。\n2. 若為 Fine-grained Token (github_pat_...)：需在 Repository Access 選取此倉庫，並在 Permissions -> Contents 設定為「Read and write」。`);
+          }
+          throw new Error(errMsg);
         }
 
         const putData = await putRes.json();
@@ -797,13 +806,57 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, nul
 
               {/* Push Error Box */}
               {pushError && (
-                <div className="p-4 bg-rose-950/60 border border-rose-500/50 rounded-xl flex items-start space-x-3 text-rose-200 text-xs sm:text-sm animate-in fade-in">
-                  <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="space-y-1">
-                    <div className="font-bold text-rose-300">{lang === 'zh' ? '同步失敗' : 'Sync Failed'}</div>
-                    <div className="font-mono text-xs">{pushError}</div>
-                    <div className="text-[11px] text-rose-300/80 pt-1">
-                      {lang === 'zh' ? '💡 請檢查 GitHub Token 是否具有 repo 讀寫權限，以及 Owner 與 Repository 名稱是否正確。' : '💡 Ensure your PAT has `repo` write access.'}
+                <div className="p-4 sm:p-5 bg-rose-950/70 border-2 border-rose-500/60 rounded-xl space-y-3 text-rose-200 text-xs sm:text-sm animate-in fade-in">
+                  <div className="flex items-start space-x-3">
+                    <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1.5 flex-1">
+                      <div className="font-bold text-rose-300 text-sm">{lang === 'zh' ? 'GitHub 同步遇到問題' : 'GitHub Sync Issue'}</div>
+                      <div className="font-mono text-xs text-rose-200 whitespace-pre-line bg-slate-950/60 p-2.5 rounded-lg border border-rose-500/30">{pushError}</div>
+                    </div>
+                  </div>
+
+                  {/* Actionable Solution Card for Token Permission */}
+                  <div className="mt-2 pt-3 border-t border-rose-500/30 space-y-2 text-xs">
+                    <div className="font-semibold text-amber-300 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '💡 快速解決方案（二選一）：' : '💡 Quick Solutions:'}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                      <div className="p-2.5 bg-slate-900/80 rounded-lg border border-amber-500/40 space-y-1.5">
+                        <div className="font-bold text-white flex items-center justify-between">
+                          <span>{lang === 'zh' ? '方案 A：建立 Classic Token (推薦最穩)' : 'Option A: Create Classic PAT (Recommended)'}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300">
+                          {lang === 'zh' ? '點擊下方連結建立 Classic Token，已為您自動預選 repo 完整寫入權限：' : 'Generate a Classic PAT with repo scope pre-selected:'}
+                        </p>
+                        <a
+                          href="https://github.com/settings/tokens/new?scopes=repo&description=Canaan+Church+Sync"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-md text-xs transition"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>{lang === 'zh' ? '👉 1 秒前往建立 Token' : '👉 Generate Token on GitHub'}</span>
+                        </a>
+                      </div>
+
+                      <div className="p-2.5 bg-slate-900/80 rounded-lg border border-slate-700 space-y-1.5">
+                        <div className="font-bold text-white">
+                          <span>{lang === 'zh' ? '方案 B：切換至「下載/複製」分頁' : 'Option B: Download / Copy Code'}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300">
+                          {lang === 'zh' ? '無需 Token！可直接在「第 2 分頁」一鍵下載 sermonsData.ts / prayersData.ts 原始碼。' : 'No token needed! Switch to Tab 2 to download or copy generated TypeScript code directly.'}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('download')}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold rounded-md text-xs border border-amber-500/30 transition"
+                        >
+                          <Download className="w-3 h-3" />
+                          <span>{lang === 'zh' ? '👉 前往下載原始碼' : '👉 Go to Download Tab'}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

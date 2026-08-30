@@ -2,10 +2,52 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import mammoth from "mammoth";
 import * as pdfParseModule from "pdf-parse";
-const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
+
+// Helper to safely extract text from PDF buffer using pdf-parse (supporting v2 class and legacy function)
+async function parsePdfBuffer(buffer: Buffer): Promise<string> {
+  if (!buffer || buffer.length === 0) return "";
+  
+  try {
+    // 1. Try PDFParse class (pdf-parse v2+)
+    if (pdfParseModule && typeof (pdfParseModule as any).PDFParse === 'function') {
+      const PDFParserClass = (pdfParseModule as any).PDFParse;
+      const parser = new PDFParserClass({ data: buffer });
+      try {
+        const res = await parser.getText();
+        return (res && res.text) ? res.text.trim() : "";
+      } finally {
+        if (parser && typeof parser.destroy === 'function') {
+          await parser.destroy().catch(() => {});
+        }
+      }
+    }
+
+    // 2. Try default or named callable export
+    const callable: any = (pdfParseModule as any).default || pdfParseModule;
+    if (typeof callable === 'function') {
+      const res = await callable(buffer);
+      return (res && res.text) ? res.text.trim() : "";
+    }
+  } catch (err) {
+    console.warn("PDF extraction notice:", err);
+  }
+
+  // 3. Fallback: extract ASCII/Unicode printable strings from PDF stream
+  try {
+    const raw = buffer.toString('utf-8');
+    const matches = raw.match(/\(([^()]{2,})\)[\s]*Tj/g);
+    if (matches && matches.length > 5) {
+      return matches.map(m => m.replace(/^[(\s]+/, '').replace(/[)\s]*Tj$/, '')).join(' ');
+    }
+  } catch {
+    // ignore
+  }
+
+  return "";
+}
 
 async function startServer() {
   const app = express();
@@ -49,11 +91,10 @@ async function startServer() {
     
     if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
       try {
-        const pdfResult = await (pdfParse as any)(buffer);
-        const pdfText = (pdfResult && pdfResult.text) ? pdfResult.text.trim() : "";
+        const pdfText = await parsePdfBuffer(buffer);
         return { text: pdfText, isPdf: true };
       } catch (pdfErr) {
-        console.warn("pdf-parse extraction notice:", pdfErr);
+        console.warn("PDF extraction notice:", pdfErr);
         return { isPdf: true };
       }
     }
@@ -407,42 +448,151 @@ async function startServer() {
     };
   };
 
-  // AI Chat proxy endpoints
+  // AI Chat & Pastoral Assistant Intelligent Response Generator
+  const generateFastPastoralReply = (userQuery: string, langZh = true) => {
+    const q = (userQuery || "").toLowerCase();
+    
+    // Church schedule
+    if (q.includes("時間") || q.includes("聚會") || q.includes("主日") || q.includes("禱告會") || q.includes("zoom") || q.includes("地址") || q.includes("schedule") || q.includes("service")) {
+      return langZh
+        ? `平安！歡迎您參加【加南新生基督教會】聚會：\n\n🏛️ 主日崇拜：每週日上午 10:00（9:45 讚美敬拜預備心）\n💻 週四線上禱告會：每週四晚上 8:00 (Zoom ID: 310-626-6103 / 密碼: 25226)\n✉️ 聯絡信箱：web@canaannewlife.org\n\n「你們不可停止聚會，好像那些停止慣了的人，倒要彼此勸勉。」（希伯來書 10:25）`
+        : `Peace! Welcome to Canaan Shin Sheng Christian Church:\n\n🏛️ Sunday Worship: Sundays at 10:00 AM PST (Harbor City, CA)\n💻 Thursday Online Prayer: Thursdays 8:00 PM PST (Zoom ID: 310-626-6103 / Passcode: 25226)\n✉️ Email: web@canaannewlife.org`;
+    }
+
+    // Anxiety & comfort
+    if (q.includes("焦慮") || q.includes("擔心") || q.includes("壓力") || q.includes("害怕") || q.includes("失眠") || q.includes("平安") || q.includes("anxiety") || q.includes("worry") || q.includes("stress")) {
+      return langZh
+        ? `親愛的弟兄姊妹平安！神顧念您心中的每一個重擔：\n\n📖 金句應許：\n「應當一無掛慮，只要凡事藉著禱告、祈求，和感謝，將你們所要的告訴神。神所賜、出人意外的平安必在基督耶穌裡保守你們的心懷意念。」（腓立比書 4:6-7）\n「你們要將一切的憂慮卸給神，因為他顧念你們。」（彼得前書 5:7）\n\n🙏 平安祝禱：求天父賜下超然的屬天平安在您心中，挪去一切懼怕，在祂愛中得享安息！`
+        : `Peace be with you! "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God." (Philippians 4:6)\n\nMay God's heavenly peace guard your heart!`;
+    }
+
+    // Illness & healing
+    if (q.includes("病") || q.includes("醫治") || q.includes("手術") || q.includes("健康") || q.includes("康復") || q.includes("跌倒") || q.includes("health") || q.includes("healing") || q.includes("surgery")) {
+      return langZh
+        ? `主內平安！耶和華拉法（耶和華是醫治者）親自看顧您與家人的健康：\n\n📖 醫治經文：\n「他赦免你的一切罪孽，醫治你的一切疾病。」（詩篇 103:3）\n「耶和華啊，求你醫治我，我便得醫治；拯救我，我便得救；因你是我所讚美的。」（耶利米書 17:14）\n\n🙏 醫治代禱：求主親自引導醫療團隊的每一步，減輕一切病痛不適，保守手術與休養過程滿有恩典，賜下神蹟般的康復與活力！`
+        : `Peace be with you! "He heals all your diseases." (Psalm 103:3)\n\nWe pray for swift healing, strength, and comfort over you and your loved ones in Jesus' name!`;
+    }
+
+    // Default spiritual guidance
+    return langZh
+      ? `平安！願加南新生基督教會神的恩惠與慈愛常與您同在。\n\n📖 今日靈修金句：\n「耶和華是我的牧者，我必不致缺乏。他使我躺臥在青草地上，領我在可安歇的水邊。」（詩篇 23:1-2）\n「你要專心仰賴耶和華，不可倚靠自己的聰明，在你一切所行的事上都要認定他，他必指引你的路。」（箴言 3:5-6）\n\n您可以隨時提出聖經問題、靈修代禱需求或詢問教會事工日程！`
+      : `Peace be with you! "The LORD is my shepherd; I shall not want." (Psalm 23:1)\nMay God fill your heart with wisdom, grace, and hope!`;
+  };
+
+  // AI Chat proxy endpoints (Optimized for ultra-fast minimal thinking latency)
   const handleChatRequest = async (req: express.Request, res: express.Response) => {
     try {
-      const { contents, prompt, systemInstruction } = req.body;
+      const { contents, prompt, systemInstruction, language } = req.body;
+      const userText = prompt || (contents && contents[contents.length - 1]?.parts?.[0]?.text) || "";
+      const isZh = language !== 'en';
       const ai = getAI();
 
       if (!ai) {
-        return res.json({
-          text: "願加南新生基督教會的弟兄姊妹平安！「應當一無掛慮，只要凡事藉著禱告、祈求，和感謝，將你們所要的告訴神。」（腓立比書 4:6）若您有任何代禱需求或想了解主日聚會、家庭小組、兒童機器人課程，歡迎隨時聯絡我們（web@canaannewlife.org）。",
-          reply: "願加南新生基督教會的弟兄姊妹平安！歡迎隨時聯絡教會。"
-        });
+        const fallbackText = generateFastPastoralReply(userText, isZh);
+        return res.json({ text: fallbackText, reply: fallbackText, success: true });
       }
 
       const payloadContents = contents || [
-        { role: 'user', parts: [{ text: prompt || 'Hello' }] }
+        { role: 'user', parts: [{ text: userText || '請給我一句今日靈修勉勵經文' }] }
       ];
 
+      // Use gemini-3.7-flash with ThinkingLevel.MINIMAL for instant sub-second response
       const response = await ai.models.generateContent({
         model: "gemini-3.7-flash",
         contents: payloadContents,
-        config: systemInstruction ? { systemInstruction } : undefined,
+        config: {
+          systemInstruction: systemInstruction || (isZh
+            ? "你是一位熱情、充滿關懷與豐富聖經知識的加南新生基督教會『聖經與靈修 AI 導師』。請用繁體中文以溫暖、鼓勵人心的語氣，以聖經真理為根基迅速回答弟兄姊妹的信仰問題與靈修疑惑。"
+            : "You are an encouraging and wise Pastoral & Bible AI Companion for Canaan Shin Sheng Christian Church. Respond warmly and rapidly grounded in Biblical truth."),
+          thinkingConfig: {
+            thinkingLevel: ThinkingLevel.MINIMAL
+          }
+        },
       });
 
-      const text = response.text || "對不起，我暫時無法回答。";
-      return res.json({ text, reply: text });
+      const text = response.text || generateFastPastoralReply(userText, isZh);
+      return res.json({ text, reply: text, success: true });
     } catch (error: any) {
-      console.error("Chat error:", error);
+      console.warn("Chat API notice, utilizing high-speed pastoral fallback:", error?.message || error);
+      const userText = req.body?.prompt || "";
+      const fallbackText = generateFastPastoralReply(userText, req.body?.language !== 'en');
       return res.json({
-        text: "願主賜福您與加南新生基督教會！「主是我的牧者，我必不致缺乏。」如有任何牧養或聚會問題，歡迎直接聯絡加南教會同工（web@canaannewlife.org）。",
-        reply: "願主賜福加南教會！"
+        text: fallbackText,
+        reply: fallbackText,
+        success: true
       });
     }
   };
 
+  // Real-time SSE Stream Endpoint for Pastoral AI (zero wait time)
+  const handleChatStreamRequest = async (req: express.Request, res: express.Response) => {
+    const { contents, prompt, systemInstruction, language } = req.body;
+    const userText = prompt || (contents && contents[contents.length - 1]?.parts?.[0]?.text) || "";
+    const isZh = language !== 'en';
+
+    res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders?.();
+
+    const sendEvent = (data: any) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    try {
+      const ai = getAI();
+      if (!ai) {
+        // Instant simulated streaming from high-speed pastoral engine
+        const reply = generateFastPastoralReply(userText, isZh);
+        const words = reply.split(/(?<=\n|。|！|？|，|\s+)/);
+        for (const w of words) {
+          if (w) {
+            sendEvent({ text: w });
+            await new Promise(r => setTimeout(r, 12));
+          }
+        }
+        sendEvent({ done: true });
+        return res.end();
+      }
+
+      const payloadContents = contents || [
+        { role: 'user', parts: [{ text: userText || '請給我一句今日靈修勉勵經文' }] }
+      ];
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.7-flash",
+        contents: payloadContents,
+        config: {
+          systemInstruction: systemInstruction || (isZh
+            ? "你是一位熱情、充滿關懷與豐富聖經知識的加南新生基督教會『聖經與靈修 AI 導師』。請用繁體中文以溫暖、鼓勵人心的語氣，以聖經真理為根基迅速回答弟兄姊妹的信仰問題與靈修疑惑。"
+            : "You are an encouraging and wise Pastoral & Bible AI Companion for Canaan Shin Sheng Christian Church. Respond warmly and rapidly grounded in Biblical truth."),
+          thinkingConfig: {
+            thinkingLevel: ThinkingLevel.MINIMAL
+          }
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        if (chunk.text) {
+          sendEvent({ text: chunk.text });
+        }
+      }
+      sendEvent({ done: true });
+      return res.end();
+    } catch (err: any) {
+      console.warn("Streaming error, falling back to instant pastoral engine:", err?.message || err);
+      const reply = generateFastPastoralReply(userText, isZh);
+      sendEvent({ text: reply });
+      sendEvent({ done: true });
+      return res.end();
+    }
+  };
+
   app.post("/api/chat", handleChatRequest);
+  app.post("/api/chat/stream", handleChatStreamRequest);
   app.post("/api/pastoral-ai", handleChatRequest);
+  app.post("/api/pastoral-ai/stream", handleChatStreamRequest);
 
   // Shared handler for Photo AI Categorization & Analysis
   const handlePhotoCategorization = async (req: express.Request, res: express.Response) => {
@@ -1847,12 +1997,23 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
           })
         });
 
-        if (putRes.ok) {
-          const resData: any = await putRes.json();
-          if (resData.commit?.sha) {
-            lastSha = resData.commit.sha.slice(0, 7);
-            lastCommitUrl = resData.commit.html_url || lastCommitUrl;
+        if (!putRes.ok) {
+          const errJson: any = await putRes.json().catch(() => ({}));
+          const errMsg = errJson.message || `GitHub error updating ${f.path} (HTTP ${putRes.status})`;
+          if (errMsg.includes("Resource not accessible") || putRes.status === 403) {
+            return res.status(403).json({
+              error: `GitHub 權限不足 (Resource not accessible by personal access token)。\n💡 請確認您的 GitHub Personal Access Token (PAT) 是否具有對倉庫「${owner}/${repo}」的寫入權限：\n1. 若為 Classic Token (ghp_...)：需勾選「repo」完整權限。\n2. 若為 Fine-grained Token (github_pat_...)：需在 Repository Access 選取此倉庫，並在 Permissions -> Contents 設定為「Read and write」。`
+            });
           }
+          return res.status(putRes.status).json({
+            error: errMsg
+          });
+        }
+
+        const resData: any = await putRes.json();
+        if (resData.commit?.sha) {
+          lastSha = resData.commit.sha.slice(0, 7);
+          lastCommitUrl = resData.commit.html_url || lastCommitUrl;
         }
       }
 

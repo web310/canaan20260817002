@@ -180,7 +180,11 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 
       if (!putRes.ok) {
         const errJson = await putRes.json().catch(() => ({}));
-        throw new Error(errJson.message || `GitHub API error (${putRes.status})`);
+        const errMsg = errJson.message || `GitHub API error (${putRes.status})`;
+        if (errMsg.includes("Resource not accessible") || putRes.status === 403) {
+          throw new Error(`GitHub 權限不足 (Resource not accessible by personal access token)。\n💡 請確認您的 GitHub Token 是否具有對倉庫「${owner}/${repo}」的寫入權限：\n1. 若為 Classic Token (ghp_...)：需勾選「repo」完整權限。\n2. 若為 Fine-grained Token (github_pat_...)：需在 Repository Access 選取此倉庫，並在 Permissions -> Contents 設定為「Read and write」。`);
+        }
+        throw new Error(errMsg);
       }
 
       const resData = await putRes.json();
@@ -475,17 +479,54 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 
               {/* Push Error Alert */}
               {pushError && (
-                <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-200 space-y-1.5 animate-fadeIn">
-                  <div className="flex items-center gap-2 font-bold text-sm text-rose-300">
-                    <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
-                    <span>{lang === 'zh' ? '同步失敗' : 'Sync Failed'}</span>
+                <div className="p-4 sm:p-5 rounded-xl bg-rose-950/70 border-2 border-rose-500/60 text-rose-200 space-y-3 animate-fadeIn">
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1 flex-1">
+                      <div className="font-bold text-sm text-rose-300">{lang === 'zh' ? 'GitHub 同步遇到問題' : 'GitHub Sync Issue'}</div>
+                      <p className="text-xs text-rose-200/90 leading-relaxed font-mono whitespace-pre-line bg-slate-950/60 p-2.5 rounded-lg border border-rose-500/30">
+                        {pushError}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-rose-200/90 leading-relaxed">
-                    {pushError}
-                  </p>
-                  <p className="text-[11px] text-rose-300/70 pt-1">
-                    {lang === 'zh' ? '💡 請檢查 GitHub Token 是否具有 repo 讀寫權限，以及 Owner 與 Repository 名稱是否正確。' : '💡 Ensure your PAT has `repo` write access.'}
-                  </p>
+
+                  {/* Actionable Solution Guide */}
+                  <div className="pt-2 border-t border-rose-500/30 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div className="p-2.5 bg-slate-900/80 rounded-lg border border-amber-500/40 space-y-1.5">
+                      <div className="font-bold text-white flex items-center justify-between">
+                        <span>{lang === 'zh' ? '方案 A：建立 Classic Token (推薦)' : 'Option A: Classic PAT (Recommended)'}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        {lang === 'zh' ? '自動預選 repo 完整寫入權限，建立後複製貼上即可：' : 'Pre-selected repo scope for instant sync:'}
+                      </p>
+                      <a
+                        href="https://github.com/settings/tokens/new?scopes=repo&description=Canaan+Church+Sync"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-md text-xs transition"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '👉 1 秒前往建立 Token' : '👉 Generate Token on GitHub'}</span>
+                      </a>
+                    </div>
+
+                    <div className="p-2.5 bg-slate-900/80 rounded-lg border border-slate-700 space-y-1.5">
+                      <div className="font-bold text-white">
+                        <span>{lang === 'zh' ? '方案 B：切換至「下載/複製」分頁' : 'Option B: Download / Copy Code'}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        {lang === 'zh' ? '免 Token！可直接在「第 2 分頁」一鍵下載 sermonsData.ts 原始碼。' : 'No token needed! Switch to Tab 2 to download sermonsData.ts directly.'}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('export')}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold rounded-md text-xs border border-amber-500/30 transition"
+                      >
+                        <FileCode className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '👉 前往下載原始碼' : '👉 Go to Download Tab'}</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
 
