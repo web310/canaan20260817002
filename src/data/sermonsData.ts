@@ -6,11 +6,36 @@ import { Sermon } from '../types';
 // Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "2026-08-23-tanni-wilderness-renewal";
+export const SERMONS_DATA_VERSION = "2026-08-30-wan-zhixia-uncharted-path";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
     id: "sermon-1",
+    title: "Walking a Path We Have Never Walked Before",
+    titleZh: "走一條我們從未走過的路",
+    speaker: "Rev. Zhixia Wan",
+    speakerZh: "萬志俠 牧師",
+    date: "2026-08-30",
+    scripture: "Joshua 3:1-17",
+    scriptureZh: "約書亞記第三章（約書亞記 3:1-17）",
+    series: "Sunday Message",
+    seriesZh: "主日證道",
+    summary: "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
+    summaryZh: "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
+    points: [
+      "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+      "2. All must be united; God will perfect and fulfill our entire church.",
+      "3. A journey born of faith will surely witness God's mighty works firsthand."
+    ],
+    pointsZh: [
+      "1. 踏上新的旅程，我們必須緊隨神的腳步。",
+      "2. 眾人要合一，神要讓我們整個教會被成全。",
+      "3. 出于信心的旅程，必能親眼見證神的作為。"
+    ],
+    videoPasscode: "25226"
+  },
+  {
+    id: "sermon-2",
     title: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
     titleZh: "曠野裡的微聲——從疲憊到更新",
     speaker: "Evangelist Tanni",
@@ -37,7 +62,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     videoPasscode: "25226"
   },
   {
-    id: "sermon-2",
+    id: "sermon-3",
     title: "A Life That Never Disappoints",
     titleZh: "永不失望的人生",
     speaker: "Evangelist ITO",
@@ -62,32 +87,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "4. 專心尋求神引領"
     ],
     videoPasscode: "25226"
-  },
-  {
-    id: "sermon-3",
-    title: "Is Life Really Gone in the Blink of an Eye?",
-    titleZh: "人生真的轉眼成空嗎？",
-    speaker: "Rev. Meng Sulun",
-    speakerZh: "孟蘇倫 牧師",
-    date: "2026-08-09",
-    scripture: "Ecclesiastes 1:2-3",
-    scriptureZh: "傳道書第 1 章第 2-3 節",
-    series: "Sunday Message",
-    seriesZh: "主日證道",
-    summary: "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
-    summaryZh: "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』孟蘇倫牧師從傳道書深刻省思日光之下的虛空勞碌，在基督裡尋求上帝賜予永恆的生命目的與公義冠冕。",
-    points: [
-      "1. Vanity of vanities under the sun — Ecclesiastes 1:2-3",
-      "2. Everything beautiful in its time — Ecclesiastes 3:11",
-      "3. The whole duty of humanity — Ecclesiastes 12:13"
-    ],
-    pointsZh: [
-      "一、日光之下的虛空 — 傳道書 1:2-3",
-      "二、神造萬物，各按其時成為美好 — 傳道書 3:11",
-      "三、人所當盡的分：敬畏神、謹守誡命 — 傳道書 12:13"
-    ],
-    videoUrl: "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
-    videoPasscode: "8s4y?JHX"
   }
 ];
 

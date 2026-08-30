@@ -44,20 +44,20 @@ export const CHURCH_INFO = {
 };
 
 export const WEEKLY_BIBLE_READING = {
-  memoryVerseZh: "凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。（馬太福音 11:28）",
-  memoryVerseEn: "Come to me, all you who are weary and burdened, and I will give you rest. (Matthew 11:28)",
-  verseReferenceZh: "馬太福音 11:28",
-  verseReferenceEn: "Matthew 11:28",
-  verseReference: "馬太福音 11:28 / Matthew 11:28",
-  readingRange: "8/24 - 8/30",
+  memoryVerseZh: "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
+  memoryVerseEn: "Joshua told the people, 'Consecrate yourselves, for tomorrow the Lord will do amazing things among you.' (Joshua 3:5)",
+  verseReferenceZh: "約書亞記 3:5",
+  verseReferenceEn: "Joshua 3:5",
+  verseReference: "約書亞記 3:5 / Joshua 3:5",
+  readingRange: "8/31 - 9/6",
   schedule: [
-    { date: "8/24 (週一)", dateEn: "8/24 (Mon)", oldTestament: "詩篇 116-118", oldTestamentEn: "Psalms 116-118", newTestament: "哥林多前書 7:1-19", newTestamentEn: "1 Corinthians 7:1-19" },
-    { date: "8/25 (週二)", dateEn: "8/25 (Tue)", oldTestament: "詩篇 119:1-88", oldTestamentEn: "Psalms 119:1-88", newTestament: "哥林多前書 7:20-40", newTestamentEn: "1 Corinthians 7:20-40" },
-    { date: "8/26 (週三)", dateEn: "8/26 (Wed)", oldTestament: "詩篇 119:89-176", oldTestamentEn: "Psalms 119:89-176", newTestament: "哥林多前書 8", newTestamentEn: "1 Corinthians 8" },
-    { date: "8/27 (週四)", dateEn: "8/27 (Thu)", oldTestament: "詩篇 120-122", oldTestamentEn: "Psalms 120-122", newTestament: "哥林多前書 9", newTestamentEn: "1 Corinthians 9" },
-    { date: "8/28 (週五)", dateEn: "8/28 (Fri)", oldTestament: "詩篇 123-125", oldTestamentEn: "Psalms 123-125", newTestament: "哥林多前書 10:1-18", newTestamentEn: "1 Corinthians 10:1-18" },
-    { date: "8/29 (週六)", dateEn: "8/29 (Sat)", oldTestament: "詩篇 126-128", oldTestamentEn: "Psalms 126-128", newTestament: "哥林多前書 10:19-33", newTestamentEn: "1 Corinthians 10:19-33" },
-    { date: "8/30 (週日)", dateEn: "8/30 (Sun)", oldTestament: "詩篇 129-131", oldTestamentEn: "Psalms 129-131", newTestament: "哥林多前書 11:1-16", newTestamentEn: "1 Corinthians 11:1-16" },
+    { date: "8/31 (週一)", dateEn: "8/31 (Mon)", oldTestament: "詩篇 132-134", oldTestamentEn: "Psalms 132-134", newTestament: "哥林多前書 11:17-34", newTestamentEn: "1 Corinthians 11:17-34" },
+    { date: "9/01 (週二)", dateEn: "9/01 (Tue)", oldTestament: "詩篇 135-136", oldTestamentEn: "Psalms 135-136", newTestament: "哥林多前書 12", newTestamentEn: "1 Corinthians 12" },
+    { date: "9/02 (週三)", dateEn: "9/02 (Wed)", oldTestament: "詩篇 137-139", oldTestamentEn: "Psalms 137-139", newTestament: "哥林多前書 13", newTestamentEn: "1 Corinthians 13" },
+    { date: "9/03 (週四)", dateEn: "9/03 (Thu)", oldTestament: "詩篇 140-141", oldTestamentEn: "Psalms 140-141", newTestament: "哥林多前書 14:1-20", newTestamentEn: "1 Corinthians 14:1-20" },
+    { date: "9/04 (週五)", dateEn: "9/04 (Fri)", oldTestament: "詩篇 142-143", oldTestamentEn: "Psalms 142-143", newTestament: "哥林多前書 14:21-40", newTestamentEn: "1 Corinthians 14:21-40" },
+    { date: "9/05 (週六)", dateEn: "9/05 (Sat)", oldTestament: "詩篇 144-145", oldTestamentEn: "Psalms 144-145", newTestament: "哥林多前書 15:1-34", newTestamentEn: "1 Corinthians 15:1-34" },
+    { date: "9/06 (週日)", dateEn: "9/06 (Sun)", oldTestament: "詩篇 146-147", oldTestamentEn: "Psalms 146-147", newTestament: "哥林多前書 15:35-58", newTestamentEn: "1 Corinthians 15:35-58" },
   ]
 };
 
@@ -210,43 +210,43 @@ export const MINISTRIES: Ministry[] = [
 export const UPCOMING_EVENTS: ChurchEvent[] = [
   {
     id: "event-1",
-    title: "Sunday Service & Holy Communion",
-    titleZh: "禮拜聖會 (主日崇拜)",
-    date: "2026-08-23",
-    time: "11:00 AM - 12:30 PM",
-    timeZh: "上午 11:00 - 中午 12:30",
-    location: "Main Worship Hall / Live Stream",
-    locationZh: "主堂禮拜堂 / 線上禮拜",
-    description: "Message by Evangelist Tanni: 'A Gentle Whisper in the Wilderness: From Weariness to Renewal' (1 Kings 19:1-18). Followed by fellowship lunch at 12:30 PM.",
-    descriptionZh: "談妮傳道主日證道《曠野裡的微聲——從疲憊到更新》（列王記上 19:1-18）。崇拜後備有 12:30 聖徒交通會餐。",
-    category: "worship"
-  },
-  {
-    id: "event-2",
-    title: "Next Sunday Service: Rev. Zhixia Wan",
-    titleZh: "下週主日崇拜 (邀請萬志俠牧師證道)",
+    title: "Sunday Service: Rev. Zhixia Wan",
+    titleZh: "禮拜聖會 (主日崇拜 - 萬志俠牧師證道)",
     date: "2026-08-30",
     time: "11:00 AM - 12:30 PM",
     timeZh: "上午 11:00 - 中午 12:30",
     location: "Main Worship Hall / Live Stream",
     locationZh: "主堂禮拜堂 / 線上禮拜",
-    description: "Inviting Rev. Zhixia Wan for Sunday message. Please pray for her preaching ministry.",
-    descriptionZh: "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹同心代禱預備心。",
+    description: "Message by Rev. Zhixia Wan: 'Walking a Path We Have Never Walked Before' (Joshua 3:1-17). Followed by fellowship lunch at 12:30 PM.",
+    descriptionZh: "萬志俠牧師主日證道《走一條我們從未走過的路》（約書亞記第三章）。崇拜後備有 12:30 聖徒交通會餐。",
     category: "worship"
   },
   {
-    id: "event-3",
+    id: "event-2",
     title: "Thursday Night Zoom Prayer Meeting",
     titleZh: "週四線上守望禱告會",
-    date: "2026-08-27",
+    date: "2026-09-03",
     time: "8:00 PM - 9:15 PM",
     timeZh: "晚上 8:00 - 9:15",
     location: "Zoom ID: 310-626-6103 (Passcode: 25226)",
     locationZh: "Zoom ID: 310-626-6103 (密碼: 25226)",
-    description: "Intercessory prayer for church venue arrangements, youth ministry, recovering members, and local outreach.",
-    descriptionZh: "同心為教會聚會場地與未來發展、年輕事工、跌倒會友康復及同工會守望禱告。請大家踴躍參加。",
+    description: "Intercessory prayer for church venue arrangements, next season ministries, recovering members, and Sunday service.",
+    descriptionZh: "同心為教會聚會場地後續安排、新階段事工拓展、身體欠安與康復中之會友及主日崇拜守望代禱。請大家踴躍參加。",
     category: "prayer",
     zoomId: "3106266103"
+  },
+  {
+    id: "event-3",
+    title: "Sunday Worship & Holy Communion",
+    titleZh: "主日聖餐崇拜",
+    date: "2026-09-06",
+    time: "11:00 AM - 12:30 PM",
+    timeZh: "上午 11:00 - 中午 12:30",
+    location: "Main Worship Hall / Live Stream",
+    locationZh: "主堂禮拜堂 / 線上禮拜",
+    description: "First Sunday of September Worship and Holy Communion. Remembering the Lord's grace.",
+    descriptionZh: "九月份第一主日崇拜與聖餐禮拜，記念主的捨身救贖恩典。",
+    category: "worship"
   }
 ];
 

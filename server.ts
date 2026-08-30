@@ -2,8 +2,10 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import mammoth from "mammoth";
+import * as pdfParseModule from "pdf-parse";
+const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
 
 async function startServer() {
   const app = express();
@@ -41,6 +43,50 @@ async function startServer() {
     }
   };
 
+  // Helper to extract text from PDF, DOCX, DOC, TXT, MD
+  async function extractTextFromBulletinFile(buffer: Buffer, filename: string, mimeType?: string): Promise<{ text?: string; isPdf: boolean }> {
+    const lowerName = (filename || "").toLowerCase();
+    
+    if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
+      try {
+        const pdfResult = await (pdfParse as any)(buffer);
+        const pdfText = (pdfResult && pdfResult.text) ? pdfResult.text.trim() : "";
+        return { text: pdfText, isPdf: true };
+      } catch (pdfErr) {
+        console.warn("pdf-parse extraction notice:", pdfErr);
+        return { isPdf: true };
+      }
+    }
+    
+    if (lowerName.endsWith(".docx") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      try {
+        const result = await mammoth.extractRawText({ buffer });
+        return { text: (result.value || "").trim(), isPdf: false };
+      } catch (e) {
+        console.warn("Mammoth docx extraction notice:", e);
+      }
+    }
+
+    if (lowerName.endsWith(".doc") || mimeType === "application/msword") {
+      try {
+        const result = await mammoth.extractRawText({ buffer });
+        if (result.value && result.value.trim().length > 10) {
+          return { text: result.value.trim(), isPdf: false };
+        }
+      } catch {
+        // fallback to binary string extraction
+      }
+      // Extract readable strings from binary .doc
+      const rawStr = buffer.toString("utf-8");
+      const cleaned = rawStr.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ");
+      return { text: cleaned.trim(), isPdf: false };
+    }
+
+    // Default text formats (.txt, .md, .rtf, .text, or plain text)
+    const textContent = buffer.toString("utf-8");
+    return { text: textContent.trim(), isPdf: false };
+  }
+
   // Comprehensive rule-based parser for Sunday bulletin documents (Word/TXT/PDF text)
   const parseBulletinFromText = (text: string, defaultBulletin: any) => {
     if (!text || typeof text !== "string" || text.trim().length === 0) {
@@ -49,24 +95,31 @@ async function startServer() {
 
     const result: any = { ...defaultBulletin };
 
-    // 1. Service Date (YYYY-MM-DD or YYYY年MM月DD日 or MM/DD/YYYY)
-    const dateMatch = text.match(/(20\d{2})[年/\-.](\d{1,2})[月/\-.](\d{1,2})/);
-    if (dateMatch) {
-      const year = dateMatch[1];
-      const month = dateMatch[2].padStart(2, "0");
-      const day = dateMatch[3].padStart(2, "0");
+    // 1. Service Date (YYYY-MM-DD or YYYY年MM月DD日 or MM/DD/YYYY or M/D)
+    const fullDateMatch = text.match(/(20\d{2})[年/\-.](\d{1,2})[月/\-.](\d{1,2})/);
+    if (fullDateMatch) {
+      const year = fullDateMatch[1];
+      const month = fullDateMatch[2].padStart(2, "0");
+      const day = fullDateMatch[3].padStart(2, "0");
       result.serviceDate = `${year}-${month}-${day}`;
     } else {
       const slashDate = text.match(/(\d{1,2})\/(\d{1,2})\/(20\d{2})/);
       if (slashDate) {
         result.serviceDate = `${slashDate[3]}-${slashDate[1].padStart(2, "0")}-${slashDate[2].padStart(2, "0")}`;
+      } else {
+        const mdMatch = text.match(/(\d{1,2})月(\d{1,2})日/);
+        if (mdMatch) {
+          const currentYear = new Date().getFullYear();
+          result.serviceDate = `${currentYear}-${mdMatch[1].padStart(2, "0")}-${mdMatch[2].padStart(2, "0")}`;
+        }
       }
     }
 
     // 2. Speaker (講員/證道/主講/講道/傳道/牧師)
-    const speakerMatch = text.match(/(?:講員|證道|講道|主講|證道者|講道者)[：:\s是]*([^\n,，;；()（）\r"“”]+)/i);
+    const speakerMatch = text.match(/(?:講員|證道|講道|主講|證道者|講道者|講員介紹)[：:\s是]*([^\n,，;；()（）\r"“”]+)/i);
     if (speakerMatch && speakerMatch[1].trim()) {
-      const sp = speakerMatch[1].trim();
+      let sp = speakerMatch[1].trim();
+      sp = sp.replace(/^[、.\s]+/, '').replace(/[\t\r\n]+/g, ' ').trim();
       result.speaker = sp;
       if (sp.includes("談妮")) {
         result.speaker = "談妮 傳道";
@@ -92,15 +145,12 @@ async function startServer() {
       } else {
         result.speakerEn = sp;
       }
-    } else if (text.includes("談妮傳道") || text.includes("談妮")) {
-      result.speaker = "談妮 傳道";
-      result.speakerEn = "Evangelist Tanni";
     }
 
     // 3. Presider (司會/主領/主席)
     const presiderMatch = text.match(/(?:司會|主領|主席)[：:\s是]*([^\n,，;；()（）\r"“”]+)/i);
     if (presiderMatch && presiderMatch[1].trim()) {
-      result.presider = presiderMatch[1].trim();
+      result.presider = presiderMatch[1].trim().replace(/^[、.\s]+/, '').trim();
     }
 
     // 4. Sermon Title (講題/題目/證道題目/講道題目)
@@ -109,7 +159,9 @@ async function startServer() {
       let t = titleMatch[1].trim();
       t = t.replace(/^[《「『"“']/, '').replace(/[》」』"”']$/, '').trim();
       result.sermonTitle = t;
-      if (t.includes("曠野裡的微聲")) {
+      if (t.includes("走一條我們從未走過的路")) {
+        result.sermonTitleEn = "Walking a Path We Have Never Walked Before";
+      } else if (t.includes("曠野裡的微聲")) {
         result.sermonTitleEn = "A Gentle Whisper in the Wilderness: From Weariness to Renewal";
       } else if (t.includes("永不失望的人生")) {
         result.sermonTitleEn = "A Life That Never Disappoints";
@@ -126,7 +178,9 @@ async function startServer() {
       let sc = scriptureMatch[1].trim();
       sc = sc.replace(/^[《「『"“']/, '').replace(/[》」』"”']$/, '').trim();
       result.sermonScripture = sc;
-      if (sc.includes("列王記上") || sc.includes("列王紀上")) {
+      if (sc.includes("約書亞記") || sc.includes("約書亞紀")) {
+        result.sermonScriptureEn = "Joshua 3:1-17";
+      } else if (sc.includes("列王記上") || sc.includes("列王紀上")) {
         result.sermonScriptureEn = "1 Kings 19:1-18";
       } else if (sc.includes("使徒行傳")) {
         result.sermonScriptureEn = "Acts 27:20-25; Acts 28:4-8";
@@ -157,9 +211,33 @@ async function startServer() {
     }
 
     // 6b. Bible reading range (8/24 到 8/30 or 8/24-8/30)
-    const rangeMatch = text.match(/(?:讀經進度表[：:\s是]*|讀經進度[：:\s是]*)(\d{1,2}\/\d{1,2})\s*(?:到|至|-|~)\s*(\d{1,2}\/\d{1,2})/i);
+    const rangeMatch = text.match(/(?:讀經進度表[：:\s是]*|讀經進度[：:\s是]*|讀經日程[：:\s是]*)(\d{1,2}\/\d{1,2})\s*(?:到|至|-|~)\s*(\d{1,2}\/\d{1,2})/i);
     if (rangeMatch) {
       result.weeklyReadingRange = `${rangeMatch[1]} - ${rangeMatch[2]}`;
+    }
+
+    // 6c. Parse 7-day Bible Reading Schedule table from text
+    const daysPattern = /(?:週一|週二|週三|週四|週五|週六|週日|\(一\)|\(二\)|\(三\)|\(四\)|\(五\)|\(六\)|\(日\)|\d{1,2}\/\d{1,2})/g;
+    const scheduleLines = text.split(/\r?\n/).filter(line => /(?:週[一二三四五六日]|舊約|新約|讀經進度|\(一\)|\(二\)|\(三\)|\(四\)|\(五\)|\(六\)|\(日\))/i.test(line));
+    if (scheduleLines.length >= 3) {
+      const parsedSchedule: any[] = [];
+      for (const sLine of scheduleLines) {
+        const dMatch = sLine.match(/(\d{1,2}\/\d{1,2}(?:\s*\(?[週一二三四五六日]\)?)?|\(?[週一二三四五六日]\)?)/);
+        if (dMatch) {
+          // Extract scripture book references in this line
+          const booksMatch = sLine.replace(dMatch[0], '').trim().split(/\s{2,}|\t/);
+          if (booksMatch.length >= 2) {
+            parsedSchedule.push({
+              date: dMatch[0].trim(),
+              oldTestament: booksMatch[0].trim(),
+              newTestament: booksMatch[1].trim()
+            });
+          }
+        }
+      }
+      if (parsedSchedule.length >= 4) {
+        result.weeklyReadingSchedule = parsedSchedule;
+      }
     }
 
     // 7. Zoom Passcode
@@ -176,7 +254,6 @@ async function startServer() {
       const extractedPrayers: string[] = [];
       for (const line of prayerLines) {
         if (/報告事項|家事報告|這週報告|本週消息|奉獻|主日崇拜|事奉人員/i.test(line) && !line.includes("代禱")) break;
-        // Check for numbered lines e.g. 1. ... 2. ...
         const itemMatches = line.match(/\d+[.、]\s*([^\d]+(?=\s*\d+[.、]|$))/g);
         if (itemMatches && itemMatches.length > 0) {
           for (const item of itemMatches) {
@@ -488,6 +565,31 @@ Strictly output your answer as a JSON object matching this schema:
   const INITIAL_DEFAULT_SERMONS = [
     {
       id: "sermon-1",
+      title: "Walking a Path We Have Never Walked Before",
+      titleZh: "走一條我們從未走過的路",
+      speaker: "Rev. Zhixia Wan",
+      speakerZh: "萬志俠 牧師",
+      date: "2026-08-30",
+      scripture: "Joshua 3:1-17",
+      scriptureZh: "約書亞記第三章（約書亞記 3:1-17）",
+      series: "Sunday Message",
+      seriesZh: "主日證道",
+      summary: "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
+      summaryZh: "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
+      points: [
+        "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+        "2. All must be united; God will perfect and fulfill our entire church.",
+        "3. A journey born of faith will surely witness God's mighty works firsthand."
+      ],
+      pointsZh: [
+        "1. 踏上新的旅程，我們必須緊隨神的腳步。",
+        "2. 眾人要合一，神要讓我們整個教會被成全。",
+        "3. 出于信心的旅程，必能親眼見證神的作為。"
+      ],
+      videoPasscode: "25226"
+    },
+    {
+      id: "sermon-2",
       title: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
       titleZh: "曠野裡的微聲——從疲憊到更新",
       speaker: "Evangelist Tanni",
@@ -514,7 +616,7 @@ Strictly output your answer as a JSON object matching this schema:
       videoPasscode: "25226"
     },
     {
-      id: "sermon-2",
+      id: "sermon-3",
       title: "A Life That Never Disappoints",
       titleZh: "永不失望的人生",
       speaker: "Evangelist ITO",
@@ -539,72 +641,9 @@ Strictly output your answer as a JSON object matching this schema:
         "4. 專心尋求神引領"
       ],
       videoPasscode: "25226"
-    },
-    {
-      id: "sermon-3",
-      title: "Is Life Really Gone in the Blink of an Eye?",
-      titleZh: "人生真的轉眼成空嗎？",
-      speaker: "Rev. Meng Sulun",
-      speakerZh: "孟蘇倫 牧師",
-      date: "2026-08-09",
-      scripture: "Ecclesiastes 1:2-3",
-      scriptureZh: "傳道書第 1 章第 2-3 節",
-      series: "Sunday Message",
-      seriesZh: "主日證道",
-      summary: "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
-      summaryZh: "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』孟蘇倫牧師從傳道書深刻省思日光之下的虛空勞碌，在基督裡尋求上帝賜予永恆的生命目的與公義冠冕。",
-      points: [
-        "1. Vanity of vanities under the sun — Ecclesiastes 1:2-3",
-        "2. Everything beautiful in its time — Ecclesiastes 3:11",
-        "3. The whole duty of humanity — Ecclesiastes 12:13"
-      ],
-      pointsZh: [
-        "一、日光之下的虛空 — 傳道書 1:2-3",
-        "二、神造萬物，各按其時成為美好 — 傳道書 3:11",
-        "三、人所當盡的分：敬畏神、謹守誡命 — 傳道書 12:13"
-      ],
-      videoUrl: "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
-      videoPasscode: "8s4y?JHX"
     }
   ];
   let inMemorySermons: any[] = [...INITIAL_DEFAULT_SERMONS];
-
-  // Helper to extract text from DOCX, DOC, TXT, MD or mark as PDF
-  async function extractTextFromBulletinFile(buffer: Buffer, filename: string, mimeType?: string): Promise<{ text?: string; isPdf: boolean }> {
-    const lowerName = (filename || "").toLowerCase();
-    
-    if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
-      return { isPdf: true };
-    }
-    
-    if (lowerName.endsWith(".docx") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-      try {
-        const result = await mammoth.extractRawText({ buffer });
-        return { text: result.value || "", isPdf: false };
-      } catch (e) {
-        console.warn("Mammoth docx extraction notice:", e);
-      }
-    }
-
-    if (lowerName.endsWith(".doc") || mimeType === "application/msword") {
-      try {
-        const result = await mammoth.extractRawText({ buffer });
-        if (result.value && result.value.trim().length > 10) {
-          return { text: result.value, isPdf: false };
-        }
-      } catch {
-        // fallback to binary string extraction
-      }
-      // Extract readable strings from binary .doc
-      const rawStr = buffer.toString("utf-8");
-      const cleaned = rawStr.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ");
-      return { text: cleaned, isPdf: false };
-    }
-
-    // Default text formats (.txt, .md, .rtf, .text, or plain text)
-    const textContent = buffer.toString("utf-8");
-    return { text: textContent, isPdf: false };
-  }
 
   // Weekly Sunday Bulletin Multi-Format Processing Endpoint (PDF, Word DOC/DOCX, TXT, Fast AI-Powered)
   const handleBulletinFileProcessing = async (req: express.Request, res: express.Response) => {
@@ -617,49 +656,48 @@ Strictly output your answer as a JSON object matching this schema:
       }
 
       const defaultBulletin = {
-        serviceDate: "2026-08-23",
+        serviceDate: "2026-08-30",
         presider: "鄭育青 弟兄",
-        speaker: "談妮 傳道",
-        speakerEn: "Evangelist Tanni",
-        sermonTitle: "曠野裡的微聲——從疲憊到更新",
-        sermonTitleEn: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
-        sermonScripture: "列王記上第 19 章第 1-18 節",
-        sermonScriptureEn: "1 Kings 19:1-18",
-        memoryVerse: "凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。（馬太福音 11:28）",
-        memoryVerseRef: "馬太福音 11:28",
-        weeklyReadingRange: "8/24 - 8/30",
+        speaker: "萬志俠 牧師",
+        speakerEn: "Rev. Zhixia Wan",
+        sermonTitle: "走一條我們從未走過的路",
+        sermonTitleEn: "Walking a Path We Have Never Walked Before",
+        sermonScripture: "約書亞記第三章（約書亞記 3:1-17）",
+        sermonScriptureEn: "Joshua 3:1-17",
+        memoryVerse: "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
+        memoryVerseRef: "約書亞記 3:5",
+        weeklyReadingRange: "8/31 - 9/6",
         weeklyReadingSchedule: [
-          { date: "8/24 (週一)", oldTestament: "詩篇 116-118", newTestament: "哥林多前書 7:1-19" },
-          { date: "8/25 (週二)", oldTestament: "詩篇 119:1-88", newTestament: "哥林多前書 7:20-40" },
-          { date: "8/26 (週三)", oldTestament: "詩篇 119:89-176", newTestament: "哥林多前書 8" },
-          { date: "8/27 (週四)", oldTestament: "詩篇 120-122", newTestament: "哥林多前書 9" },
-          { date: "8/28 (週五)", oldTestament: "詩篇 123-125", newTestament: "哥林多前書 10:1-18" },
-          { date: "8/29 (週六)", oldTestament: "詩篇 126-128", newTestament: "哥林多前書 10:19-33" },
-          { date: "8/30 (週日)", oldTestament: "詩篇 129-131", newTestament: "哥林多前書 11:1-16" }
+          { date: "8/31 (週一)", oldTestament: "詩篇 132-134", newTestament: "哥林多前書 11:17-34" },
+          { date: "9/01 (週二)", oldTestament: "詩篇 135-136", newTestament: "哥林多前書 12" },
+          { date: "9/02 (週三)", oldTestament: "詩篇 137-139", newTestament: "哥林多前書 13" },
+          { date: "9/03 (週四)", oldTestament: "詩篇 140-141", newTestament: "哥林多前書 14:1-20" },
+          { date: "9/04 (週五)", oldTestament: "詩篇 142-143", newTestament: "哥林多前書 14:21-40" },
+          { date: "9/05 (週六)", oldTestament: "詩篇 144-145", newTestament: "哥林多前書 15:1-34" },
+          { date: "9/06 (週日)", oldTestament: "詩篇 146-147", newTestament: "哥林多前書 15:35-58" }
         ],
         sermonPointsZh: [
-          "一、曠野低谷中的疲憊與求死 （列王記上 19:1-4）",
-          "二、神親自的供應、撫摸與撫慰 （列王記上 19:5-8）",
-          "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
-          "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
+          "1. 踏上新的旅程，我們必須緊隨神的腳步。",
+          "2. 眾人要合一，神要讓我們整個教會被成全。",
+          "3. 出于信心的旅程，必能親眼見證神的作為。"
         ],
         sermonPoints: [
-          "1. Weariness in the Wilderness — 1 Kings 19:1-4",
-          "2. God's Gentle Provision and Touch — 1 Kings 19:5-8",
-          "3. Listening to the Gentle Whisper on Mount Horeb — 1 Kings 19:9-14",
-          "4. Commissioned Anew with Seven Thousand Faithful — 1 Kings 19:15-18"
+          "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+          "2. All must be united; God will perfect and fulfill our entire church.",
+          "3. A journey born of faith will surely witness God's mighty works firsthand."
         ],
-        sermonSummary: "加南新生基督教會主日崇拜，談妮傳道透過列王記上第 19 章第 1-18 節傳講《曠野裡的微聲——從疲憊到更新》，分享先知以利亞在低潮與疲憊中的經歷。勉勵弟兄姊妹：即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的微聲，重新得著力量與盼望。",
-        sermonSummaryEn: "Evangelist Tanni shared the journey of Prophet Elijah in exhaustion and despair. Even in our deepest weakness and wilderness, God is present to provide, comfort, and guide us to listen to His gentle whisper and regain strength and heavenly hope.",
+        sermonSummary: "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
+        sermonSummaryEn: "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
         prayerRequests: [
-          "因 C3 教會總部方面的規劃，我們教會與 C3 教會的租約將於 9/6 結束。求主親自帶領後續各項安排，也求主使這次的變動對 C3 教會及我們教會都有所助益，並為我們教會未來的聚會場地與發展預備合適的道路。",
-          "求主帶領發展年輕事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。求主賜下智慧與力量，使年輕事工穩健發展，成為教會的祝福。",
-          "為近日跌倒的會友，包括 Lois、談妮傳道的母親及先生代禱，求主親自保守、醫治與扶持，使他們身體得著恢復，減少疼痛與不適，也保守後續的檢查、治療及休養都順利。",
-          "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
+          "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
+          "因 C3 教會總部規劃，我們教會與 C3 的租約將於 9/6 結束。求主親自帶領後續各項聚會場地安排，為加南新生基督教會開道路，賜下合適的敬拜處所。",
+          "求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",
+          "為術後休養中的談妮傳道及其家人代禱，求主保守身心早日康復；也為身體欠安與跌倒的會友禱告，求主賜下醫治與平安。"
         ],
         announcements: [
-          "感謝談妮傳道今天帶來的訊息，分享先知以利亞在低潮與疲憊中的經歷。提醒我們，即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的聲音，重新得著力量與盼望。",
-          "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
+          "歡迎第一次來參加崇拜的新朋友，願神大大賜福您和您的家庭！",
+          "感謝萬志俠牧師今天前來證道分享《走一條我們從未走過的路》（約書亞記第三章），提醒我們緊隨神腳步、同心合一、憑信心見證神的奇妙作為。",
+          "每週四晚上 8:00 線上守望禱告會 (Zoom ID: 310-626-6103，密碼: 25226)，歡迎弟兄姊妹同心代求。"
         ],
         zoomPasscode: "25226"
       };
@@ -707,68 +745,49 @@ Strictly output your answer as a JSON object matching this schema:
           success: true,
           data: parsedTextData,
           newSermon: directSermon,
+          extractedRawText: extractedInfo.text || fileText || "",
           isFallback: true
         });
       }
 
       try {
-        const promptText = `
-You are the AI Church Secretary for Canaan Shin Sheng Christian Church (加南新生基督教會) located in Harbor City, CA (25226 S. Western Ave, Harbor City, CA 90710).
-Carefully read and extract the EXACT church bulletin data from this uploaded Sunday service bulletin document (PDF / Word DOC/DOCX / TXT).
+        const systemInstruction = `
+You are the expert Church Bulletin Parser for Canaan Shin Sheng Christian Church (加南新生基督教會) in Harbor City, CA (25226 S. Western Ave, Harbor City, CA 90710).
+Extract ALL church bulletin data accurately from the provided Sunday bulletin document (PDF / Word / Text).
 
-Known Church Context:
-- Pastors/Preachers often include: 孟蘇倫 牧師 (Rev. Meng Sulun), 郭易君 牧師 (Rev. Yijun Guo), Ito 傳道 (Evangelist Ito), 李紹信 弟兄 (Brother Shaoxin Li), 陳嘉彰 牧師 (Rev. Jiachang Chen).
-- Presiders (司會) often include: 鄭育青 弟兄, 萬四 長老, 張文辛 長老, 馬新民 執事.
-- Zoom Passcode is typically: 25226 or as noted in the bulletin.
+CRITICAL PARSING RULES:
+1. Multi-Column Structure: Church bulletins often use multiple columns (Order of Service / 崇拜程序表, Sermon Outline / 講道大綱, Reading Schedule / 讀經進度, Announcements / 家事報告, Prayer Requests / 代禱事項). Read all sections carefully.
+2. Presider vs Preacher:
+   - "presider" (司會 / 主領): The person leading the liturgy (e.g. 鄭育青 弟兄, 萬四 長老, 張文辛 長老, 馬新民 執事).
+   - "speaker" (講員 / 證道): The preacher for the Sunday sermon (e.g. 萬志俠 牧師, 孟蘇倫 牧師, 郭易君 牧師, 談妮 傳道, ITO 傳道, 李紹信 弟兄, 陳嘉彰 牧師). Always retain the title (牧師/傳道/弟兄/長老).
+3. Sermon Title & Scripture: Extract the exact Chinese sermon title and scripture passage (e.g. 列王記上 19:1-18, 使徒行傳 27:20-25, 傳道書 1:2-3). Also provide clean English translations.
+4. Sermon Outline Points: Extract the outline points (e.g. 一、..., 二、... or 1. ..., 2. ...).
+5. Memory Verse: Extract the exact memory verse (本週背誦經文 / 金句) and the scripture reference.
+6. Bible Reading Schedule: Extract 7 days (Monday to Sunday) with Date (e.g. '8/24 (週一)'), Old Testament book and chapter range, and New Testament book and chapter range.
+7. Prayer Requests (代禱事項): Extract each prayer request bullet item.
+8. Announcements (家事報告 / 報告事項): Extract each announcement item.
+9. Zoom: Passcode (usually 25226) and any recording URL.
 
-Extract the following information faithfully from the document:
-1. "serviceDate": Exact Sunday date in YYYY-MM-DD format (e.g. "2026-08-09" or "2026-08-16").
-2. "presider": Exact name and title of the service presider (司會), e.g. "鄭育青 弟兄".
-3. "speaker": Exact name and title of the preacher/speaker in Chinese (講員/證道), e.g. "孟蘇倫 牧師".
-4. "speakerEn": Preacher name in English (e.g. "Rev. Meng Sulun").
-5. "sermonTitle": Exact sermon title in Chinese (講道題目), e.g. "人生真的轉眼成空嗎？".
-6. "sermonTitleEn": Sermon title translated into clean English.
-7. "sermonScripture": Exact scripture passage in Chinese (經文), e.g. "傳道書 1:2-3".
-8. "sermonScriptureEn": Scripture reference in English, e.g. "Ecclesiastes 1:2-3".
-9. "sermonSummary": 2-3 sentence spiritual summary in Traditional Chinese based on the sermon and scripture.
-10. "sermonSummaryEn": 2-3 sentence spiritual summary in English.
-11. "sermonPointsZh": Array of strings for the sermon outline points in Chinese (e.g. ["一、...", "二、...", "三、..."]).
-12. "sermonPoints": Array of strings for the sermon outline points in English.
-13. "memoryVerse": Exact memory verse text in Chinese (本週背誦經文).
-14. "memoryVerseRef": Scripture book, chapter, and verse reference for the memory verse (e.g. "馬太福音 6:33").
-15. "weeklyReadingRange": Date range string for the Bible reading schedule (e.g. "8/10 - 8/16").
-16. "weeklyReadingSchedule": Array of 7 day objects for the week's Bible reading table:
-    [
-      { "date": "8/10 (週一)", "oldTestament": "詩篇 79-80", "newTestament": "羅馬書 11:1-18" },
-      ...
-    ]
-17. "prayerRequests": Array of prayer requests / 代禱事項 from the bulletin.
-18. "announcements": Array of church announcements / 報告事項 / 家事報告 from the bulletin.
-19. "zoomPasscode": Zoom passcode if found (default to "25226").
-20. "videoUrl": Zoom recording link if mentioned in the bulletin, or empty string.
-
-Return ONLY valid JSON matching this schema.
+Strictly adhere to the JSON schema. Do not hallucinate or output generic placeholder data.
 `;
 
-        let contentsParts: any[] = [];
+        const contentsParts: any[] = [];
         if (extractedInfo.isPdf && cleanBase64) {
-          contentsParts = [
-            {
-              inlineData: {
-                data: cleanBase64,
-                mimeType: "application/pdf"
-              }
-            },
-            { text: promptText }
-          ];
-        } else {
-          contentsParts = [
-            {
-              text: `=== UPLOADED WEEKLY BULLETIN CONTENT (${filename || 'bulletin document'}) ===\n\n${extractedInfo.text || ''}`
-            },
-            { text: promptText }
-          ];
+          contentsParts.push({
+            inlineData: {
+              data: cleanBase64,
+              mimeType: "application/pdf"
+            }
+          });
         }
+        if (extractedInfo.text || fileText) {
+          contentsParts.push({
+            text: `[DOCUMENT OCR / EXTRACTED TEXT LAYER]:\n${(extractedInfo.text || fileText || "").slice(0, 15000)}`
+          });
+        }
+        contentsParts.push({
+          text: `Please parse this Sunday bulletin for Canaan Shin Sheng Christian Church and return the structured JSON data according to the schema.`
+        });
 
         const response = await ai.models.generateContent({
           model: "gemini-3.7-flash",
@@ -779,7 +798,62 @@ Return ONLY valid JSON matching this schema.
             }
           ],
           config: {
-            responseMimeType: "application/json"
+            systemInstruction,
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                serviceDate: { type: Type.STRING, description: "Sunday service date YYYY-MM-DD" },
+                presider: { type: Type.STRING, description: "Presider 司會 name and title" },
+                speaker: { type: Type.STRING, description: "Preacher 講員 in Chinese" },
+                speakerEn: { type: Type.STRING, description: "Preacher in English" },
+                sermonTitle: { type: Type.STRING, description: "Sermon title in Chinese" },
+                sermonTitleEn: { type: Type.STRING, description: "Sermon title in English" },
+                sermonScripture: { type: Type.STRING, description: "Sermon scripture in Chinese" },
+                sermonScriptureEn: { type: Type.STRING, description: "Sermon scripture in English" },
+                sermonSummary: { type: Type.STRING, description: "2-3 sentence summary in Traditional Chinese" },
+                sermonSummaryEn: { type: Type.STRING, description: "2-3 sentence summary in English" },
+                sermonPointsZh: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                  description: "Sermon outline points in Chinese"
+                },
+                sermonPoints: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                  description: "Sermon outline points in English"
+                },
+                memoryVerse: { type: Type.STRING, description: "Memory verse text" },
+                memoryVerseRef: { type: Type.STRING, description: "Memory verse scripture reference" },
+                weeklyReadingRange: { type: Type.STRING, description: "Weekly Bible reading date range" },
+                weeklyReadingSchedule: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      date: { type: Type.STRING, description: "Date and weekday e.g. 8/24 (週一)" },
+                      oldTestament: { type: Type.STRING, description: "Old Testament reading" },
+                      newTestament: { type: Type.STRING, description: "New Testament reading" }
+                    },
+                    required: ["date", "oldTestament", "newTestament"]
+                  },
+                  description: "7-day reading schedule"
+                },
+                prayerRequests: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                  description: "List of prayer items"
+                },
+                announcements: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                  description: "List of church announcements"
+                },
+                zoomPasscode: { type: Type.STRING, description: "Zoom passcode" },
+                videoUrl: { type: Type.STRING, description: "Video or recording URL if present" }
+              },
+              required: ["serviceDate", "speaker", "sermonTitle", "sermonScripture"]
+            }
           }
         });
 
@@ -833,7 +907,8 @@ Return ONLY valid JSON matching this schema.
         return res.json({
           success: true,
           data: mergedData,
-          newSermon: newSermon
+          newSermon: newSermon,
+          extractedRawText: extractedInfo.text || fileText || ""
         });
       } catch (aiErr: any) {
         console.warn("AI document extraction fallback notice:", aiErr?.message || "Using parsed document data");
@@ -860,6 +935,7 @@ Return ONLY valid JSON matching this schema.
           success: true,
           data: parsedTextData,
           newSermon: fallbackSermon,
+          extractedRawText: extractedInfo.text || fileText || "",
           isFallback: true
         });
       }

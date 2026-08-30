@@ -58,50 +58,48 @@ interface EditableBulletinForm {
 }
 
 const DEFAULT_OFFICIAL_BULLETIN: EditableBulletinForm = {
-  serviceDate: "2026-08-23",
+  serviceDate: "2026-08-30",
   presider: "鄭育青 弟兄",
-  speaker: "談妮 傳道",
-  speakerEn: "Evangelist Tanni",
-  sermonTitle: "曠野裡的微聲——從疲憊到更新",
-  sermonTitleEn: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
-  sermonScripture: "列王記上第 19 章第 1-18 節",
-  sermonScriptureEn: "1 Kings 19:1-18",
-  sermonSummary: "加南新生基督教會主日崇拜，談妮傳道透過列王記上第 19 章第 1-18 節傳講《曠野裡的微聲——從疲憊到更新》，分享先知以利亞在低潮與疲憊中的經歷。勉勵弟兄姊妹：即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的微聲，重新得著力量與盼望。",
-  sermonSummaryEn: "Evangelist Tanni shared the journey of Prophet Elijah in exhaustion and despair. Even in our deepest weakness and wilderness, God is present to provide, comfort, and guide us to listen to His gentle whisper and regain strength and heavenly hope.",
+  speaker: "萬志俠 牧師",
+  speakerEn: "Rev. Zhixia Wan",
+  sermonTitle: "走一條我們從未走過的路",
+  sermonTitleEn: "Walking a Path We Have Never Walked Before",
+  sermonScripture: "約書亞記第三章（約書亞記 3:1-17）",
+  sermonScriptureEn: "Joshua 3:1-17",
+  sermonSummary: "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
+  sermonSummaryEn: "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
   sermonPointsZh: [
-    "一、曠野低谷中的疲憊與求死 （列王記上 19:1-4）",
-    "二、神親自的供應、撫摸與撫慰 （列王記上 19:5-8）",
-    "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
-    "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
+    "1. 踏上新的旅程，我們必須緊隨神的腳步。",
+    "2. 眾人要合一，神要讓我們整個教會被成全。",
+    "3. 出于信心的旅程，必能親眼見證神的作為。"
   ],
   sermonPoints: [
-    "1. Weariness in the Wilderness — 1 Kings 19:1-4",
-    "2. God's Gentle Provision and Touch — 1 Kings 19:5-8",
-    "3. Listening to the Gentle Whisper on Mount Horeb — 1 Kings 19:9-14",
-    "4. Commissioned Anew with Seven Thousand Faithful — 1 Kings 19:15-18"
+    "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+    "2. All must be united; God will perfect and fulfill our entire church.",
+    "3. A journey born of faith will surely witness God's mighty works firsthand."
   ],
-  memoryVerse: "凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。（馬太福音 11:28）",
-  memoryVerseRef: "馬太福音 11:28",
-  weeklyReadingRange: "8/24 - 8/30",
+  memoryVerse: "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
+  memoryVerseRef: "約書亞記 3:5",
+  weeklyReadingRange: "8/31 - 9/6",
   weeklyReadingSchedule: [
-    { date: "8/24 (週一)", oldTestament: "詩篇 116-118", newTestament: "哥林多前書 7:1-19" },
-    { date: "8/25 (週二)", oldTestament: "詩篇 119:1-88", newTestament: "哥林多前書 7:20-40" },
-    { date: "8/26 (週三)", oldTestament: "詩篇 119:89-176", newTestament: "哥林多前書 8" },
-    { date: "8/27 (週四)", oldTestament: "詩篇 120-122", newTestament: "哥林多前書 9" },
-    { date: "8/28 (週五)", oldTestament: "詩篇 123-125", newTestament: "哥林多前書 10:1-18" },
-    { date: "8/29 (週六)", oldTestament: "詩篇 126-128", newTestament: "哥林多前書 10:19-33" },
-    { date: "8/30 (週日)", oldTestament: "詩篇 129-131", newTestament: "哥林多前書 11:1-16" }
+    { date: "8/31 (週一)", oldTestament: "詩篇 132-134", newTestament: "哥林多前書 11:17-34" },
+    { date: "9/01 (週二)", oldTestament: "詩篇 135-136", newTestament: "哥林多前書 12" },
+    { date: "9/02 (週三)", oldTestament: "詩篇 137-139", newTestament: "哥林多前書 13" },
+    { date: "9/03 (週四)", oldTestament: "詩篇 140-141", newTestament: "哥林多前書 14:1-20" },
+    { date: "9/04 (週五)", oldTestament: "詩篇 142-143", newTestament: "哥林多前書 14:21-40" },
+    { date: "9/05 (週六)", oldTestament: "詩篇 144-145", newTestament: "哥林多前書 15:1-34" },
+    { date: "9/06 (週日)", oldTestament: "詩篇 146-147", newTestament: "哥林多前書 15:35-58" }
   ],
   prayerRequests: [
-    "因 C3 教會總部方面的規劃，我們教會與 C3 教會的租約將於 9/6 結束。求主親自帶領後續各項安排，也求主使這次的變動對 C3 教會及我們教會都有所助益，並為我們教會未來的聚會場地與發展預備合適的道路。",
-    "求主帶領發展年輕事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。求主賜下智慧與力量，使年輕事工穩健發展，成為教會的祝福。",
-    "為近日跌倒的會友，包括 Lois、談妮傳道的母親及先生代禱，求主親自保守、醫治與扶持，使他們身體得著恢復，減少疼痛與不適，也保守後續的檢查、治療及休養都順利。",
-    "談妮傳道即將於 8/24接受手術代禱，求主親自保守手術過程順利，賜給醫療團隊智慧與能力，也賜給她的家人平安與力量。求主親自看顧她的家人及家中各樣需要，使一切事務都有妥善的安排，讓她可以安心接受手術與休養，無後顧之憂。也求主保守她術後恢復順利，身心逐漸康復，在整個過程中經歷主的恩典與同在。",
-    "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
+    "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
+    "因 C3 教會總部規劃，我們教會與 C3 的租約將於 9/6 結束。求主親自帶領後續各項聚會場地安排，為加南新生基督教會開道路，賜下合適的敬拜處所。",
+    "求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",
+    "為術後休養中的談妮傳道及其家人代禱，求主保守身心早日康復；也為身體欠安與跌倒的會友禱告，求主賜下醫治與平安。"
   ],
   announcements: [
-    "感謝談妮傳道今天帶來的訊息，分享先知以利亞在低潮與疲憊中的經歷。提醒我們，即使身處軟弱與困境中，神仍然與我們同在，親自供應、安慰並帶領我們，在安靜中聆聽神的聲音，重新得著力量與盼望。",
-    "下週將再次邀請萬志俠牧師前來證道，請弟兄姊妹代禱，求主賜福她的服事，賜下智慧與力量，忠心傳講神的話語，也預備我們的心，明白並遵行主的旨意。"
+    "歡迎第一次來參加崇拜的新朋友，願神大大賜福您和您的家庭！",
+    "感謝萬志俠牧師今天前來證道分享《走一條我們從未走過的路》（約書亞記第三章），提醒我們緊隨神腳步、同心合一、憑信心見證神的奇妙作為。",
+    "每週四晚上 8:00 線上守望禱告會 (Zoom ID: 310-626-6103，密碼: 25226)，歡迎弟兄姊妹同心代求。"
   ],
   zoomPasscode: "25226",
   videoUrl: ""
@@ -120,6 +118,8 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [extractedRawText, setExtractedRawText] = useState<string>('');
+  const [showRawText, setShowRawText] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [simulatedEmail, setSimulatedEmail] = useState(false);
@@ -190,7 +190,10 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
     }
   };
 
-  const applyParsedDataToForm = (rawBulletin: any, isFallback?: boolean) => {
+  const applyParsedDataToForm = (rawBulletin: any, isFallback?: boolean, rawExtractedText?: string) => {
+    if (rawExtractedText) {
+      setExtractedRawText(rawExtractedText);
+    }
     const updatedForm: EditableBulletinForm = {
       serviceDate: rawBulletin.serviceDate || DEFAULT_OFFICIAL_BULLETIN.serviceDate,
       presider: rawBulletin.presider || DEFAULT_OFFICIAL_BULLETIN.presider,
@@ -217,9 +220,9 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
     setFormData(updatedForm);
     setActiveTab('edit-form');
     if (isFallback) {
-      setSuccessMsg(lang === 'zh' ? '✅ 已成功載入教會最新主日資訊（8/16 ITO傳道《永不失望的人生》），請在下方確認或微調後點擊「發布更新」。' : 'Loaded latest official bulletin data (8/16 Evangelist ITO: A Life That Never Disappoints). Please review below and click Publish.');
+      setSuccessMsg(lang === 'zh' ? '✅ 已成功載入教會最新主日資訊（8/16 ITO傳道《永不失望的人生》），請在下方確認或微調後點擊「發布更新」。' : 'Loaded latest official bulletin data. Please review below and click Publish.');
     } else {
-      setSuccessMsg(lang === 'zh' ? '✅ AI 已自動擷取週報資訊！請在下方檢查並確認各欄位，確認無誤後點擊「發布更新」。' : 'AI extracted bulletin data! Please review and confirm below.');
+      setSuccessMsg(lang === 'zh' ? '✅ AI 與智慧引擎已精準解析週報資訊！請在下方檢查確認各欄位，確認無誤後點擊「發布更新」。' : 'AI extracted bulletin data! Please review and confirm below.');
     }
   };
 
@@ -250,7 +253,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
         setLoadingStep('');
 
         if (data.success && data.data) {
-          applyParsedDataToForm(data.data, data.isFallback);
+          applyParsedDataToForm(data.data, data.isFallback, data.extractedRawText || rawText);
         } else {
           setErrorMsg(data.error || (lang === 'zh' ? '解析週報文字失敗，請手動填寫或重試。' : 'Failed to parse bulletin text.'));
         }
@@ -285,7 +288,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
           setLoadingStep(lang === 'zh' ? 'Gemini AI 正在智能解析 TXT 週報內容...' : 'AI parsing TXT bulletin content...');
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 25000);
+          const timeoutId = setTimeout(() => controller.abort(), 60000);
 
           try {
             const res = await fetch('/api/process-bulletin-file', {
@@ -306,7 +309,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
             setLoadingStep('');
 
             if (data.success && data.data) {
-              applyParsedDataToForm(data.data, data.isFallback);
+              applyParsedDataToForm(data.data, data.isFallback, data.extractedRawText || textContent);
             } else {
               setErrorMsg(data.error || (lang === 'zh' ? '解析 TXT 檔案失敗，請手動填寫或重試。' : 'Failed to parse TXT file.'));
             }
@@ -332,7 +335,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
           setLoadingStep(lang === 'zh' ? `Gemini AI 正在智能解析 ${formatLabel} 週報經文、講員與讀經進度...` : `AI parsing ${formatLabel} bulletin & creating sermon...`);
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 25000);
+          const timeoutId = setTimeout(() => controller.abort(), 60000);
 
           try {
             const res = await fetch('/api/process-bulletin-file', {
@@ -354,7 +357,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
             setLoadingStep('');
 
             if (data.success && data.data) {
-              applyParsedDataToForm(data.data, data.isFallback);
+              applyParsedDataToForm(data.data, data.isFallback, data.extractedRawText || '');
             } else {
               setErrorMsg(data.error || (lang === 'zh' ? '解析檔案失敗，請手動填寫或重試。' : 'Failed to parse bulletin file.'));
             }
@@ -726,15 +729,43 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleResetToDefault}
-                    className="text-xs text-rose-700 hover:text-rose-800 font-semibold flex items-center space-x-1 bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-200"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>{lang === 'zh' ? '重設預設' : 'Reset'}</span>
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    {extractedRawText && (
+                      <button
+                        type="button"
+                        onClick={() => setShowRawText(!showRawText)}
+                        className="text-xs text-slate-700 hover:text-amber-800 font-semibold flex items-center space-x-1 bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200"
+                      >
+                        <FileText className="w-3 h-3" />
+                        <span>{showRawText ? (lang === 'zh' ? '收起原文' : 'Hide Text') : (lang === 'zh' ? '對照文件原文' : 'Show Raw Text')}</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleResetToDefault}
+                      className="text-xs text-rose-700 hover:text-rose-800 font-semibold flex items-center space-x-1 bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-200"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>{lang === 'zh' ? '重設預設' : 'Reset'}</span>
+                    </button>
+                  </div>
                 </div>
+
+                {/* Collapsible Raw Text Display */}
+                {showRawText && extractedRawText && (
+                  <div className="p-4 bg-slate-900 text-slate-200 rounded-2xl border border-slate-800 text-xs font-mono space-y-2">
+                    <div className="flex items-center justify-between text-amber-400 font-bold">
+                      <span className="flex items-center space-x-1.5">
+                        <FileText className="w-4 h-4" />
+                        <span>{lang === 'zh' ? '📄 上傳文件/PDF 原始萃取文字' : '📄 Extracted Raw Document Text'}</span>
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-sans">{extractedRawText.length} 字</span>
+                    </div>
+                    <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap leading-relaxed text-[11px] bg-slate-950 p-3 rounded-xl border border-slate-800">
+                      {extractedRawText}
+                    </pre>
+                  </div>
+                )}
 
                 {/* Grid 1: Basic Service & Sermon Info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
