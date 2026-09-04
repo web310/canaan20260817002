@@ -18,7 +18,13 @@ import {
   HelpCircle,
   ExternalLink
 } from 'lucide-react';
-import { GalleryPhoto, GalleryCategory, Language } from '../types';
+import { GalleryPhoto, GalleryCategory, Language, GoogleAlbum } from '../types';
+import { 
+  INITIAL_GOOGLE_ALBUMS, 
+  GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL, 
+  GOOGLE_SITES_GALLERY_URL, 
+  GOOGLE_PHOTOS_DEFAULT_URL 
+} from '../data/galleryData';
 
 interface GalleryGitHubSyncModalProps {
   lang: Language;
@@ -48,10 +54,44 @@ export const GalleryGitHubSyncModal: React.FC<GalleryGitHubSyncModalProps> = ({
 
   // Helper to generate clean galleryData.ts file string
   const generateTypeScriptCode = () => {
-    const categoriesJson = JSON.stringify(categories, null, 2);
-    const photosJson = JSON.stringify(photos, null, 2);
+    let savedAlbums: GoogleAlbum[] = INITIAL_GOOGLE_ALBUMS;
+    try {
+      const cached = localStorage.getItem('canaan_google_albums');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          savedAlbums = parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
 
-    return `import { GalleryCategory, GalleryPhoto } from '../types';
+    const sanitizedAlbums = savedAlbums.map(a => ({
+      ...a,
+      coverImageUrl: (a.coverImageUrl || '').replace('/src/assets/images/', '/assets/images/')
+    }));
+
+    const sanitizedPhotos = photos.map(p => ({
+      ...p,
+      imageUrl: (p.imageUrl || '').replace('/src/assets/images/', '/assets/images/')
+    }));
+
+    const categoriesJson = JSON.stringify(categories, null, 2);
+    const photosJson = JSON.stringify(sanitizedPhotos, null, 2);
+    const albumsJson = JSON.stringify(sanitizedAlbums, null, 2);
+
+    return `import { GalleryCategory, GalleryPhoto, GoogleAlbum } from '../types';
+import choirImg from '../assets/images/canaan_worship_choir_1786671374150.jpg';
+import baptismImg from '../assets/images/canaan_baptism_service_1786671385015.jpg';
+import retreatImg from '../assets/images/canaan_retreat_camp_1786671399070.jpg';
+import christmasImg from '../assets/images/canaan_christmas_praise_1786671410013.jpg';
+import feastImg from '../assets/images/canaan_love_feast_1786671419624.jpg';
+import familyImg from '../assets/images/canaan_family_sunday_1786671430385.jpg';
+import fellowshipImg from '../assets/images/canaan_fellowship_1786434097997.jpg';
+import cellGroupImg from '../assets/images/chinese_fellowship_photo_1786495882516.jpg';
+import churchHeroImg from '../assets/images/canaan_church_hero_1786434083190.jpg';
+import outdoorImg from '../assets/images/chinese_church_hero_1786495867006.jpg';
 
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - PHOTO GALLERY MASTER DATA
@@ -59,6 +99,38 @@ export const GalleryGitHubSyncModal: React.FC<GalleryGitHubSyncModalProps> = ({
 // Updated at: ${new Date().toISOString()}
 // Total Photos: ${photos.length}
 // ============================================================================
+
+export const GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL = "${GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL}";
+export const GOOGLE_SITES_GALLERY_URL = "${GOOGLE_SITES_GALLERY_URL}";
+export const GOOGLE_PHOTOS_DEFAULT_URL = "${GOOGLE_PHOTOS_DEFAULT_URL}";
+
+export const LOCAL_ASSET_MAP: Record<string, string> = {
+  'canaan_worship_choir_1786671374150.jpg': choirImg,
+  'canaan_baptism_service_1786671385015.jpg': baptismImg,
+  'canaan_retreat_camp_1786671399070.jpg': retreatImg,
+  'canaan_christmas_praise_1786671410013.jpg': christmasImg,
+  'canaan_love_feast_1786671419624.jpg': feastImg,
+  'canaan_family_sunday_1786671430385.jpg': familyImg,
+  'chinese_fellowship_photo_1786495882516.jpg': cellGroupImg,
+  'canaan_fellowship_1786434097997.jpg': fellowshipImg,
+  'chinese_church_hero_1786495867006.jpg': outdoorImg,
+  'canaan_church_hero_1786434083190.jpg': churchHeroImg,
+};
+
+export const resolveGalleryImageUrl = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  for (const [filename, importedAsset] of Object.entries(LOCAL_ASSET_MAP)) {
+    if (url.includes(filename)) {
+      return importedAsset;
+    }
+  }
+  return url;
+};
+
+export const INITIAL_GOOGLE_ALBUMS: GoogleAlbum[] = ${albumsJson};
 
 export const GALLERY_CATEGORIES: GalleryCategory[] = ${categoriesJson};
 

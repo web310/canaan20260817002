@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Language, GalleryPhoto, GalleryCategory, GoogleAlbum } from '../types';
-import { INITIAL_GALLERY_PHOTOS, INITIAL_GOOGLE_ALBUMS, GALLERY_CATEGORIES, GOOGLE_SITES_GALLERY_URL, GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL, isPhotoInCategory } from '../data/galleryData';
+import { 
+  INITIAL_GALLERY_PHOTOS, 
+  INITIAL_GOOGLE_ALBUMS, 
+  GALLERY_CATEGORIES, 
+  GOOGLE_SITES_GALLERY_URL, 
+  GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL, 
+  isPhotoInCategory,
+  resolveGalleryImageUrl
+} from '../data/galleryData';
 import { GooglePhotosAISyncModal } from './GooglePhotosAISyncModal';
 import { CategoryManagerModal } from './CategoryManagerModal';
 import { PhotoEditModal } from './PhotoEditModal';
@@ -157,7 +165,9 @@ export const PhotoGallerySection: React.FC<PhotoGalleryProps> = ({ lang, adminEm
       if (savedAll) {
         const parsed = JSON.parse(savedAll);
         if (Array.isArray(parsed)) {
-          return parsed.filter(p => !deletedIds.has(p.id));
+          return parsed
+            .map(p => ({ ...p, imageUrl: resolveGalleryImageUrl(p.imageUrl) }))
+            .filter(p => !deletedIds.has(p.id));
         }
       }
       const savedCustom = localStorage.getItem('canaan_gallery_photos_custom');
@@ -171,10 +181,12 @@ export const PhotoGallerySection: React.FC<PhotoGalleryProps> = ({ lang, adminEm
       }
       if (combined.length > 0) {
         const map = new Map<string, GalleryPhoto>();
-        combined.forEach(p => map.set(p.id, p));
+        combined.forEach(p => map.set(p.id, { ...p, imageUrl: resolveGalleryImageUrl(p.imageUrl) }));
         return Array.from(map.values()).filter(p => !deletedIds.has(p.id));
       }
-      return INITIAL_GALLERY_PHOTOS.filter(p => !deletedIds.has(p.id));
+      return INITIAL_GALLERY_PHOTOS
+        .map(p => ({ ...p, imageUrl: resolveGalleryImageUrl(p.imageUrl) }))
+        .filter(p => !deletedIds.has(p.id));
     } catch (e) {
       console.error("Failed to load saved gallery photos:", e);
     }
@@ -207,11 +219,25 @@ export const PhotoGallerySection: React.FC<PhotoGalleryProps> = ({ lang, adminEm
       const saved = localStorage.getItem('canaan_google_albums');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          return parsed.filter(a => !deletedAlbumIds.has(a.id));
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const normalized = parsed.map((a: GoogleAlbum) => {
+            const initialMatch = INITIAL_GOOGLE_ALBUMS.find(init => init.id === a.id);
+            let cover = a.coverImageUrl;
+            // If empty or broken path, fallback to INITIAL_GOOGLE_ALBUMS definition
+            if (!cover || cover.includes('/src/assets/images/')) {
+              cover = initialMatch ? initialMatch.coverImageUrl : cover;
+            }
+            return {
+              ...a,
+              coverImageUrl: resolveGalleryImageUrl(cover)
+            };
+          });
+          return normalized.filter(a => !deletedAlbumIds.has(a.id));
         }
       }
-      return INITIAL_GOOGLE_ALBUMS.filter(a => !deletedAlbumIds.has(a.id));
+      return INITIAL_GOOGLE_ALBUMS
+        .map(a => ({ ...a, coverImageUrl: resolveGalleryImageUrl(a.coverImageUrl) }))
+        .filter(a => !deletedAlbumIds.has(a.id));
     } catch (e) {
       console.error("Failed to load saved google albums:", e);
     }
@@ -1255,10 +1281,27 @@ export const PhotoGallerySection: React.FC<PhotoGalleryProps> = ({ lang, adminEm
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                   {album.coverImageUrl ? (
                     <img
-                      src={album.coverImageUrl}
+                      src={resolveGalleryImageUrl(album.coverImageUrl)}
                       alt={lang === 'zh' ? album.titleZh : album.titleEn}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        const original = album.coverImageUrl || '';
+                        // 1. Try public assets folder fallback
+                        if (original.includes('/src/assets/images/')) {
+                          target.src = original.replace('/src/assets/images/', '/assets/images/');
+                          return;
+                        }
+                        // 2. Try match from INITIAL_GOOGLE_ALBUMS
+                        const initMatch = INITIAL_GOOGLE_ALBUMS.find(a => a.id === album.id);
+                        if (initMatch && initMatch.coverImageUrl && target.src !== initMatch.coverImageUrl) {
+                          target.src = initMatch.coverImageUrl;
+                          return;
+                        }
+                        // 3. Gracefully hide broken img tag to show background icon card
+                        target.style.display = 'none';
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 text-slate-400">
@@ -1512,13 +1555,19 @@ export const PhotoGallerySection: React.FC<PhotoGalleryProps> = ({ lang, adminEm
             {/* Photo Image Frame */}
             <div className="max-w-5xl max-h-[68vh] rounded-2xl overflow-hidden shadow-2xl border border-slate-800 flex items-center justify-center bg-black">
               <img
-                src={currentPhoto.imageUrl}
+                src={resolveGalleryImageUrl(currentPhoto.imageUrl)}
                 alt={lang === 'zh' ? currentPhoto.titleZh : currentPhoto.title}
                 referrerPolicy="no-referrer"
                 className="max-w-full max-h-[68vh] object-contain select-none"
                 onError={(e) => {
-                  if (currentPhoto.fallbackImageUrl && e.currentTarget.src !== currentPhoto.fallbackImageUrl) {
-                    e.currentTarget.src = currentPhoto.fallbackImageUrl;
+                  const target = e.currentTarget;
+                  if (currentPhoto.fallbackImageUrl && target.src !== currentPhoto.fallbackImageUrl) {
+                    target.src = currentPhoto.fallbackImageUrl;
+                    return;
+                  }
+                  const original = currentPhoto.imageUrl || '';
+                  if (original.includes('/src/assets/images/')) {
+                    target.src = original.replace('/src/assets/images/', '/assets/images/');
                   }
                 }}
               />
