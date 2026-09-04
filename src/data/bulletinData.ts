@@ -13,13 +13,29 @@ export interface BulletinData {
   readingRange: string;
   schedule: Array<{
     date: string;
+    dateEn?: string;
     oldTestament: string;
+    oldTestamentEn?: string;
     newTestament: string;
+    newTestamentEn?: string;
   }>;
   announcements?: string[];
   pastoralNoteZh?: string;
   pastoralNoteEn?: string;
   updatedAt?: string;
+  serviceDate?: string;
+  presider?: string;
+  speaker?: string;
+  speakerEn?: string;
+  sermonTitle?: string;
+  sermonTitleEn?: string;
+  sermonScripture?: string;
+  sermonScriptureEn?: string;
+  sermonSummary?: string;
+  sermonSummaryEn?: string;
+  sermonPointsZh?: string[];
+  sermonPoints?: string[];
+  [key: string]: any;
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = {

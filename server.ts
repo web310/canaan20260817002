@@ -730,7 +730,9 @@ Strictly output your answer as a JSON object matching this schema:
         "2. 眾人要合一，神要讓我們整個教會被成全。",
         "3. 出于信心的旅程，必能親眼見證神的作為。"
       ],
-      videoPasscode: "25226"
+      videoPasscode: "25226",
+      showVideo: true,
+      showAudio: true
     },
     {
       id: "sermon-2",
@@ -757,7 +759,9 @@ Strictly output your answer as a JSON object matching this schema:
         "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
         "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
       ],
-      videoPasscode: "25226"
+      videoPasscode: "25226",
+      showVideo: true,
+      showAudio: true
     },
     {
       id: "sermon-3",
@@ -784,7 +788,9 @@ Strictly output your answer as a JSON object matching this schema:
         "3. 主恩典是夠用的",
         "4. 專心尋求神引領"
       ],
-      videoPasscode: "25226"
+      videoPasscode: "25226",
+      showVideo: true,
+      showAudio: true
     }
   ];
   let inMemorySermons: any[] = [...INITIAL_DEFAULT_SERMONS];
@@ -1577,6 +1583,53 @@ Respond in JSON format:
     }
   });
 
+  // Helper to persist sermons to src/data/sermonsData.ts and public/canaan_master_data.json
+  const persistSermonsToFile = (sermons: any[]) => {
+    try {
+      const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
+      const tsContent = `import { Sermon } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
+// Total Sermons: ${sermons.length}
+// ============================================================================
+
+export const SERMONS_DATA_VERSION = "${versionStr}";
+
+export const SERMON_CONTENT_LIST: Sermon[] = ${JSON.stringify(sermons, null, 2)};
+
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+`;
+      const sermonsPath = path.join(process.cwd(), "src", "data", "sermonsData.ts");
+      fs.writeFileSync(sermonsPath, tsContent, "utf-8");
+
+      // Update canaan_master_data.json
+      const masterJsonPath = path.join(process.cwd(), "public", "canaan_master_data.json");
+      if (fs.existsSync(masterJsonPath)) {
+        try {
+          const raw = fs.readFileSync(masterJsonPath, "utf-8");
+          const masterData = JSON.parse(raw);
+          if (masterData && masterData.data) {
+            masterData.data.sermons = sermons;
+            masterData.stats = masterData.stats || {};
+            masterData.stats.totalSermons = sermons.length;
+            masterData.exportedAt = new Date().toISOString();
+            fs.writeFileSync(masterJsonPath, JSON.stringify(masterData, null, 2), "utf-8");
+          }
+        } catch (jsonErr) {
+          console.warn("Could not sync canaan_master_data.json:", jsonErr);
+        }
+      }
+    } catch (fsErr) {
+      console.warn("Notice: persistSermonsToFile disk write warning:", fsErr);
+    }
+  };
+
   // ==========================================
   // SUNDAY SERMON MANAGEMENT & AI ASSIST APIS
   // ==========================================
@@ -1592,6 +1645,7 @@ Respond in JSON format:
       const { sermons } = req.body;
       if (Array.isArray(sermons)) {
         inMemorySermons = sermons;
+        persistSermonsToFile(sermons);
         return res.json({ success: true, count: sermons.length });
       }
       return res.status(400).json({ error: "Sermons array required" });
@@ -1605,6 +1659,7 @@ Respond in JSON format:
       const { id } = req.params;
       const initialLength = inMemorySermons.length;
       inMemorySermons = inMemorySermons.filter(s => s.id !== id);
+      persistSermonsToFile(inMemorySermons);
       return res.json({
         success: true,
         deletedId: id,
@@ -1732,6 +1787,7 @@ Return ONLY valid JSON.
       // Update in-memory sermons
       if (Array.isArray(data?.sermons)) {
         inMemorySermons = data.sermons;
+        persistSermonsToFile(data.sermons);
       }
 
       // Generate file contents
@@ -1742,23 +1798,29 @@ Return ONLY valid JSON.
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
 // Updated at: ${new Date().toISOString()}
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: ${sermonsList.length}
 // ============================================================================
 
 export const SERMONS_DATA_VERSION = "${versionStr}";
 
-export const INITIAL_SERMONS: Sermon[] = ${JSON.stringify(sermonsList, null, 2)};
+export const SERMON_CONTENT_LIST: Sermon[] = ${JSON.stringify(sermonsList, null, 2)};
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 `;
 
       const sermonStorageTs = `import { Sermon } from '../types';
 import * as SermonsData from '../data/sermonsData';
 
 export const INITIAL_SERMONS: Sermon[] = 
+  (SermonsData as any).SERMON_CONTENT_LIST || 
   (SermonsData as any).INITIAL_SERMONS || 
   (SermonsData as any).RECENT_SERMONS || 
   [];
+
+export const SERMON_CONTENT_LIST: Sermon[] = INITIAL_SERMONS;
 
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
@@ -1766,12 +1828,12 @@ export const SERMONS_DATA_VERSION: string =
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
- * Any change in titles, dates, speakers, scriptures, passcodes or count in code triggers an immediate refresh.
+ * Any change in titles, dates, speakers, scriptures, passcodes, video/audio visibility or count in code triggers an immediate refresh.
  */
 export function getMasterDataFingerprint(): string {
   try {
     return \`\${SERMONS_DATA_VERSION}::\` + INITIAL_SERMONS.map(s => 
-      \`\${s.id}:\${s.date}:\${s.titleZh}:\${s.speakerZh}:\${s.videoUrl || ''}:\${s.videoPasscode || ''}\`
+      \`\${s.id}:\${s.date}:\${s.titleZh}:\${s.speakerZh}:\${s.videoUrl || ''}:\${s.videoPasscode || ''}:\${s.showVideo !== false}:\${s.showAudio !== false}\`
     ).join('|');
   } catch {
     return \`\${SERMONS_DATA_VERSION}::\${INITIAL_SERMONS.length}\`;
@@ -2043,20 +2105,27 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
       // Update in-memory sermons as well
       if (Array.isArray(sermons)) {
         inMemorySermons = sermons;
+        persistSermonsToFile(sermons);
       }
 
+      const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
       const tsContent = `import { Sermon } from '../types';
 
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
 // Updated at: ${new Date().toISOString()}
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: ${sermonList.length}
 // ============================================================================
 
-export const INITIAL_SERMONS: Sermon[] = ${JSON.stringify(sermonList, null, 2)};
+export const SERMONS_DATA_VERSION = "${versionStr}";
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+export const SERMON_CONTENT_LIST: Sermon[] = ${JSON.stringify(sermonList, null, 2)};
+
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 `;
 
       const base64Content = Buffer.from(tsContent, "utf-8").toString("base64");

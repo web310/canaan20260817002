@@ -66,17 +66,38 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Purge any legacy LocalStorage cache on startup and enforce static SERMON_CONTENT_LIST
+  // Load initial sermons: query server first (which syncs from disk file), fallback to localStorage, then SERMON_CONTENT_LIST
   useEffect(() => {
-    try {
-      localStorage.removeItem('canaan_sermons_data');
-      localStorage.removeItem('canaan_sermons_master_fingerprint');
-      localStorage.removeItem('canaan_sermons_data_version');
-    } catch (e) {
-      console.warn("Storage cleanup notice:", e);
-    }
-    setSermons(SERMON_CONTENT_LIST);
+    fetch('/api/sermons')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.sermons) && data.sermons.length > 0) {
+          setSermons(data.sermons);
+          try {
+            localStorage.setItem('canaan_sermons_data', JSON.stringify(data.sermons));
+          } catch {}
+        } else {
+          loadFromLocalOrStatic();
+        }
+      })
+      .catch(() => {
+        loadFromLocalOrStatic();
+      });
   }, []);
+
+  const loadFromLocalOrStatic = () => {
+    try {
+      const saved = localStorage.getItem('canaan_sermons_data');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSermons(parsed);
+          return;
+        }
+      }
+    } catch {}
+    setSermons(SERMON_CONTENT_LIST || []);
+  };
 
   // Listen to external sermon updates (e.g. from PDF Bulletin upload or manual admin save)
   useEffect(() => {
@@ -105,6 +126,9 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
   const syncSermonList = (newList: Sermon[], msg?: string) => {
     setSermons(newList);
+    try {
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(newList));
+    } catch {}
 
     fetch('/api/sermons', {
       method: 'POST',
@@ -193,6 +217,10 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       ? sermons.map(s => (s.id === savedSermon.id || s.date === savedSermon.date) ? { ...s, ...savedSermon, id: s.id } : s)
       : [savedSermon, ...sermons];
 
+    try {
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(fullList));
+    } catch {}
+
     // Sync with backend API to auto-write to src/data/sermonsData.ts on disk
     fetch('/api/sermons', {
       method: 'POST',
@@ -228,7 +256,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       ? '已設為【讓使用者看到】'
       : '已設為【對使用者隱藏】';
     const labelZh = type === 'video' ? '「觀看影音」' : '「收聽音訊」';
-    showToast(`${labelZh} ${stateZh}！`);
+    showToast(`${labelZh} ${stateZh}！（已更新並同步至檔案，可點擊「同步至 GitHub」永久保存）`);
   };
 
   const handleDeleteSermon = (sermonId: string) => {
@@ -236,6 +264,9 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
     
     // Update React state
     setSermons(remainingSermons);
+    try {
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(remainingSermons));
+    } catch {}
 
     if (selectedSermon && selectedSermon.id === sermonId) {
       setSelectedSermon(null);
@@ -270,6 +301,9 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
   const handleResetToDefaults = () => {
     setSermons(SERMON_CONTENT_LIST);
+    try {
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(SERMON_CONTENT_LIST));
+    } catch {}
     fetch('/api/sermons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

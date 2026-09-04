@@ -83,11 +83,47 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   const [allBulletin, setAllBulletin] = useState<BulletinData>(INITIAL_BULLETIN_DATA);
   const [allPrayers, setAllPrayers] = useState<PrayerRequest[]>(() => deduplicatePrayers(INITIAL_PRAYERS));
 
+  const loadSermonsFromStorage = () => {
+    try {
+      const saved = localStorage.getItem('canaan_sermons_data');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setAllSermons(parsed);
+          return;
+        }
+      }
+    } catch {}
+    setAllSermons(SERMON_CONTENT_LIST || []);
+  };
+
+  // Listen for real-time sermon updates
+  useEffect(() => {
+    const handleUpdated = (e: any) => {
+      if (e.detail?.allSermons && Array.isArray(e.detail.allSermons)) {
+        setAllSermons(e.detail.allSermons);
+      }
+    };
+    window.addEventListener('canaan_sermons_updated', handleUpdated as EventListener);
+    return () => window.removeEventListener('canaan_sermons_updated', handleUpdated as EventListener);
+  }, []);
+
   // Load fresh data whenever modal opens
   useEffect(() => {
     if (isOpen) {
-      // 1. Sermons - always initialize with authoritative SERMON_CONTENT_LIST
-      setAllSermons(SERMON_CONTENT_LIST);
+      // 1. Sermons - fetch authoritative sermons from server API or localStorage, falling back to SERMON_CONTENT_LIST
+      fetch('/api/sermons')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && Array.isArray(data.sermons) && data.sermons.length > 0) {
+            setAllSermons(data.sermons);
+          } else {
+            loadSermonsFromStorage();
+          }
+        })
+        .catch(() => {
+          loadSermonsFromStorage();
+        });
 
       // 2. Photos
       try {
