@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-04T06:04:41.175Z
+// Updated at: 2026-09-04T06:10:30.600Z
 // ============================================================================
 
 export interface BulletinData {
@@ -13,29 +13,13 @@ export interface BulletinData {
   readingRange: string;
   schedule: Array<{
     date: string;
-    dateEn?: string;
     oldTestament: string;
-    oldTestamentEn?: string;
     newTestament: string;
-    newTestamentEn?: string;
   }>;
   announcements?: string[];
   pastoralNoteZh?: string;
   pastoralNoteEn?: string;
   updatedAt?: string;
-  serviceDate?: string;
-  presider?: string;
-  speaker?: string;
-  speakerEn?: string;
-  sermonTitle?: string;
-  sermonTitleEn?: string;
-  sermonScripture?: string;
-  sermonScriptureEn?: string;
-  sermonSummary?: string;
-  sermonSummaryEn?: string;
-  sermonPointsZh?: string[];
-  sermonPoints?: string[];
-  [key: string]: any;
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = {
