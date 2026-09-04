@@ -2,9 +2,12 @@ import { Sermon } from '../types';
 import * as SermonsData from '../data/sermonsData';
 
 export const INITIAL_SERMONS: Sermon[] = 
+  (SermonsData as any).SERMON_CONTENT_LIST || 
   (SermonsData as any).INITIAL_SERMONS || 
   (SermonsData as any).RECENT_SERMONS || 
   [];
+
+export const SERMON_CONTENT_LIST: Sermon[] = INITIAL_SERMONS;
 
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
@@ -12,12 +15,12 @@ export const SERMONS_DATA_VERSION: string =
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
- * Any change in titles, dates, speakers, scriptures, passcodes or count in code triggers an immediate refresh.
+ * Any change in titles, dates, speakers, scriptures, passcodes, video/audio visibility or count in code triggers an immediate refresh.
  */
 export function getMasterDataFingerprint(): string {
   try {
     return `${SERMONS_DATA_VERSION}::` + INITIAL_SERMONS.map(s => 
-      `${s.id}:${s.date}:${s.titleZh}:${s.speakerZh}:${s.videoUrl || ''}:${s.videoPasscode || ''}`
+      `${s.id}:${s.date}:${s.titleZh}:${s.speakerZh}:${s.videoUrl || ''}:${s.videoPasscode || ''}:${s.showVideo !== false}:${s.showAudio !== false}`
     ).join('|');
   } catch {
     return `${SERMONS_DATA_VERSION}::${INITIAL_SERMONS.length}`;
