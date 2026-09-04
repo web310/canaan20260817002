@@ -15,7 +15,10 @@ import {
   Trash2,
   Check,
   Tag,
-  AlertCircle
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Sliders
 } from 'lucide-react';
 
 interface SermonEditModalProps {
@@ -66,6 +69,8 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
     videoUrl: sermon?.videoUrl || '',
     videoPasscode: sermon?.videoPasscode || '',
     audioUrl: sermon?.audioUrl || '',
+    showVideo: sermon?.showVideo !== false,
+    showAudio: sermon?.showAudio !== false,
     summary: sermon?.summary || '',
     summaryZh: sermon?.summaryZh || '',
     points: sermon?.points ? [...sermon.points] : ['', '', ''],
@@ -94,6 +99,8 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
         videoUrl: sermon.videoUrl || '',
         videoPasscode: sermon.videoPasscode || '',
         audioUrl: sermon.audioUrl || '',
+        showVideo: sermon.showVideo !== false,
+        showAudio: sermon.showAudio !== false,
         summary: sermon.summary || '',
         summaryZh: sermon.summaryZh || '',
         points: sermon.points ? [...sermon.points] : ['', '', ''],
@@ -115,6 +122,8 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
         videoUrl: '',
         videoPasscode: '',
         audioUrl: '',
+        showVideo: true,
+        showAudio: false,
         summary: '',
         summaryZh: '',
         points: ['', '', ''],
@@ -577,6 +586,148 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
           {/* TAB 3: MEDIA & ZOOM */}
           {activeTab === 'media' && (
             <div className="space-y-4">
+              {/* 讓管理者選擇讓使用者看到或看不到「觀看影音」與「收聽音訊」的選項 */}
+              <div className="p-4 bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 border border-amber-500/40 rounded-2xl space-y-3.5 shadow-lg">
+                <div className="flex items-start justify-between border-b border-slate-800 pb-2.5">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg border border-amber-500/30 shrink-0">
+                      <Sliders className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
+                        <span>{lang === 'zh' ? '使用者按鈕顯示控制 (公開 / 隱藏)' : 'Front-end User Visibility Controls'}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-normal">
+                          {lang === 'zh' ? '管理員可自選' : 'Admin Controlled'}
+                        </span>
+                      </h4>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        {lang === 'zh'
+                          ? '管理員可在此選擇讓一般使用者「看到」或「看不到」這「觀看影音」和「收聽音訊」選項：'
+                          : 'Choose whether users can see or not see the "Watch Video" and "Listen Audio" options.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* 1. 「觀看影音」顯示控制 */}
+                  <div className={`p-3 rounded-xl border transition-all ${
+                    formData.showVideo !== false
+                      ? 'bg-blue-950/40 border-blue-500/50 shadow-sm shadow-blue-500/10'
+                      : 'bg-slate-850/80 border-slate-700/80'
+                  }`}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center space-x-1.5">
+                        <Video className={`w-4 h-4 ${formData.showVideo !== false ? 'text-blue-400' : 'text-slate-400'}`} />
+                        <span className="text-xs font-bold text-white">
+                          {lang === 'zh' ? '「觀看影音」選項' : '"Watch Video" Option'}
+                        </span>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        formData.showVideo !== false
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                      }`}>
+                        {formData.showVideo !== false
+                          ? (lang === 'zh' ? '👁️ 使用者可見' : '👁️ Visible')
+                          : (lang === 'zh' ? '🚫 對使用者隱藏' : '🚫 Hidden')}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-300 mb-2.5 leading-relaxed">
+                      {formData.showVideo !== false
+                        ? (lang === 'zh' ? '一般使用者在卡片上可以看到「觀看影音」按鈕與 Zoom/YouTube 錄影。' : 'Users will see the "Watch Video" button on the sermon card.')
+                        : (lang === 'zh' ? '已隱藏！一般使用者在首頁與列表將「看不到」此「觀看影音」按鈕與密碼。' : 'Hidden! Users will NOT see the "Watch Video" button on this sermon.')}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-900 rounded-lg border border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, showVideo: true }))}
+                        className={`py-1.5 px-2 rounded-md text-xs font-bold transition-all flex items-center justify-center space-x-1 ${
+                          formData.showVideo !== false
+                            ? 'bg-blue-600 text-white shadow'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '讓使用者看見' : 'Show to Users'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, showVideo: false }))}
+                        className={`py-1.5 px-2 rounded-md text-xs font-bold transition-all flex items-center justify-center space-x-1 ${
+                          formData.showVideo === false
+                            ? 'bg-rose-600 text-white shadow'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <EyeOff className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '對使用者隱藏' : 'Hide from Users'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. 「收聽音訊」顯示控制 */}
+                  <div className={`p-3 rounded-xl border transition-all ${
+                    formData.showAudio !== false
+                      ? 'bg-amber-950/40 border-amber-500/50 shadow-sm shadow-amber-500/10'
+                      : 'bg-slate-850/80 border-slate-700/80'
+                  }`}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center space-x-1.5">
+                        <Volume2 className={`w-4 h-4 ${formData.showAudio !== false ? 'text-amber-400' : 'text-slate-400'}`} />
+                        <span className="text-xs font-bold text-white">
+                          {lang === 'zh' ? '「收聽音訊」選項' : '"Listen Audio" Option'}
+                        </span>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        formData.showAudio !== false
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                      }`}>
+                        {formData.showAudio !== false
+                          ? (lang === 'zh' ? '🔊 使用者可見' : '🔊 Visible')
+                          : (lang === 'zh' ? '🚫 對使用者隱藏' : '🚫 Hidden')}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-300 mb-2.5 leading-relaxed">
+                      {formData.showAudio !== false
+                        ? (lang === 'zh' ? '一般使用者在卡片上可以看到「收聽音訊」按鈕，並可點擊線上收聽廣播。' : 'Users will see the "Listen Audio" button on the sermon card.')
+                        : (lang === 'zh' ? '已隱藏！一般使用者在首頁與列表將「看不到」此「收聽音訊」按鈕。' : 'Hidden! Users will NOT see the "Listen Audio" button on this sermon.')}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-900 rounded-lg border border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, showAudio: true }))}
+                        className={`py-1.5 px-2 rounded-md text-xs font-bold transition-all flex items-center justify-center space-x-1 ${
+                          formData.showAudio !== false
+                            ? 'bg-amber-600 text-white shadow'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '讓使用者看見' : 'Show to Users'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, showAudio: false }))}
+                        className={`py-1.5 px-2 rounded-md text-xs font-bold transition-all flex items-center justify-center space-x-1 ${
+                          formData.showAudio === false
+                            ? 'bg-rose-600 text-white shadow'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <EyeOff className="w-3 h-3" />
+                        <span>{lang === 'zh' ? '對使用者隱藏' : 'Hide from Users'}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-2xl text-xs text-blue-200 space-y-1">
                 <div className="font-bold flex items-center space-x-1.5 text-blue-300">
                   <Video className="w-4 h-4" />
@@ -591,9 +742,16 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
 
               {/* Video URL */}
               <div>
-                <label className="block text-xs font-bold text-amber-300 mb-1 flex items-center space-x-1.5">
-                  <Video className="w-3.5 h-3.5" />
-                  <span>{lang === 'zh' ? '影片連結 (Zoom Recording / YouTube URL)' : 'Video Recording URL'}</span>
+                <label className="block text-xs font-bold text-amber-300 mb-1 flex items-center justify-between">
+                  <span className="flex items-center space-x-1.5">
+                    <Video className="w-3.5 h-3.5" />
+                    <span>{lang === 'zh' ? '影片連結 (Zoom Recording / YouTube URL)' : 'Video Recording URL'}</span>
+                  </span>
+                  {formData.showVideo === false && (
+                    <span className="text-[10px] text-rose-300 bg-rose-950/80 px-2 py-0.5 rounded border border-rose-500/40">
+                      {lang === 'zh' ? '目前已設為：對使用者隱藏' : 'Set to: Hidden from Users'}
+                    </span>
+                  )}
                 </label>
                 <input
                   type="url"
@@ -621,9 +779,16 @@ export const SermonEditModal: React.FC<SermonEditModalProps> = ({
 
               {/* Audio URL */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center space-x-1.5">
-                  <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{lang === 'zh' ? '廣播錄音 / 音訊連結 (Audio Stream URL)' : 'Audio Stream URL (Optional)'}</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
+                  <span className="flex items-center space-x-1.5">
+                    <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{lang === 'zh' ? '廣播錄音 / 音訊連結 (Audio Stream URL)' : 'Audio Stream URL (Optional)'}</span>
+                  </span>
+                  {formData.showAudio === false && (
+                    <span className="text-[10px] text-rose-300 bg-rose-950/80 px-2 py-0.5 rounded border border-rose-500/40">
+                      {lang === 'zh' ? '目前已設為：對使用者隱藏' : 'Set to: Hidden from Users'}
+                    </span>
+                  )}
                 </label>
                 <input
                   type="url"

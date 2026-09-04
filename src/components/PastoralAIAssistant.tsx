@@ -175,6 +175,14 @@ export const PastoralAIAssistant: React.FC<PastoralAIProps> = ({ lang, isOpen, o
     };
 
     try {
+      // Set a rapid 2.8s response timeout to ensure the user NEVER waits for slow AI
+      let hasReceivedFirstToken = false;
+      const speedTimeoutId = setTimeout(() => {
+        if (!hasReceivedFirstToken) {
+          abortController.abort();
+        }
+      }, 2800);
+
       // 1. Attempt Server-Sent Events (SSE) stream for real-time tokens
       const streamRes = await fetch('/api/pastoral-ai/stream', {
         method: 'POST',
@@ -217,9 +225,14 @@ export const PastoralAIAssistant: React.FC<PastoralAIProps> = ({ lang, isOpen, o
               try {
                 const parsed = JSON.parse(jsonStr);
                 if (parsed.text) {
+                  if (!hasReceivedFirstToken) {
+                    hasReceivedFirstToken = true;
+                    clearTimeout(speedTimeoutId);
+                  }
                   updateAiMessage(parsed.text);
                 }
                 if (parsed.done) {
+                  clearTimeout(speedTimeoutId);
                   finalizeAiMessage();
                   return;
                 }
@@ -230,11 +243,14 @@ export const PastoralAIAssistant: React.FC<PastoralAIProps> = ({ lang, isOpen, o
           }
         }
 
+        clearTimeout(speedTimeoutId);
         if (accumulatedText.trim()) {
           finalizeAiMessage();
           return;
         }
       }
+
+      clearTimeout(speedTimeoutId);
 
       // 2. Fallback to standard JSON endpoint if SSE stream wasn't fulfilled
       const jsonRes = await fetch('/api/pastoral-ai', {

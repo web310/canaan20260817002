@@ -496,17 +496,14 @@ async function startServer() {
         { role: 'user', parts: [{ text: userText || '請給我一句今日靈修勉勵經文' }] }
       ];
 
-      // Use gemini-3.7-flash with ThinkingLevel.MINIMAL for instant sub-second response
+      // Use gemini-2.5-flash for instant, high-speed biblical responses without thinking latency
       const response = await ai.models.generateContent({
-        model: "gemini-3.7-flash",
+        model: "gemini-2.5-flash",
         contents: payloadContents,
         config: {
           systemInstruction: systemInstruction || (isZh
             ? "你是一位熱情、充滿關懷與豐富聖經知識的加南新生基督教會『聖經與靈修 AI 導師』。請用繁體中文以溫暖、鼓勵人心的語氣，以聖經真理為根基迅速回答弟兄姊妹的信仰問題與靈修疑惑。"
             : "You are an encouraging and wise Pastoral & Bible AI Companion for Canaan Shin Sheng Christian Church. Respond warmly and rapidly grounded in Biblical truth."),
-          thinkingConfig: {
-            thinkingLevel: ThinkingLevel.MINIMAL
-          }
         },
       });
 
@@ -561,15 +558,12 @@ async function startServer() {
       ];
 
       const responseStream = await ai.models.generateContentStream({
-        model: "gemini-3.7-flash",
+        model: "gemini-2.5-flash",
         contents: payloadContents,
         config: {
           systemInstruction: systemInstruction || (isZh
             ? "你是一位熱情、充滿關懷與豐富聖經知識的加南新生基督教會『聖經與靈修 AI 導師』。請用繁體中文以溫暖、鼓勵人心的語氣，以聖經真理為根基迅速回答弟兄姊妹的信仰問題與靈修疑惑。"
             : "You are an encouraging and wise Pastoral & Bible AI Companion for Canaan Shin Sheng Christian Church. Respond warmly and rapidly grounded in Biblical truth."),
-          thinkingConfig: {
-            thinkingLevel: ThinkingLevel.MINIMAL
-          }
         }
       });
 

@@ -34,7 +34,9 @@ import {
   Lock,
   ExternalLink,
   Copy,
-  Youtube
+  Youtube,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface SermonProps {
@@ -205,6 +207,28 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
     );
 
     showToast(lang === 'zh' ? `講道「${savedSermon.titleZh || savedSermon.title}」已成功儲存並同步至代碼檔案！` : `Sermon saved and file synced!`);
+  };
+
+  const handleToggleVisibility = (sermonId: string, type: 'video' | 'audio') => {
+    const target = sermons.find(s => s.id === sermonId);
+    if (!target) return;
+
+    const newShowVideo = type === 'video' ? (target.showVideo === false ? true : false) : (target.showVideo !== false);
+    const newShowAudio = type === 'audio' ? (target.showAudio === false ? true : false) : (target.showAudio !== false);
+
+    const updatedSermon: Sermon = {
+      ...target,
+      showVideo: newShowVideo,
+      showAudio: newShowAudio
+    };
+
+    handleSaveSermon(updatedSermon);
+
+    const stateZh = (type === 'video' ? newShowVideo : newShowAudio)
+      ? '已設為【讓使用者看到】'
+      : '已設為【對使用者隱藏】';
+    const labelZh = type === 'video' ? '「觀看影音」' : '「收聽音訊」';
+    showToast(`${labelZh} ${stateZh}！`);
   };
 
   const handleDeleteSermon = (sermonId: string) => {
@@ -514,8 +538,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     </div>
                   )}
 
-                  {/* Video and Passcode Indicator Badges */}
-                  {(sermon.videoUrl || sermon.videoPasscode) && (
+                  {/* Video and Passcode Indicator Badges (Shown if video is visible to user, or if admin is logged in) */}
+                  {(adminEmail || sermon.showVideo !== false) && (sermon.videoUrl || sermon.videoPasscode) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-700/40">
                       {sermon.videoUrl?.includes('zoom.us') ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-[11px] font-semibold border border-blue-500/40">
@@ -540,43 +564,126 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                           <span>Passcode: {sermon.videoPasscode}</span>
                         </span>
                       )}
+
+                      {adminEmail && sermon.showVideo === false && (
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-rose-950/80 text-rose-300 text-[10px] font-bold border border-rose-500/40">
+                          <EyeOff className="w-3 h-3" />
+                          <span>{lang === 'zh' ? '對訪客隱藏' : 'Hidden from Visitors'}</span>
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
 
+                {/* Admin Quick Visibility Toggles on Card */}
+                {adminEmail && (
+                  <div className="mx-4 mb-2 p-2 bg-slate-900/95 rounded-xl border border-slate-700/80 flex items-center justify-between gap-1 text-[11px]">
+                    <span className="text-slate-400 font-medium flex items-center space-x-1">
+                      <span>{lang === 'zh' ? '訪客選項顯示:' : 'Visitor Options:'}</span>
+                    </span>
+                    <div className="flex items-center space-x-1.5">
+                      {/* Video visibility toggle */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVisibility(sermon.id, 'video')}
+                        className={`px-2 py-0.5 rounded-lg font-bold flex items-center space-x-1 border transition-all ${
+                          sermon.showVideo !== false
+                            ? 'bg-blue-950/80 text-blue-300 border-blue-500/50 hover:bg-blue-900'
+                            : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
+                        }`}
+                        title={lang === 'zh' ? (sermon.showVideo !== false ? '「觀看影音」目前對訪客可見，點擊設為隱藏' : '「觀看影音」目前對訪客隱藏，點擊設為可見') : 'Toggle video visibility'}
+                      >
+                        {sermon.showVideo !== false ? <Eye className="w-3 h-3 text-blue-400" /> : <EyeOff className="w-3 h-3 text-rose-400" />}
+                        <span>{sermon.showVideo !== false ? (lang === 'zh' ? '影音:開' : 'Vid:ON') : (lang === 'zh' ? '影音:關' : 'Vid:OFF')}</span>
+                      </button>
+
+                      {/* Audio visibility toggle */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVisibility(sermon.id, 'audio')}
+                        className={`px-2 py-0.5 rounded-lg font-bold flex items-center space-x-1 border transition-all ${
+                          sermon.showAudio !== false
+                            ? 'bg-amber-950/80 text-amber-300 border-amber-500/50 hover:bg-amber-900'
+                            : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
+                        }`}
+                        title={lang === 'zh' ? (sermon.showAudio !== false ? '「收聽音訊」目前對訪客可見，點擊設為隱藏' : '「收聽音訊」目前對訪客隱藏，點擊設為可見') : 'Toggle audio visibility'}
+                      >
+                        {sermon.showAudio !== false ? <Eye className="w-3 h-3 text-amber-400" /> : <EyeOff className="w-3 h-3 text-rose-400" />}
+                        <span>{sermon.showAudio !== false ? (lang === 'zh' ? '音訊:開' : 'Aud:ON') : (lang === 'zh' ? '音訊:關' : 'Aud:OFF')}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Card Actions */}
                 <div className="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedSermon(sermon);
-                      setActiveTab('video');
-                    }}
-                    className="flex-1 flex items-center justify-center space-x-1.5 bg-amber-600 hover:bg-amber-700 text-white py-2 px-3 rounded-xl text-xs font-semibold transition-colors"
-                  >
-                    <Video className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '觀看影音' : 'Watch Video'}</span>
-                  </button>
+                  {/* 觀看影音按鈕：管理員可自選讓使用者看到或看不到 */}
+                  {(adminEmail || sermon.showVideo !== false) && (
+                    <button
+                      onClick={() => {
+                        setSelectedSermon(sermon);
+                        setActiveTab('video');
+                      }}
+                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-semibold transition-colors ${
+                        sermon.showVideo !== false
+                          ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-sm'
+                          : 'bg-slate-800 text-slate-300 border border-dashed border-rose-500/60 hover:bg-slate-750'
+                      }`}
+                      title={adminEmail && sermon.showVideo === false ? (lang === 'zh' ? '此按鈕目前對一般使用者隱藏（管理員可預覽）' : 'Hidden from visitors (Admin preview)') : undefined}
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '觀看影音' : 'Watch Video'}</span>
+                      {adminEmail && sermon.showVideo === false && (
+                        <span className="text-[9px] bg-rose-950 text-rose-300 px-1 py-0.2 rounded border border-rose-500/40">
+                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
+                        </span>
+                      )}
+                    </button>
+                  )}
 
-                  <button
-                    onClick={() => {
-                      setSelectedSermon(sermon);
-                      setActiveTab('audio');
-                    }}
-                    className="flex items-center justify-center space-x-1 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 px-3 rounded-xl text-xs font-medium transition-colors"
-                  >
-                    <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{lang === 'zh' ? '收聽音訊' : 'Audio'}</span>
-                  </button>
+                  {/* 收聽音訊按鈕：管理員可自選讓使用者看到或看不到 */}
+                  {(adminEmail || sermon.showAudio !== false) && (
+                    <button
+                      onClick={() => {
+                        setSelectedSermon(sermon);
+                        setActiveTab('audio');
+                      }}
+                      className={`flex items-center justify-center space-x-1 py-2 px-3 rounded-xl text-xs font-medium transition-colors ${
+                        sermon.showAudio !== false
+                          ? 'bg-slate-700 hover:bg-slate-600 text-slate-200'
+                          : 'bg-slate-800 text-slate-400 border border-dashed border-rose-500/60 hover:bg-slate-750'
+                      }`}
+                      title={adminEmail && sermon.showAudio === false ? (lang === 'zh' ? '此按鈕目前對一般使用者隱藏（管理員可預覽）' : 'Hidden from visitors (Admin preview)') : undefined}
+                    >
+                      <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                      <span>{lang === 'zh' ? '收聽音訊' : 'Audio'}</span>
+                      {adminEmail && sermon.showAudio === false && (
+                        <span className="text-[9px] bg-rose-950 text-rose-300 px-1 py-0.2 rounded border border-rose-500/40">
+                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
+                        </span>
+                      )}
+                    </button>
+                  )}
 
+                  {/* 證道講義大綱按鈕 */}
                   <button
                     onClick={() => {
                       setSelectedSermon(sermon);
                       setActiveTab('notes');
                     }}
-                    className="p-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl transition-colors"
-                    title="View Scripture & Notes"
+                    className={`${
+                      !adminEmail && sermon.showVideo === false && sermon.showAudio === false
+                        ? 'flex-1 flex items-center justify-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-xl text-xs font-semibold transition-colors shadow-sm'
+                        : (!adminEmail && (sermon.showVideo === false || sermon.showAudio === false))
+                          ? 'flex items-center justify-center space-x-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 px-3 rounded-xl text-xs font-medium transition-colors'
+                          : 'p-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl transition-colors'
+                    }`}
+                    title={lang === 'zh' ? '查看證道經文與大綱' : 'View Scripture & Notes'}
                   >
-                    <FileText className="w-3.5 h-3.5" />
+                    <FileText className="w-3.5 h-3.5 text-amber-400" />
+                    {(!adminEmail && (sermon.showVideo === false || sermon.showAudio === false)) && (
+                      <span>{lang === 'zh' ? '證道大綱與經文' : 'Sermon Notes'}</span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -603,9 +710,39 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                   {adminEmail && (
                     <>
+                      {/* Video Visibility Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVisibility(selectedSermon.id, 'video')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 border transition-all ${
+                          selectedSermon.showVideo !== false
+                            ? 'bg-blue-950/80 text-blue-300 border-blue-500/50 hover:bg-blue-900'
+                            : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
+                        }`}
+                        title={lang === 'zh' ? '點擊切換使用者能否看到「觀看影音」' : 'Toggle video visibility'}
+                      >
+                        {selectedSermon.showVideo !== false ? <Eye className="w-3.5 h-3.5 text-blue-400" /> : <EyeOff className="w-3.5 h-3.5 text-rose-400" />}
+                        <span>{selectedSermon.showVideo !== false ? (lang === 'zh' ? '影音:訪客可見' : 'Vid:Visible') : (lang === 'zh' ? '影音:訪客隱藏' : 'Vid:Hidden')}</span>
+                      </button>
+
+                      {/* Audio Visibility Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVisibility(selectedSermon.id, 'audio')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 border transition-all ${
+                          selectedSermon.showAudio !== false
+                            ? 'bg-amber-950/80 text-amber-300 border-amber-500/50 hover:bg-amber-900'
+                            : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
+                        }`}
+                        title={lang === 'zh' ? '點擊切換使用者能否看到「收聽音訊」' : 'Toggle audio visibility'}
+                      >
+                        {selectedSermon.showAudio !== false ? <Eye className="w-3.5 h-3.5 text-amber-400" /> : <EyeOff className="w-3.5 h-3.5 text-rose-400" />}
+                        <span>{selectedSermon.showAudio !== false ? (lang === 'zh' ? '音訊:訪客可見' : 'Aud:Visible') : (lang === 'zh' ? '音訊:訪客隱藏' : 'Aud:Hidden')}</span>
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => {
@@ -641,25 +778,39 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
               {/* Modal Tabs */}
               <div className="px-6 flex items-center justify-between border-b border-slate-800 flex-wrap gap-2">
                 <div className="flex space-x-2">
-                  <button
-                    onClick={() => setActiveTab('video')}
-                    className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
-                      activeTab === 'video' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <Video className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '影音播放' : 'Video Player'}</span>
-                  </button>
+                  {(adminEmail || selectedSermon.showVideo !== false) && (
+                    <button
+                      onClick={() => setActiveTab('video')}
+                      className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
+                        activeTab === 'video' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '影音播放' : 'Video Player'}</span>
+                      {adminEmail && selectedSermon.showVideo === false && (
+                        <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
+                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
+                        </span>
+                      )}
+                    </button>
+                  )}
 
-                  <button
-                    onClick={() => setActiveTab('audio')}
-                    className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
-                      activeTab === 'audio' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <Volume2 className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '錄音廣播' : 'Audio Stream'}</span>
-                  </button>
+                  {(adminEmail || selectedSermon.showAudio !== false) && (
+                    <button
+                      onClick={() => setActiveTab('audio')}
+                      className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
+                        activeTab === 'audio' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '錄音廣播' : 'Audio Stream'}</span>
+                      {adminEmail && selectedSermon.showAudio === false && (
+                        <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
+                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
+                        </span>
+                      )}
+                    </button>
+                  )}
 
                   <button
                     onClick={() => setActiveTab('notes')}
@@ -689,6 +840,23 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
               <div className="p-6 pt-2 space-y-6">
                 {activeTab === 'video' && (
                   <div className="space-y-4">
+                    {/* Admin notice if video is currently hidden from visitors */}
+                    {adminEmail && selectedSermon.showVideo === false && (
+                      <div className="p-3.5 bg-rose-950/70 border border-rose-500/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-rose-200">
+                        <div className="flex items-center space-x-2">
+                          <EyeOff className="w-4 h-4 text-rose-400 shrink-0" />
+                          <span>{lang === 'zh' ? '管理員提示：此講道「觀看影音」目前已設為【對一般使用者隱藏】。' : 'Admin notice: "Watch Video" is currently hidden from visitors.'}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleVisibility(selectedSermon.id, 'video')}
+                          className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shrink-0 transition-colors shadow"
+                        >
+                          {lang === 'zh' ? '改為對訪客可見' : 'Make Visible'}
+                        </button>
+                      </div>
+                    )}
+
                     {/* Notice for Zoom recording upload */}
                     <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-start space-x-3 text-xs text-amber-200">
                       <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
@@ -899,7 +1067,25 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                 )}
 
                 {activeTab === 'audio' && (
-                  <div className="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 space-y-4 text-center">
+                  <div className="space-y-4">
+                    {/* Admin notice if audio is currently hidden from visitors */}
+                    {adminEmail && selectedSermon.showAudio === false && (
+                      <div className="p-3.5 bg-rose-950/70 border border-rose-500/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-rose-200">
+                        <div className="flex items-center space-x-2">
+                          <EyeOff className="w-4 h-4 text-rose-400 shrink-0" />
+                          <span>{lang === 'zh' ? '管理員提示：此講道「收聽音訊」目前已設為【對一般使用者隱藏】。' : 'Admin notice: "Audio Stream" is currently hidden from visitors.'}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleVisibility(selectedSermon.id, 'audio')}
+                          className="px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shrink-0 transition-colors shadow"
+                        >
+                          {lang === 'zh' ? '改為對訪客可見' : 'Make Visible'}
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 space-y-4 text-center">
                     <div className="p-4 rounded-full bg-amber-500/20 text-amber-400 inline-block border border-amber-500/30">
                       <Volume2 className="w-8 h-8 animate-pulse" />
                     </div>
@@ -928,6 +1114,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                         {isPlayingAudio ? (lang === 'zh' ? '暫停播放' : 'Pause Audio') : (lang === 'zh' ? '播放廣播錄音' : 'Play Audio Stream')}
                       </button>
                     </div>
+                  </div>
                   </div>
                 )}
 

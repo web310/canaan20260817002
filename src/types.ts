@@ -14,6 +14,8 @@ export interface Sermon {
   audioUrl?: string;
   videoUrl?: string;
   videoPasscode?: string;
+  showVideo?: boolean; // 管理員設定：是否讓使用者看到「觀看影音」選項（預設為 true）
+  showAudio?: boolean; // 管理員設定：是否讓使用者看到「收聽音訊」選項（預設為 true）
   summary: string;
   summaryZh: string;
   points: string[];
