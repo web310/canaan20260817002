@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
-import { Calendar, MapPin, Play, Heart, ArrowRight, Video, Sparkles, Clock } from 'lucide-react';
+import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen } from 'lucide-react';
 import heroImgUrl from '../assets/images/canaan_church_hero_1786434083190.jpg';
+import { getTodayDevotion } from '../data/dailyDevotionData';
 
 interface HeroProps {
   lang: Language;
@@ -11,6 +12,18 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
+  const [copiedVerse, setCopiedVerse] = useState(false);
+  const todayDevotion = getTodayDevotion();
+
+  const handleCopyVerse = () => {
+    const verseText = lang === 'zh'
+      ? `【加南今日靈修金句 • ${todayDevotion.formattedDateZh}】\n“${todayDevotion.devotion.verseZh}”（${todayDevotion.devotion.referenceZh}）\n\n🌱 靈修勉勵：${todayDevotion.devotion.thoughtZh}\n\n加南新生基督教會 祝福您有美好平安的一天！`
+      : `[Canaan Daily Scripture • ${todayDevotion.formattedDateEn}]\n"${todayDevotion.devotion.verseEn}" (${todayDevotion.devotion.referenceEn})\n\nReflection: ${todayDevotion.devotion.thoughtEn}\n\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+    
+    navigator.clipboard.writeText(verseText);
+    setCopiedVerse(true);
+    setTimeout(() => setCopiedVerse(false), 2000);
+  };
 
   return (
     <section className="relative min-h-[90vh] pt-32 pb-20 md:pt-36 md:pb-28 flex items-center bg-slate-950 overflow-hidden text-white">
@@ -54,7 +67,64 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
             </p>
           </div>
 
-          {/* Description */}
+          {/* Daily Scripture & Encouragement (每日經文與靈修勉勵 - 每日更新) */}
+          <div className="relative rounded-2xl bg-gradient-to-br from-slate-900/95 via-slate-900/85 to-amber-950/40 border border-amber-500/35 backdrop-blur-md p-4 sm:p-5 shadow-2xl space-y-3 max-w-2xl animate-in fade-in duration-300">
+            {/* Top Bar: Date + Title Badge + Copy/Share Button */}
+            <div className="flex items-center justify-between text-xs border-b border-amber-500/20 pb-2.5">
+              <div className="flex items-center space-x-2 text-amber-300 font-semibold tracking-wide">
+                <span className="p-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                </span>
+                <span>
+                  {lang === 'zh' ? '今日經文靈修 • 每日更新' : 'Daily Scripture & Reflection'}
+                </span>
+                <span className="hidden sm:inline-block text-amber-400/50">•</span>
+                <span className="text-amber-200/90 font-medium">
+                  {lang === 'zh' ? todayDevotion.formattedDateZh : todayDevotion.formattedDateEn}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyVerse}
+                className="flex items-center space-x-1 text-[11px] text-amber-300/90 hover:text-amber-100 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2.5 py-1 rounded-lg transition"
+                title={lang === 'zh' ? '複製今日經文與短文' : 'Copy verse and reflection'}
+              >
+                {copiedVerse ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    <span className="text-emerald-300 font-medium">{lang === 'zh' ? '已複製' : 'Copied'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>{lang === 'zh' ? '分享經文' : 'Share'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Scripture Verse */}
+            <div className="space-y-1.5 pl-3 border-l-2 border-amber-400/80">
+              <blockquote className="font-serif text-amber-100 text-base sm:text-lg italic leading-relaxed">
+                “{lang === 'zh' ? todayDevotion.devotion.verseZh : todayDevotion.devotion.verseEn}”
+              </blockquote>
+              <div className="text-xs font-bold text-amber-300/90 tracking-wide">
+                —— {lang === 'zh' ? todayDevotion.devotion.referenceZh : todayDevotion.devotion.referenceEn}
+              </div>
+            </div>
+
+            {/* Short Encouraging Reflection */}
+            <div className="pt-0.5 text-slate-200 text-xs sm:text-sm leading-relaxed font-light flex items-start space-x-1.5">
+              <span className="text-amber-400 shrink-0 font-bold">🌱</span>
+              <p>
+                <strong className="text-amber-200/95 font-medium">{lang === 'zh' ? '今日勉勵：' : 'Encouragement: '}</strong>
+                {lang === 'zh' ? todayDevotion.devotion.thoughtZh : todayDevotion.devotion.thoughtEn}
+              </p>
+            </div>
+          </div>
+
+          {/* Description (Moved Down) */}
           <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-light">
             {lang === 'zh' 
               ? '加南新生基督教會 (Canaan Shin Sheng Christian Church) 位於加州 Harbor City。我們竭誠歡迎您與家人參加每週日早上 11:00 的主日崇拜，感受上帝屬天更新的平安與溫馨家園！'
