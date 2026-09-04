@@ -3,13 +3,14 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-04T05:50:49.376Z
+// Updated at: 2026-09-04T06:04:41.175Z
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: 3
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-04-mtmjchsw";
+export const SERMONS_DATA_VERSION = "version-2026-09-04-mtmjubmf";
 
-export const INITIAL_SERMONS: Sermon[] = [
+export const SERMON_CONTENT_LIST: Sermon[] = [
   {
     "id": "sermon-1",
     "title": "Walking a Path We Have Never Walked Before",
@@ -33,7 +34,9 @@ export const INITIAL_SERMONS: Sermon[] = [
       "2. 眾人要合一，神要讓我們整個教會被成全。",
       "3. 出于信心的旅程，必能親眼見證神的作為。"
     ],
-    "videoPasscode": "25226"
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
   },
   {
     "id": "sermon-2",
@@ -60,7 +63,9 @@ export const INITIAL_SERMONS: Sermon[] = [
       "三、何烈山洞前微小的聲音 （列王記上 19:9-14）",
       "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
     ],
-    "videoPasscode": "25226"
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
   },
   {
     "id": "sermon-3",
@@ -87,8 +92,12 @@ export const INITIAL_SERMONS: Sermon[] = [
       "3. 主恩典是夠用的",
       "4. 專心尋求神引領"
     ],
-    "videoPasscode": "25226"
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
   }
 ];
 
-export const RECENT_SERMONS: Sermon[] = INITIAL_SERMONS;
+// Backwards compatibility aliases
+export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
