@@ -1,5 +1,6 @@
 import emailjs from '@emailjs/browser';
 import { CHURCH_INFO } from '../data/churchData';
+import { sendEmailViaSMTP } from './smtpService';
 
 export interface EmailJSConfig {
   serviceId: string;
@@ -104,9 +105,40 @@ export interface PrayerFormPayload {
 }
 
 /**
- * Sends Contact / Ride form via EmailJS.
+ * Sends Contact / Ride form via SMTP (preferred) with EmailJS / mailto fallback.
  */
-export async function sendContactEmailJS(payload: ContactFormPayload): Promise<{ success: boolean; method: 'emailjs' | 'mailto'; message: string }> {
+export async function sendContactEmailJS(payload: ContactFormPayload): Promise<{ success: boolean; method: 'smtp' | 'emailjs' | 'mailto'; message: string }> {
+  // Save submission locally in history for backup
+  saveSubmissionToHistory('contact', {
+    ...payload,
+    time: new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' }),
+  });
+
+  // 1. Try Server-Side SMTP First (Configured by Admin in Admin Login)
+  try {
+    const smtpRes = await sendEmailViaSMTP({
+      type: 'contact',
+      subject: `[加南網站${payload.needRide ? '主日接送預約' : '在線留言'}] ${payload.senderName || '訪客'} - ${payload.senderPhone || ''}`,
+      senderName: payload.senderName,
+      senderPhone: payload.senderPhone,
+      senderEmail: payload.senderEmail,
+      senderMessage: payload.senderMessage,
+      needRide: payload.needRide,
+      replyTo: payload.senderEmail,
+    });
+
+    if (smtpRes.success) {
+      return {
+        success: true,
+        method: 'smtp',
+        message: smtpRes.message || '信件已成功透過加南 SMTP 郵件伺服器自動發送！',
+      };
+    }
+  } catch (smtpErr) {
+    console.warn('SMTP delivery attempt failed, checking EmailJS fallback...', smtpErr);
+  }
+
+  // 2. EmailJS Fallback if configured
   const config = getEmailJSConfig();
 
   const templateParams = {
@@ -120,9 +152,6 @@ export async function sendContactEmailJS(payload: ContactFormPayload): Promise<{
     need_ride: payload.needRide ? '是 (需要主日車輛免費接送)' : '否 (一般心聲留言)',
     time: new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' }),
   };
-
-  // Save submission locally in history for backup
-  saveSubmissionToHistory('contact', templateParams);
 
   if (config.serviceId && config.templateId && config.publicKey) {
     try {
@@ -142,18 +171,51 @@ export async function sendContactEmailJS(payload: ContactFormPayload): Promise<{
       return {
         success: false,
         method: 'emailjs',
-        message: `EmailJS 發送失敗 (${err?.text || err?.message || '請檢查 Service ID / Template ID / Public Key'})`
+        message: `發送失敗 (${err?.text || err?.message || '請確認 SMTP 或 EmailJS 設定'})`
       };
     }
   }
 
-  return { success: false, method: 'mailto', message: '尚未設定 EmailJS 金鑰' };
+  return { success: false, method: 'mailto', message: '尚未設定 SMTP 或 EmailJS 郵件服務' };
 }
 
 /**
- * Sends Ministry application form via EmailJS.
+ * Sends Ministry application form via SMTP (preferred) with EmailJS / mailto fallback.
  */
-export async function sendMinistryEmailJS(payload: MinistryFormPayload): Promise<{ success: boolean; method: 'emailjs' | 'mailto'; message: string }> {
+export async function sendMinistryEmailJS(payload: MinistryFormPayload): Promise<{ success: boolean; method: 'smtp' | 'emailjs' | 'mailto'; message: string }> {
+  const timeStr = new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' });
+
+  // Save submission locally in history for backup
+  saveSubmissionToHistory('ministry', {
+    ...payload,
+    time: timeStr,
+  });
+
+  // 1. Try Server-Side SMTP First
+  try {
+    const smtpRes = await sendEmailViaSMTP({
+      type: 'ministry',
+      subject: `[加南事工登記] ${payload.applicantName} 意願加入/了解 【${payload.ministryName}】`,
+      ministryName: payload.ministryName,
+      applicantName: payload.applicantName,
+      applicantPhone: payload.applicantPhone,
+      applicantEmail: payload.applicantEmail,
+      applicantNotes: payload.applicantNotes,
+      replyTo: payload.applicantEmail,
+    });
+
+    if (smtpRes.success) {
+      return {
+        success: true,
+        method: 'smtp',
+        message: `參與意願已成功透過加南 SMTP 寄出！事工項目：【${payload.ministryName}】`,
+      };
+    }
+  } catch (smtpErr) {
+    console.warn('SMTP delivery attempt failed, checking EmailJS fallback...', smtpErr);
+  }
+
+  // 2. EmailJS Fallback
   const config = getEmailJSConfig();
 
   const templateParams = {
@@ -165,11 +227,8 @@ export async function sendMinistryEmailJS(payload: MinistryFormPayload): Promise
     ministry_name: payload.ministryName,
     message: payload.applicantNotes || '無備註事項',
     subject: `[加南事工登記] ${payload.applicantName} 意願加入/了解 【${payload.ministryName}】`,
-    time: new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' }),
+    time: timeStr,
   };
-
-  // Save submission locally in history for backup
-  saveSubmissionToHistory('ministry', templateParams);
 
   if (config.serviceId && config.templateId && config.publicKey) {
     try {
@@ -205,11 +264,43 @@ export async function sendMinistryEmailJS(payload: MinistryFormPayload): Promise
 }
 
 /**
- * Sends Prayer Request via EmailJS to web@canaannewlife.org, saves to pending queue for Admin review.
+ * Sends Prayer Request via SMTP (preferred) or EmailJS to web@canaannewlife.org, saves to pending queue for Admin review.
  */
-export async function sendPrayerEmailJS(payload: PrayerFormPayload): Promise<{ success: boolean; method: 'emailjs' | 'mailto' | 'pending'; message: string }> {
-  const config = getEmailJSConfig();
+export async function sendPrayerEmailJS(payload: PrayerFormPayload): Promise<{ success: boolean; method: 'smtp' | 'emailjs' | 'mailto' | 'pending'; message: string }> {
   const timeStr = new Date().toLocaleString('zh-TW', { timeZone: 'America/Los_Angeles' });
+
+  // Save into pending prayers storage for Admin approval workflow
+  savePendingPrayerToQueue(payload);
+
+  // 1. Try Server-Side SMTP First
+  try {
+    const smtpRes = await sendEmailViaSMTP({
+      type: 'prayer',
+      subject: `[加南代禱登記] ${payload.isConfidential ? '【保密代禱】' : '【公開代禱申請】'} ${payload.title} - ${payload.authorName || '無名氏'}`,
+      authorName: payload.authorName,
+      authorPhone: payload.authorPhone,
+      authorEmail: payload.authorEmail,
+      prayerTitle: payload.title,
+      categoryLabelZh: payload.categoryLabelZh,
+      categoryLabelEn: payload.categoryLabelEn,
+      isConfidential: payload.isConfidential,
+      content: payload.content,
+      replyTo: payload.authorEmail,
+    });
+
+    if (smtpRes.success) {
+      return {
+        success: true,
+        method: 'smtp',
+        message: `代禱事項已成功透過 SMTP 發送至教會同工信箱！${payload.isConfidential ? '(教牧保密代禱)' : '(已排入同工審核流程)'}`,
+      };
+    }
+  } catch (smtpErr) {
+    console.warn('SMTP delivery failed for prayer request, checking EmailJS fallback...', smtpErr);
+  }
+
+  // 2. EmailJS Fallback
+  const config = getEmailJSConfig();
 
   const structuredMessage = [
     `【加南官網代禱登記通知】`,

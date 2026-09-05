@@ -15,6 +15,7 @@ interface NavbarProps {
   onOpenBulletinAdmin?: () => void;
   onOpenGlobalGitHubSync?: () => void;
   onOpenEmailJSConfig?: () => void;
+  onOpenSMTPConfig?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -28,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenBulletinAdmin,
   onOpenGlobalGitHubSync,
   onOpenEmailJSConfig,
+  onOpenSMTPConfig,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,14 +104,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <span>{lang === 'zh' ? '週報 PDF' : 'Bulletin'}</span>
                   </button>
                 )}
-                {onOpenEmailJSConfig && (
+                {(onOpenSMTPConfig || onOpenEmailJSConfig) && (
                   <button
-                    onClick={onOpenEmailJSConfig}
+                    onClick={onOpenSMTPConfig || onOpenEmailJSConfig}
                     className="flex items-center text-amber-300 hover:text-white bg-slate-800/90 hover:bg-slate-700/90 px-2.5 py-0.5 rounded-full border border-amber-500/40 transition-all text-xs"
-                    title="EmailJS 自動寄信服務金鑰設定"
+                    title={lang === 'zh' ? "SMTP 郵件伺服器寄信設定" : "SMTP Email Server Settings"}
                   >
                     <Mail className="w-3 h-3 mr-1 text-amber-400" />
-                    <span>EmailJS</span>
+                    <span>{lang === 'zh' ? 'SMTP 寄信' : 'SMTP Mail'}</span>
                   </button>
                 )}
                 <button
@@ -320,16 +322,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span>{lang === 'zh' ? '週報 PDF / Email 自動更新' : 'Bulletin PDF Sync'}</span>
                     </button>
                   )}
-                  {onOpenEmailJSConfig && (
+                  {(onOpenSMTPConfig || onOpenEmailJSConfig) && (
                     <button
                       onClick={() => {
                         setMobileMenuOpen(false);
-                        onOpenEmailJSConfig();
+                        if (onOpenSMTPConfig) {
+                          onOpenSMTPConfig();
+                        } else if (onOpenEmailJSConfig) {
+                          onOpenEmailJSConfig();
+                        }
                       }}
                       className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-amber-300 py-2.5 rounded-xl text-xs font-bold border border-amber-500/40"
                     >
                       <Mail className="w-4 h-4 text-amber-400" />
-                      <span>{lang === 'zh' ? 'EmailJS 自動寄信設定' : 'EmailJS Configuration'}</span>
+                      <span>{lang === 'zh' ? 'SMTP 郵件伺服器設定' : 'SMTP Email Configuration'}</span>
                     </button>
                   )}
                   <button

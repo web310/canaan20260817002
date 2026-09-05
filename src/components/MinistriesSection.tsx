@@ -3,7 +3,8 @@ import { Language, Ministry } from '../types';
 import { MINISTRIES, CHURCH_INFO } from '../data/churchData';
 import { sendMinistryEmailJS } from '../lib/emailService';
 import { EmailJSConfigModal } from './EmailJSConfigModal';
-import { Users, Music, BookOpen, HeartHandshake, HandHeart, Clock, MapPin, CheckCircle, Send, X, ArrowRight, Settings, Mail, Loader2 } from 'lucide-react';
+import { SMTPConfigModal } from './SMTPConfigModal';
+import { Users, Music, BookOpen, HeartHandshake, HandHeart, Clock, MapPin, CheckCircle, Send, X, ArrowRight, Settings, Mail, Loader2, Server } from 'lucide-react';
 
 interface MinistryProps {
   lang: Language;
@@ -21,6 +22,7 @@ export const MinistriesSection: React.FC<MinistryProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [sendFeedback, setSendFeedback] = useState<string | null>(null);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [isSMTPModalOpen, setIsSMTPModalOpen] = useState(false);
 
   // Form Fields State
   const [applicantName, setApplicantName] = useState('');
@@ -95,13 +97,23 @@ export const MinistriesSection: React.FC<MinistryProps> = ({
             <Mail className="w-3.5 h-3.5 text-amber-700" />
             <span>{lang === 'zh' ? `表單意願將自動發送至：${CHURCH_INFO.email}` : `Submissions sent automatically to: ${CHURCH_INFO.email}`}</span>
             {adminEmail && (
-              <button
-                onClick={() => setIsConfigOpen(true)}
-                className="p-1 text-slate-400 hover:text-amber-800 transition-colors"
-                title={lang === 'zh' ? 'EmailJS 設定 (管理員專用)' : 'EmailJS Settings (Admin)'}
-              >
-                <Settings className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={() => setIsSMTPModalOpen(true)}
+                  className="px-2 py-0.5 text-[11px] bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg flex items-center space-x-1 transition-colors"
+                  title={lang === 'zh' ? 'SMTP 伺服器寄信設定' : 'SMTP Email Settings'}
+                >
+                  <Server className="w-3 h-3" />
+                  <span>SMTP</span>
+                </button>
+                <button
+                  onClick={() => setIsConfigOpen(true)}
+                  className="p-1 text-slate-400 hover:text-amber-800 transition-colors"
+                  title={lang === 'zh' ? 'EmailJS 設定 (管理員專用)' : 'EmailJS Settings (Admin)'}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -278,6 +290,15 @@ export const MinistriesSection: React.FC<MinistryProps> = ({
             </div>
           </div>
         )}
+
+        {/* SMTP Mail Server Modal Config */}
+        <SMTPConfigModal
+          isOpen={isSMTPModalOpen}
+          onClose={() => setIsSMTPModalOpen(false)}
+          lang={lang}
+          adminEmail={adminEmail}
+          onOpenAdminLogin={onOpenAdminLogin}
+        />
 
         {/* EmailJS Modal Config */}
         <EmailJSConfigModal

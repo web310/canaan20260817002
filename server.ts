@@ -5,6 +5,7 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import mammoth from "mammoth";
 import * as pdfParseModule from "pdf-parse";
+import nodemailer from "nodemailer";
 
 // Helper to safely extract text from PDF buffer using pdf-parse (supporting v2 class and legacy function)
 async function parsePdfBuffer(buffer: Buffer): Promise<string> {
@@ -2186,6 +2187,513 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       return res.status(500).json({ error: err.message || "Failed to sync to GitHub" });
     }
   });
+
+  // ============================================================================
+  // SMTP EMAIL SERVICE (Configurable via Admin Login, tested & sent via nodemailer)
+  // ============================================================================
+  const SMTP_CONFIG_FILE = path.join(process.cwd(), "data", "smtp_config.json");
+
+  interface StoredSMTPConfig {
+    host: string;
+    port: number;
+    secure: boolean;
+    requireTLS: boolean;
+    user: string;
+    pass: string;
+    fromName: string;
+    fromEmail: string;
+    defaultRecipient: string;
+    isActive: boolean;
+    updatedAt?: string;
+  }
+
+  function loadSMTPConfig(): StoredSMTPConfig {
+    try {
+      if (fs.existsSync(SMTP_CONFIG_FILE)) {
+        const raw = fs.readFileSync(SMTP_CONFIG_FILE, "utf-8");
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          return {
+            host: (parsed.host || process.env.SMTP_HOST || "").trim(),
+            port: Number(parsed.port) || Number(process.env.SMTP_PORT) || 587,
+            secure: parsed.secure !== undefined ? Boolean(parsed.secure) : (process.env.SMTP_SECURE === "true"),
+            requireTLS: parsed.requireTLS !== undefined ? Boolean(parsed.requireTLS) : true,
+            user: (parsed.user || process.env.SMTP_USER || "").trim(),
+            pass: parsed.pass || process.env.SMTP_PASS || "",
+            fromName: (parsed.fromName || process.env.SMTP_FROM_NAME || "加南新生基督教會").trim(),
+            fromEmail: (parsed.fromEmail || process.env.SMTP_FROM_EMAIL || parsed.user || process.env.SMTP_USER || "web@canaannewlife.org").trim(),
+            defaultRecipient: (parsed.defaultRecipient || process.env.SMTP_DEFAULT_TO || "web@canaannewlife.org").trim(),
+            isActive: parsed.isActive !== undefined ? Boolean(parsed.isActive) : true,
+            updatedAt: parsed.updatedAt
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("Notice: reading smtp_config.json:", e);
+    }
+
+    return {
+      host: (process.env.SMTP_HOST || "").trim(),
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === "true",
+      requireTLS: true,
+      user: (process.env.SMTP_USER || "").trim(),
+      pass: process.env.SMTP_PASS || "",
+      fromName: (process.env.SMTP_FROM_NAME || "加南新生基督教會").trim(),
+      fromEmail: (process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || "web@canaannewlife.org").trim(),
+      defaultRecipient: (process.env.SMTP_DEFAULT_TO || "web@canaannewlife.org").trim(),
+      isActive: Boolean(process.env.SMTP_HOST && process.env.SMTP_USER)
+    };
+  }
+
+  function saveSMTPConfig(config: Partial<StoredSMTPConfig>): StoredSMTPConfig {
+    const existing = loadSMTPConfig();
+    const dataDir = path.join(process.cwd(), "data");
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    const providedPass = config.pass ? String(config.pass).trim() : "";
+    const isMaskedOrEmpty = !providedPass || providedPass === "••••••••" || providedPass.includes("•••");
+    const newPass = isMaskedOrEmpty ? existing.pass : providedPass;
+
+    const merged: StoredSMTPConfig = {
+      host: (config.host !== undefined ? config.host : existing.host).trim(),
+      port: config.port ? Number(config.port) : existing.port,
+      secure: config.secure !== undefined ? Boolean(config.secure) : (Number(config.port) === 465),
+      requireTLS: config.requireTLS !== undefined ? Boolean(config.requireTLS) : existing.requireTLS,
+      user: (config.user !== undefined ? config.user : existing.user).trim(),
+      pass: newPass,
+      fromName: (config.fromName !== undefined ? config.fromName : existing.fromName).trim() || "加南新生基督教會",
+      fromEmail: (config.fromEmail !== undefined ? config.fromEmail : existing.fromEmail).trim() || "web@canaannewlife.org",
+      defaultRecipient: (config.defaultRecipient !== undefined ? config.defaultRecipient : existing.defaultRecipient).trim() || "web@canaannewlife.org",
+      isActive: config.isActive !== undefined ? Boolean(config.isActive) : true,
+      updatedAt: new Date().toISOString()
+    };
+
+    fs.writeFileSync(SMTP_CONFIG_FILE, JSON.stringify(merged, null, 2), "utf-8");
+    return merged;
+  }
+
+  function createTransporterFromConfig(config: StoredSMTPConfig) {
+    if (!config.host || !config.user) {
+      throw new Error("SMTP 伺服器主機 (Server) 或使用者帳號 (Username) 尚未設定。");
+    }
+
+    const port = Number(config.port) || 587;
+    const isSecure = config.secure ?? (port === 465);
+
+    return nodemailer.createTransport({
+      host: config.host,
+      port: port,
+      secure: isSecure,
+      requireTLS: config.requireTLS ?? (port === 587),
+      auth: {
+        user: config.user,
+        pass: config.pass
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 10000,
+      socketTimeout: 20000
+    });
+  }
+
+  // Generate Church Branded HTML Email
+  function generateChurchHtmlEmail(options: {
+    title: string;
+    badgeText: string;
+    badgeColor?: string;
+    details: Array<{ label: string; value: string }>;
+    messageBody?: string;
+    footerNote?: string;
+  }) {
+    const detailRows = options.details
+      .filter(d => d.value && d.value.trim().length > 0)
+      .map(
+        d => `
+        <tr>
+          <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; width: 140px; vertical-align: top; font-size: 13px;">
+            ${d.label}
+          </td>
+          <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #0f172a; font-size: 14px; line-height: 1.5;">
+            ${d.value.replace(/\n/g, '<br/>')}
+          </td>
+        </tr>`
+      )
+      .join("");
+
+    const messageSection = options.messageBody
+      ? `
+      <div style="margin-top: 20px; padding: 16px 20px; background-color: #f8fafc; border-left: 4px solid #d97706; border-radius: 8px;">
+        <div style="font-size: 12px; font-weight: 700; color: #b45309; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">詳細內容 / 留言信件</div>
+        <div style="color: #1e293b; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${options.messageBody}</div>
+      </div>`
+      : "";
+
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 24px 12px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
+        <!-- Header -->
+        <tr>
+          <td style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 28px 24px; text-align: center;">
+            <div style="display: inline-block; padding: 6px 12px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; color: #fbbf24; font-size: 12px; font-weight: 600; margin-bottom: 12px;">
+              加南新生基督教會 • 官方通知
+            </div>
+            <h1 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: 0.3px;">
+              ${options.title}
+            </h1>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding: 24px;">
+            <div style="display: inline-block; padding: 4px 10px; background-color: ${options.badgeColor || '#e0f2fe'}; color: #0369a1; border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 16px;">
+              ${options.badgeText}
+            </div>
+
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+              ${detailRows}
+            </table>
+
+            ${messageSection}
+
+            ${options.footerNote ? `<p style="margin-top: 20px; font-size: 12px; color: #64748b; font-style: italic;">${options.footerNote}</p>` : ''}
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background-color: #f8fafc; padding: 20px 24px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b;">
+            <p style="margin: 0 0 4px 0; font-weight: 600; color: #334155;">加南新生基督教會 (Canaan Shin Sheng Christian Church)</p>
+            <p style="margin: 0 0 4px 0;">1635 W. 228th St., Harbor City, CA 90710 | (310) 626-6103</p>
+            <p style="margin: 0; color: #94a3b8;">Email: <a href="mailto:web@canaannewlife.org" style="color: #d97706; text-decoration: none;">web@canaannewlife.org</a></p>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+    `;
+  }
+
+  // 1. GET /api/smtp/config - Retrieve current SMTP settings (passwords masked)
+  app.get("/api/smtp/config", (req: express.Request, res: express.Response) => {
+    try {
+      const conf = loadSMTPConfig();
+      res.json({
+        host: conf.host,
+        port: conf.port,
+        secure: conf.secure,
+        requireTLS: conf.requireTLS,
+        user: conf.user,
+        hasPassword: Boolean(conf.pass && conf.pass.length > 0),
+        maskedPassword: conf.pass ? "••••••••" : "",
+        fromName: conf.fromName,
+        fromEmail: conf.fromEmail,
+        defaultRecipient: conf.defaultRecipient,
+        isActive: conf.isActive,
+        isConfigured: Boolean(conf.host && conf.user && conf.pass),
+        updatedAt: conf.updatedAt
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message || "Failed to load SMTP configuration" });
+    }
+  });
+
+  // 2. POST /api/smtp/config - Save or update SMTP settings
+  app.post("/api/smtp/config", (req: express.Request, res: express.Response) => {
+    try {
+      const { host, port, secure, requireTLS, user, pass, fromName, fromEmail, defaultRecipient, isActive } = req.body;
+      const updated = saveSMTPConfig({
+        host,
+        port: Number(port) || 587,
+        secure: Boolean(secure),
+        requireTLS: requireTLS !== undefined ? Boolean(requireTLS) : true,
+        user,
+        pass,
+        fromName,
+        fromEmail,
+        defaultRecipient,
+        isActive: isActive !== undefined ? Boolean(isActive) : true
+      });
+
+      res.json({
+        success: true,
+        message: "SMTP 伺服器設定已成功儲存！",
+        config: {
+          host: updated.host,
+          port: updated.port,
+          secure: updated.secure,
+          requireTLS: updated.requireTLS,
+          user: updated.user,
+          hasPassword: Boolean(updated.pass && updated.pass.length > 0),
+          maskedPassword: updated.pass ? "••••••••" : "",
+          fromName: updated.fromName,
+          fromEmail: updated.fromEmail,
+          defaultRecipient: updated.defaultRecipient,
+          isActive: updated.isActive,
+          isConfigured: Boolean(updated.host && updated.user && updated.pass),
+          updatedAt: updated.updatedAt
+        }
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message || "Failed to save SMTP configuration" });
+    }
+  });
+
+  // 3. POST /api/smtp/test - Test connection and send verification test email
+  app.post("/api/smtp/test", async (req: express.Request, res: express.Response) => {
+    try {
+      const currentStored = loadSMTPConfig();
+      const testHost = (req.body.host || currentStored.host || "").trim();
+      const testPort = Number(req.body.port) || currentStored.port || 587;
+      const testSecure = req.body.secure !== undefined ? Boolean(req.body.secure) : (testPort === 465);
+      const testRequireTLS = req.body.requireTLS !== undefined ? Boolean(req.body.requireTLS) : true;
+      const testUser = (req.body.user || currentStored.user || "").trim();
+      
+      let testPass = req.body.pass ? String(req.body.pass).trim() : "";
+      if (!testPass || testPass === "••••••••" || testPass.includes("•••")) {
+        testPass = currentStored.pass;
+      }
+
+      const testFromName = (req.body.fromName || currentStored.fromName || "加南新生基督教會").trim();
+      const testFromEmail = (req.body.fromEmail || currentStored.fromEmail || testUser || "web@canaannewlife.org").trim();
+      const recipient = (req.body.testRecipient || currentStored.defaultRecipient || testUser || "web@canaannewlife.org").trim();
+
+      if (!testHost || !testUser) {
+        return res.status(400).json({
+          success: false,
+          error: "請先填寫 SMTP 伺服器主機 (Host) 與帳號 (Username)。"
+        });
+      }
+
+      if (!testPass) {
+        return res.status(400).json({
+          success: false,
+          error: "請填寫 SMTP 密碼或應用程式專用密碼 (App Password)。"
+        });
+      }
+
+      const transporter = nodemailer.createTransport({
+        host: testHost,
+        port: testPort,
+        secure: testSecure,
+        requireTLS: testRequireTLS,
+        auth: {
+          user: testUser,
+          pass: testPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 15000,
+        greetingTimeout: 10000,
+        socketTimeout: 20000
+      });
+
+      // 1. Verify SMTP handshake & credentials
+      await transporter.verify();
+
+      // 2. Send test email to recipient
+      const timeStr = new Date().toLocaleString("zh-TW", { timeZone: "America/Los_Angeles" });
+      const htmlContent = generateChurchHtmlEmail({
+        title: "SMTP 郵件伺服器連線測試成功",
+        badgeText: "連線測試通過 (Verified)",
+        badgeColor: "#dcfce7",
+        details: [
+          { label: "測試時間", value: timeStr },
+          { label: "SMTP 主機 (Host)", value: `${testHost}:${testPort}` },
+          { label: "安全傳輸協定", value: testSecure ? "SSL/TLS (Port 465)" : "STARTTLS (Port 587)" },
+          { label: "登入使用者 (User)", value: testUser },
+          { label: "發送端身份", value: `${testFromName} <${testFromEmail}>` },
+          { label: "收件測試目標", value: recipient }
+        ],
+        messageBody: `恭喜！加南新生基督教會官方網站已成功透過您的 SMTP 帳號 (${testUser}) 完成認證並寄出測試信件。\n未來網站所有在線聯絡留言、主日接送預約、事工登記、與代禱通知均會以此帳號安全自動寄出。`,
+        footerNote: "收到此測試信表示您於管理員後台配置的 SMTP 參數完全正確無誤。"
+      });
+
+      const info = await transporter.sendMail({
+        from: `"${testFromName}" <${testFromEmail}>`,
+        to: recipient,
+        subject: `[測試成功] 加南新生基督教會 SMTP 自動發信測試 (${timeStr})`,
+        text: `加南新生基督教會 SMTP 郵件伺服器連線測試成功！時間: ${timeStr}，主機: ${testHost}:${testPort}，帳號: ${testUser}`,
+        html: htmlContent
+      });
+
+      return res.json({
+        success: true,
+        message: `SMTP 連線測試成功！已成功發送測試信至 ${recipient}。`,
+        messageId: info.messageId,
+        details: {
+          host: testHost,
+          port: testPort,
+          user: testUser,
+          recipient
+        }
+      });
+    } catch (err: any) {
+      console.error("SMTP Test Error:", err);
+      let advice = "";
+      const msg = err.message || "";
+      const code = err.code || "";
+
+      if (code === "EAUTH" || msg.includes("535") || msg.includes("Username and Password not accepted")) {
+        advice = "SMTP 帳號或密碼驗證失敗。若使用 Google/Gmail，請務必開啟 Google 帳戶的「兩步驟驗證」，並進入 Google 帳戶安全性設定生成專用的「應用程式密碼 (App Password)」(16位字母)，不能使用一般個人密碼。";
+      } else if (code === "ESOCKET" || code === "ETIMEDOUT" || code === "ECONNREFUSED") {
+        advice = `無法連線至郵件伺服器。請檢查伺服器主機名稱與連接埠是否正確 (常用埠：587 搭配 STARTTLS，或 465 搭配 SSL/TLS)。`;
+      } else if (msg.includes("self signed") || msg.includes("certificate")) {
+        advice = "TLS/SSL 憑證連線警告。系統已設定寬鬆容許，但建議確認郵件伺服器主機名稱是否與憑證一致。";
+      }
+
+      return res.status(400).json({
+        success: false,
+        error: `SMTP 測試失敗: ${msg}`,
+        advice: advice || undefined,
+        code: code || undefined
+      });
+    }
+  });
+
+  // 4. POST /api/smtp/send & POST /api/send-email - Main Email Sending Route
+  const handleEmailSend = async (req: express.Request, res: express.Response) => {
+    try {
+      const conf = loadSMTPConfig();
+
+      if (!conf.host || !conf.user || !conf.pass) {
+        return res.status(400).json({
+          success: false,
+          error: "尚未在管理員後台設定 SMTP 郵件帳號密碼。請管理員登入後前往「SMTP 設定」完成配置。"
+        });
+      }
+
+      const body = req.body || {};
+      const targetTo = (body.to || conf.defaultRecipient || "web@canaannewlife.org").trim();
+      const fromName = (body.fromName || conf.fromName || "加南新生基督教會").trim();
+      const fromEmail = (body.fromEmail || conf.fromEmail || conf.user).trim();
+      const replyTo = body.replyTo || body.senderEmail || body.email || body.authorEmail || body.applicantEmail;
+      
+      const timeStr = new Date().toLocaleString("zh-TW", { timeZone: "America/Los_Angeles" });
+
+      let subject = body.subject || "加南新生基督教會 - 網站通知";
+      let htmlBody = body.html || "";
+      let textBody = body.text || "";
+
+      // Type-specific automatic formatting if html not provided
+      const type = body.type || (body.needRide !== undefined ? "contact" : (body.prayerTitle ? "prayer" : (body.ministryName ? "ministry" : "general")));
+
+      if (!htmlBody) {
+        if (type === "contact" || body.senderMessage || body.needRide !== undefined) {
+          const isRide = Boolean(body.needRide);
+          subject = subject || `[加南官網${isRide ? '主日接送預約' : '在線留言'}] ${body.senderName || body.name || '訪客'} - ${body.senderPhone || body.phone || '未留電話'}`;
+          htmlBody = generateChurchHtmlEmail({
+            title: isRide ? "主日崇拜免費車輛接送預約" : "在線留言與聯絡事宜",
+            badgeText: isRide ? "🚗 車輛接送預約" : "✉️ 在線心聲留言",
+            badgeColor: isRide ? "#fef3c7" : "#e0f2fe",
+            details: [
+              { label: "姓名 / 稱謂", value: body.senderName || body.name || "未提供" },
+              { label: "聯絡電話", value: body.senderPhone || body.phone || "未提供" },
+              { label: "聯絡 Email", value: body.senderEmail || body.email || "未提供" },
+              { label: "需要接送", value: isRide ? "是 (需要主日車輛免費接送)" : "否 (一般心聲留言)" },
+              { label: "提交時間", value: timeStr }
+            ],
+            messageBody: body.senderMessage || body.message || "(無留言備註)",
+            footerNote: "此通知由加南新生基督教會官網 SMTP 服務自動寄出，請長執同工盡速跟進聯絡。"
+          });
+          textBody = `${subject}\n\n姓名: ${body.senderName || body.name}\n電話: ${body.senderPhone || body.phone}\nEmail: ${body.senderEmail || body.email}\n接送需求: ${isRide ? '需要' : '不需要'}\n留言:\n${body.senderMessage || body.message}\n時間: ${timeStr}`;
+        } else if (type === "prayer" || body.prayerTitle || body.categoryLabelZh) {
+          const isConfidential = Boolean(body.isConfidential);
+          subject = subject || `[加南代禱登記] ${isConfidential ? '【教牧保密】' : '【公開代禱】'} ${body.prayerTitle || body.title} - ${body.authorName || body.author || '弟兄姊妹'}`;
+          htmlBody = generateChurchHtmlEmail({
+            title: isConfidential ? "教牧同工會保密代禱事項" : "代禱事項登記 (申請公開刊登)",
+            badgeText: isConfidential ? "🔒 教牧保密代禱 (不公開)" : "🙏 公開代禱申請",
+            badgeColor: isConfidential ? "#fee2e2" : "#f0fdf4",
+            details: [
+              { label: "提出者姓名", value: body.authorName || body.author || "無名氏弟兄/姊妹" },
+              { label: "聯絡電話", value: body.authorPhone || body.phone || "未提供" },
+              { label: "聯絡 Email", value: body.authorEmail || body.email || "未提供" },
+              { label: "代禱主題", value: body.prayerTitle || body.title || "未填寫" },
+              { label: "分類項目", value: body.categoryLabelZh || body.prayerCategory || "一般代禱" },
+              { label: "代禱性質", value: isConfidential ? "【保密代禱】僅限長執教牧守望，不刊登於代禱牆" : "【公開代禱】同工審核確認後刊登至官網代禱牆" },
+              { label: "登記時間", value: timeStr }
+            ],
+            messageBody: body.content || body.message || "(無詳細內容)",
+            footerNote: "代禱事項已同時同步記錄於後台審核清單中，管理員可登入後台直接授理。"
+          });
+          textBody = `${subject}\n\n作者: ${body.authorName || body.author}\n電話: ${body.authorPhone || body.phone}\nEmail: ${body.authorEmail || body.email}\n主題: ${body.prayerTitle || body.title}\n分類: ${body.categoryLabelZh || body.prayerCategory}\n保密: ${isConfidential ? '是' : '否'}\n內容:\n${body.content || body.message}\n時間: ${timeStr}`;
+        } else if (type === "ministry" || body.ministryName) {
+          subject = subject || `[加南事工登記] ${body.applicantName || body.name || '弟兄姊妹'} 意願參與【${body.ministryName}】`;
+          htmlBody = generateChurchHtmlEmail({
+            title: `事工服事意願登記通知`,
+            badgeText: `✝️ 事工登記：${body.ministryName}`,
+            badgeColor: "#fef3c7",
+            details: [
+              { label: "事工項目", value: body.ministryName },
+              { label: "姓名 / 署名", value: body.applicantName || body.name || "未提供" },
+              { label: "聯絡電話", value: body.applicantPhone || body.phone || "未提供" },
+              { label: "聯絡 Email", value: body.applicantEmail || body.email || "未提供" },
+              { label: "提交時間", value: timeStr }
+            ],
+            messageBody: body.applicantNotes || body.message || "(無特別備註)",
+            footerNote: "請該事工幹事或負責長執主動致電或寄信關懷聯絡。"
+          });
+          textBody = `${subject}\n\n事工: ${body.ministryName}\n姓名: ${body.applicantName || body.name}\n電話: ${body.applicantPhone || body.phone}\nEmail: ${body.applicantEmail || body.email}\n備註: ${body.applicantNotes || body.message}\n時間: ${timeStr}`;
+        } else {
+          htmlBody = generateChurchHtmlEmail({
+            title: subject,
+            badgeText: "加南官網通知",
+            details: [
+              { label: "發送時間", value: timeStr },
+              { label: "回覆信箱", value: replyTo || "無" }
+            ],
+            messageBody: textBody || body.message || JSON.stringify(body, null, 2)
+          });
+        }
+      }
+
+      const transporter = createTransporterFromConfig(conf);
+
+      const mailOptions: any = {
+        from: `"${fromName}" <${fromEmail}>`,
+        to: targetTo,
+        subject: subject,
+        text: textBody || (htmlBody ? htmlBody.replace(/<[^>]+>/g, " ") : ""),
+        html: htmlBody
+      };
+
+      if (replyTo) {
+        mailOptions.replyTo = replyTo;
+      }
+
+      const sendInfo = await transporter.sendMail(mailOptions);
+      console.log(`[SMTP] Successfully sent email "${subject}" to ${targetTo}, messageId: ${sendInfo.messageId}`);
+
+      return res.json({
+        success: true,
+        message: "信件已成功透過 SMTP 郵件伺服器發送！",
+        messageId: sendInfo.messageId,
+        recipient: targetTo
+      });
+    } catch (err: any) {
+      console.error("[SMTP] Send Error:", err);
+      return res.status(500).json({
+        success: false,
+        error: `SMTP 寄信失敗: ${err.message || "未知錯誤"}`,
+        code: err.code || undefined
+      });
+    }
+  };
+
+  app.post("/api/smtp/send", handleEmailSend);
+  app.post("/api/send-email", handleEmailSend);
 
   // Vite or static serving
   if (process.env.NODE_ENV !== "production") {

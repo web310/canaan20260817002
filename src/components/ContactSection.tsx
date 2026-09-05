@@ -3,8 +3,9 @@ import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
 import { sendContactEmailJS, getEmailJSConfig } from '../lib/emailService';
 import { EmailJSConfigModal } from './EmailJSConfigModal';
+import { SMTPConfigModal } from './SMTPConfigModal';
 import { ParkingMapGuide } from './ParkingMapGuide';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Navigation, Sparkles, Settings, ExternalLink, Car, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Navigation, Sparkles, Settings, ExternalLink, Car, Youtube, Server } from 'lucide-react';
 
 interface ContactProps {
   lang: Language;
@@ -21,7 +22,8 @@ export const ContactSection: React.FC<ContactProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needRide, setNeedRide] = useState(false);
   const [showConfigModal, setShowConfigModal] = useState(false);
-  const [submitResult, setSubmitResult] = useState<{ method: 'emailjs' | 'mailto'; message: string }>({ method: 'mailto', message: '' });
+  const [showSMTPModal, setShowSMTPModal] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{ method: 'smtp' | 'emailjs' | 'mailto'; message: string }>({ method: 'mailto', message: '' });
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -82,10 +84,13 @@ ${formData.message}
       console.error('Server API email log failed:', err);
     }
 
-    if (emailJsRes.success && emailJsRes.method === 'emailjs') {
+    if (emailJsRes.success) {
+      const isSmtp = emailJsRes.method === 'smtp';
       setSubmitResult({
-        method: 'emailjs',
-        message: '您的留言與接送預約已透過 EmailJS 背景自動發送至 web@canaannewlife.org！加南教會同工會盡快與您聯絡。'
+        method: isSmtp ? 'smtp' : 'emailjs',
+        message: isSmtp
+          ? '您的留言與接送預約已透過加南專用 SMTP 郵件伺服器自動發送至 web@canaannewlife.org！加南教會同工會盡快與您聯絡。'
+          : '您的留言與接送預約已透過 EmailJS 背景自動發送至 web@canaannewlife.org！加南教會同工會盡快與您聯絡。'
       });
     } else {
       // EmailJS not configured or failed -> trigger mailto fallback
@@ -238,15 +243,26 @@ ${formData.message}
               </div>
 
               {adminEmail && (
-                <button
-                  type="button"
-                  onClick={() => setShowConfigModal(true)}
-                  className="self-start sm:self-center inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-xl text-xs text-amber-900 font-medium transition"
-                  title="啟用背景自動寄信服務 (管理員專用)"
-                >
-                  <Settings className="w-3.5 h-3.5 text-amber-800" />
-                  <span>{lang === 'zh' ? 'EmailJS 設定' : 'EmailJS Config'}</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowSMTPModal(true)}
+                    className="self-start sm:self-center inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold shadow-sm transition"
+                    title="設定 SMTP 伺服器 (Server, Port, TLS, 帳號, 密碼)"
+                  >
+                    <Server className="w-3.5 h-3.5 text-amber-200" />
+                    <span>{lang === 'zh' ? 'SMTP 寄信設定' : 'SMTP Config'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfigModal(true)}
+                    className="self-start sm:self-center inline-flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs text-slate-700 font-medium transition"
+                    title="EmailJS 設定"
+                  >
+                    <Settings className="w-3.5 h-3.5 text-slate-500" />
+                    <span>EmailJS</span>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -406,6 +422,14 @@ ${formData.message}
         </div>
 
       </div>
+
+      <SMTPConfigModal
+        isOpen={showSMTPModal}
+        onClose={() => setShowSMTPModal(false)}
+        lang={lang}
+        adminEmail={adminEmail}
+        onOpenAdminLogin={onOpenAdminLogin}
+      />
 
       <EmailJSConfigModal
         isOpen={showConfigModal}
