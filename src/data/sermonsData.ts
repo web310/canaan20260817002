@@ -3,12 +3,12 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-05T18:44:30.445Z
+// Updated at: 2026-09-05T18:54:02.145Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: 3
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-05-mtoqfb71";
+export const SERMONS_DATA_VERSION = "version-2026-09-05-mtoqrkbl";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
