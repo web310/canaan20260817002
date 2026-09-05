@@ -1,0 +1,215 @@
+。",titleZh:"為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",titleEn:"為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",content:"為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",contentZh:"為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",contentEn:"為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。. Please join together in prayer for God's grace and guidance.",date:"2026-08-30",isConfidential:!1,prayedCount:31},{id:"bulletin-prayer-3-1788053168913",author:"教會同工會",authorZh:"教會同工會",authorEn:"Church Board",category:"health",title:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",titleZh:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",titleEn:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",content:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",contentZh:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",contentEn:"求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。. Please join together in prayer for God's grace and guidance.",date:"2026-08-30",isConfidential:!1,prayedCount:25},{id:"prayer-5",author:"宣教外展組",authorZh:"宣教外展組",authorEn:"Outreach & Missions Team",category:"family",title:"為每週四晚上 8:00 線上 Zoom 守望禱告會代禱",titleZh:"為每週四晚上 8:00 線上 Zoom 守望禱告會代禱",titleEn:"Prayer for Thursday 8:00 PM Zoom Intercessory Meeting",content:"邀請全體弟兄姊妹同心參加週四線上禱告會 (Zoom ID: 310-626-6103 / 密碼: 25226)，同心為教會聖工、場地轉換、肢體健康與年輕事工守望。",contentZh:"邀請全體弟兄姊妹同心參加週四線上禱告會 (Zoom ID: 310-626-6103 / 密碼: 25226)，同心為教會聖工、場地轉換、肢體健康與年輕事工守望。",contentEn:"Inviting all brothers and sisters to join our Thursday online prayer meeting (Zoom ID: 310-626-6103 / Passcode: 25226) to intercede for church transition, family health, and next-gen outreach.",date:"2026-08-23",isConfidential:!1,prayedCount:36},{id:"bulletin-prayer-5-1786930779435",author:"教會同工會",category:"health",title:"為每月兩次細胞小組與健行團契外展代禱",content:"為每月兩次細胞小組與健行團契外展代禱。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",date:"2026-08-16",isConfidential:!1,prayedCount:35},{id:"bulletin-prayer-4-1786930779435",author:"教會同工會",category:"health",title:"為每週四晚上 8:00 線上 Zoom 禱告會守望",content:"為每週四晚上 8:00 線上 Zoom 禱告會守望。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",date:"2026-08-16",isConfidential:!1,prayedCount:30},{id:"bulletin-prayer-3-1786930779435",author:"教會同工會",category:"health",title:"為長老執事與全體會友身體健康關懷代禱",content:"為長老執事與全體會友身體健康關懷代禱。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",date:"2026-08-16",isConfidential:!1,prayedCount:25},{id:"bulletin-prayer-1-1786930779435",author:"教會同工會",category:"general",title:"為教會冷氣安裝工程與招牌設計製作代禱",content:"為教會冷氣安裝工程與招牌設計製作代禱。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",date:"2026-08-16",isConfidential:!1,prayedCount:15}],ve={nameEn:"Canaan Shin Sheng Christian Church",nameZh:"加南新生基督教會",chineseNameAlt:"Canaan Shin Sheng Christian Church",websiteUrl:"www.canaanshinsheng.org",annualThemeZh:"同心合一，興旺福音，建造教會",annualThemeEn:"United as One, Flourishing the Gospel, Building the Church",pastorZh:"孟蘇倫 牧師",pastorEn:"Rev. Meng Sulun",pastors:[{nameZh:"孟蘇倫 牧師",nameEn:"Rev. Meng Sulun",titleZh:"主講牧師",titleEn:"Guest Preacher"},{nameZh:"Ito 傳道",nameEn:"Evangelist Ito",titleZh:"傳道",titleEn:"Evangelist"},{nameZh:"鄭育青 弟兄",nameEn:"Brother Zheng Yuqing",titleZh:"司會 / 事工同工",titleEn:"Service Presider"}],elders:[{titleZh:"長老",titleEn:"Elder",nameZh:"萬四 長老",nameEn:"Elder Wan",phone:"(310) 347-2010"},{titleZh:"長老",titleEn:"Elder",nameZh:"張文辛 長老",nameEn:"Elder Chang",phone:"(310) 468-3789"},{titleZh:"執事",titleEn:"Deacon",nameZh:"馬新民 執事",nameEn:"Deacon Ma",phone:"(310) 989-4528"}],address:"25226 S. Western Ave, Harbor City, CA 90710",phone1:"(310) 626-6103",phone2:"(310) 347-2010",email:"web@canaannewlife.org",denominationEn:"Christian Church",denominationZh:"基督教會 (Christian Church)",zoomId:"310-626-6103",zoomPasscode:"25226",establishedYear:1984,youtubeUrl:"https://www.youtube.com/@CanaanShinShengChristianChurch",youtubeHandle:"@CanaanShinShengChristianChurch",zelleEmail:"ShinShengChurch@Gmail.com",zellePhone:"(310) 626-6103",checkPayableTo:"Canaan Shin Sheng Christian Church",inPersonGivingLocationZh:"禮拜天到教會作禮拜時，在禮拜堂的後面，左右各有一個奉獻箱，可以將奉獻放進裏面，也是教會最鼓勵的方式。",inPersonGivingLocationEn:"When attending Sunday service, offering boxes are located at the back of the sanctuary on both the left and right sides. This is our most encouraged way to give.",googleMapsUrl:"https://maps.google.com/?q=25226+S.+Western+Ave,+Harbor+City,+CA+90710",parkingEntranceZh:"專屬停車場入口位於 W 253rd St（由 Western Ave 轉進 W 253rd St 即可駛入免費停車場）",parkingEntranceEn:"Dedicated parking lot entrance is on W 253rd St (Turn into W 253rd St from Western Ave for free on-site parking)"},No={memoryVerseZh:"約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",memoryVerseEn:"Joshua told the people, 'Consecrate yourselves, for tomorrow the Lord will do amazing things among you.' (Joshua 3:5)",verseReferenceZh:"約書亞記 3:5",verseReferenceEn:"Joshua 3:5"},Ub=[{eventEn:"Sunday Worship Service",eventZh:"禮拜聖會 (主日崇拜)",timeEn:"Every Sunday at 11:00 AM",timeZh:"每個禮拜的星期日 上午 11:00",locationEn:"Main Worship Hall / Live Stream",locationZh:"主堂禮拜堂 / 線上直播"},{eventEn:"Thursday Online Prayer Meeting",eventZh:"線上禱告會 (週四 Zoom)",timeEn:"Every Thursday at 8:00 PM",timeZh:"每個禮拜四 晚上 8:00",locationEn:"Zoom ID: 310-626-6103 (Passcode: 25226)",locationZh:"Zoom ID: 310-626-6103 (密碼: 25226)"},{eventEn:"Cell Group Fellowship",eventZh:"細胞小組 (每月第1與第3個週六)",timeEn:"1st & 3rd Saturday at 2:00 PM",timeZh:"每個月第 1 和第 3 個星期六 下午 2:00",locationEn:"Member Homes / Church Fellowship Hall",locationZh:"弟兄姊妹家中 / 教會副堂"},{eventEn:"Sunday School",eventZh:"禮拜前主日學",timeEn:"Every Sunday at 10:00 AM",timeZh:"每個禮拜的星期日 上午 10:00",locationEn:"Main Sanctuary & Classrooms",locationZh:"主堂與主日學教室"},{eventEn:"Fellowship Lunch",eventZh:"聖徒交通會餐 (愛宴)",timeEn:"Every Sunday at 12:30 PM",timeZh:"每個禮拜的星期日 下午 12:30",locationEn:"Fellowship Dining Hall",locationZh:"副堂會餐廳"},{eventEn:"Choir Practice",eventZh:"詩班練歌讚美",timeEn:"Every Sunday at 1:00 PM",timeZh:"每個禮拜的星期日 下午 1:00",locationEn:"Choir Room",locationZh:"詩班室"}],Pb=[{id:"sunday-school",name:"Sunday School Ministry",nameZh:"禮拜前主日學 (成人與兒童)",leader:"Sunday School Teachers",leaderZh:"主日學教務同工",description:"In-depth Bible teaching before morning service, training teachers and lesson preparation for all ages.",descriptionZh:"崇拜前的主日學真理教導，裝備弟兄姊妹、栽培主日學講師與備課同工。",meetingTime:"Sundays 10:00 AM",meetingTimeZh:"星期日 上午 10:00",location:"Education Wing Classrooms",locationZh:"主堂與教室",iconName:"BookOpen",tags:["Education","Bible Study","All Ages"]},{id:"worship-choir",name:"Choir & Music Ministry",nameZh:"詩班獻詩與聖樂讚美",leader:"Choir Director",leaderZh:"詩班指揮與同工",description:"Rehearsing sacred choral anthems and leading congregation praise every Sunday morning.",descriptionZh:"每主日早晨與午後進行詩班練歌，引領會眾同心讚美，獻上最美的詩歌。",meetingTime:"Sundays 1:00 PM",meetingTimeZh:"星期日 下午 1:00",location:"Choir Room",locationZh:"詩班室",iconName:"Music",tags:["Music","Worship","Sunday"]},{id:"thursday-prayer",name:"Thursday Night Zoom Prayer Meeting",nameZh:"週四線上守望禱告會",leader:"Pastoral Team",leaderZh:"教務同工",description:"Gathering online via Zoom every Thursday at 8:00 PM to intercede for church, family health, and community needs.",descriptionZh:"每週四晚上 8:00 透過 Zoom 線上連線，同心為肢體健康、空調工程修繕、青年事工與福音外展守望禱告。",meetingTime:"Thursdays 8:00 PM",meetingTimeZh:"星期四 晚上 8:00",location:"Zoom ID: 310-626-6103 (Passcode: 25226)",locationZh:"Zoom ID: 310-626-6103 (密碼: 25226)",iconName:"HeartHandshake",tags:["Prayer","Zoom","Intercession"]},{id:"cell-groups",name:"Cell Groups & Small Fellowship",nameZh:"細胞小組 (每月第 1 與第 3 個週六)",leader:"Cell Group Leaders",leaderZh:"小組長與同工",description:"Gathering on the 1st and 3rd Saturday of each month for fellowship, Bible discussion, prayer, and caring for member families.",descriptionZh:"每個月第 1 與第 3 個星期六下午 2:00 舉行細胞小組，透過聖經研討、生活分享與愛心扶持，建立緊密的屬靈團契。",meetingTime:"1st & 3rd Saturday 2:00 PM",meetingTimeZh:"每月第 1 與第 3 個星期六 下午 2:00",location:"Member Homes / Church",locationZh:"弟兄姊妹家中 / 教會副堂",iconName:"Users",tags:["Small Group","Cell","Fellowship"]},{id:"hiking-group",name:"Hiking & Outdoor Wellness Group",nameZh:"健行小組 (每月一次)",leader:"Outdoor Ministry Team",leaderZh:"健行小組同工",description:"Monthly Saturday morning trail walks, lunch fellowship, and short spiritual devotions outdoors.",descriptionZh:"每月一次於週六上午進行南灣步道健行，享受上帝創造的大自然，並有午餐與短講分享。",meetingTime:"Monthly Saturday 9:30 AM",meetingTimeZh:"星期六 上午 9:30 (每月一次)",location:"South Bay Trails & Parks",locationZh:"南灣步道與公園",iconName:"Compassion",tags:["Outreach","Fitness","Fellowship"]},{id:"youth-ministry",name:"NextGen & Youth Ministry",nameZh:"青年事工與年輕世代培育",leader:"Youth Staff & Pastor",leaderZh:"青年事工輔導",description:"Nurturing young adults and youth to be rooted in biblical truth and grow together in fellowship.",descriptionZh:"帶領更多年輕兄弟姊妹來到教會，在真理中扎根，在團契中彼此扶持、成長，成為神的器皿。",meetingTime:"Saturdays / Sundays",meetingTimeZh:"週六聚會 / 主日靈修",location:"Church Fellowship Hall",locationZh:"副堂青少年中心",iconName:"Users",tags:["Youth","NextGen","Growth"]}],Ib=[{title:"The Holy Trinity",titleZh:"三位一體的神",content:"We believe in one God, eternally existing in three Persons: Father, Son, and Holy Spirit, co-equal in power and glory.",contentZh:"我們相信獨一真神，永恆存在於父、子、聖靈三個位格中，同權、同榮、同尊。",verses:["Matthew 28:19","2 Corinthians 13:14"]},{title:"Authority of Holy Scripture",titleZh:"聖經的權威",content:"We believe the Bible, both Old and New Testaments, is the divinely inspired, infallible Word of God and supreme rule for faith and living.",contentZh:"我們相信新舊約聖經皆為上帝所默示的無誤神的話語，是我們信仰與生活的最高準則。",verses:["2 Timothy 3:16-17","Psalm 119:105"]},{title:"Salvation Through Christ Alone",titleZh:"唯獨基督的救恩",content:"We believe salvation is received purely by grace through faith in Jesus Christ, who died for our sins and rose bodily from the dead.",contentZh:"我們相信拯救唯獨靠著神的恩典、因信耶穌基督而得，耶穌為我們的罪釘死在十字架上，並從死裡身體復活。",verses:["Ephesians 2:8-9","John 14:6"]},{title:"The Church & Great Commission",titleZh:"教會與大使命",content:"We believe the Church is the body of Christ called to worship God, build up believers, love our neighbors, and make disciples of all nations.",contentZh:"我們相信教會是基督的身體，受召敬拜神、建立信徒、愛鄰舍，並廣傳福音使萬民作主的門徒。",verses:["Matthew 28:18-20","Hebrews 10:24-25"]}],Bb=[{year:"1984",titleEn:"Founding of Canaan Shin Sheng",titleZh:"加南新生基督教會創立",descEn:"Established as a gospel beacon serving South Bay Taiwanese and Chinese families, holding its inaugural worship service.",descZh:"於南灣地區成立，舉行首屆開拓主日崇拜，成為事奉華人與台胞家庭的福音燈塔。"},{year:"1996",titleEn:"Sanctuary Acquisition in Harbor City",titleZh:"購入海港城現址聖堂",descEn:"Acquired and dedicated the permanent church facility located at 25226 S. Western Ave, Harbor City, CA.",descZh:"順利購得位於 Harbor City S. Western Ave 現址之自屬聖堂，展開定居深耕與社區宣教。"},{year:"2012",titleEn:"Established Christian Church",titleZh:"自立基督教會",descEn:"Operating as a Christian church led by the board of elders, deacons, and pastoral team.",descZh:"成為基督教會，由長執同工會與事工同工共同推動教牧與社區宣教事工。"},{year:"2026",titleEn:"United as One, Flourishing the Gospel",titleZh:"同心合一，興旺福音，建造教會",descEn:"Continuing under our annual theme to build up youth, strengthen Sunday school, update facilities, and praise God together.",descZh:"以「同心合一，興旺福音，建造教會」為標題，更新冷氣設備與招牌，推動青年事工、健行小組與週四線上禱告會。"}],$b="/assets/canaan_church_logo_1787020807712-DJsBhc-L.jpg",J0=({className:n="",size:h="md",variant:i="art",lightMode:d=!1})=>{let f=36;if(typeof h=="number")f=h;else switch(h){case"sm":f=28;break;case"md":f=38;break;case"lg":f=48;break;case"xl":f=64;break}return i==="art"?e.jsx("div",{className:`relative inline-flex items-center justify-center rounded-xl overflow-hidden shadow-sm border ${d?"bg-white/95 border-amber-900/10":"bg-white border-amber-500/20"} ${n}`,style:{width:`${f}px`,height:`${f}px`},children:e.jsx("img",{src:$b,alt:"Canaan Christian Church Logo",referrerPolicy:"no-referrer",className:"w-full h-full object-cover transform scale-105"})}):e.jsx("div",{className:`inline-flex items-center justify-center ${n}`,style:{width:`${f}px`,height:`${f}px`},children:e.jsxs("svg",{viewBox:"0 0 100 160",fill:"none",xmlns:"http://www.w3.org/2000/svg",className:"w-full h-full drop-shadow-sm",children:[e.jsxs("g",{opacity:"0.18",children:[e.jsx("rect",{x:"18",y:"32",width:"10",height:"10",fill:"#94A3B8",rx:"1.5"}),e.jsx("rect",{x:"72",y:"36",width:"9",height:"9",fill:"#64748B",rx:"1.5"}),e.jsx("rect",{x:"12",y:"70",width:"11",height:"11",fill:"#94A3B8",rx:"1.5"}),e.jsx("rect",{x:"78",y:"65",width:"12",height:"12",fill:"#475569",rx:"2"}),e.jsx("rect",{x:"22",y:"112",width:"10",height:"10",fill:"#64748B",rx:"1.5"}),e.jsx("rect",{x:"8",y:"130",width:"10",height:"10",fill:"#94A3B8",rx:"1.5"}),e.jsx("rect",{x:"82",y:"125",width:"10",height:"10",fill:"#94A3B8",rx:"1.5"})]}),e.jsx("path",{d:"M 50 10 L 50 32 M 42 18 L 58 18",stroke:"#B91C1C",strokeWidth:"4.5",strokeLinecap:"round",strokeLinejoin:"round"}),e.jsx("path",{d:"M 50 30 L 26 112 M 50 30 L 68 110",stroke:"#B91C1C",strokeWidth:"5",strokeLinecap:"round",strokeLinejoin:"round"}),e.jsx("path",{d:"M 50 30 L 80 106 L 68 110",stroke:"#991B1B",strokeWidth:"4",strokeLinecap:"round",strokeLinejoin:"round"}),e.jsx("path",{d:"M 28 116 L 64 116 L 64 150 L 28 150 Z",stroke:"#B91C1C",strokeWidth:"4.5",strokeLinecap:"round",strokeLinejoin:"round"}),e.jsx("path",{d:"M 64 116 L 78 114 L 78 144 L 64 150",stroke:"#991B1B",strokeWidth:"3.5",strokeLinecap:"round",strokeLinejoin:"round"}),e.jsx("path",{d:"M 34 125 L 58 125 M 32 133 L 60 133 M 35 141 L 56 141",stroke:"#DC2626",strokeWidth:"2.5",strokeLinecap:"round"}),e.jsx("path",{d:"M 68 123 L 74 122 M 68 131 L 75 130 M 67 139 L 74 138",stroke:"#B91C1C",strokeWidth:"2",strokeLinecap:"round"})]})})};/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const qb=n=>n.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),Jb=n=>n.replace(/^([A-Z])|[\s-_]+(\w)/g,(h,i,d)=>d?d.toUpperCase():i.toLowerCase()),Z0=n=>{const h=Jb(n);return h.charAt(0).toUpperCase()+h.slice(1)},Y0=(...n)=>n.filter((h,i,d)=>!!h&&h.trim()!==""&&d.indexOf(h)===i).join(" ").trim(),Yb=n=>{for(const h in n)if(h.startsWith("aria-")||h==="role"||h==="title")return!0};/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var Vb={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"};/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Wb=b.forwardRef(({color:n="currentColor",size:h=24,strokeWidth:i=2,absoluteStrokeWidth:d,className:f="",children:m,iconNode:j,...z},S)=>b.createElement("svg",{ref:S,...Vb,width:h,height:h,stroke:n,strokeWidth:d?Number(i)*24/Number(h):i,className:Y0("lucide",f),...!m&&!Yb(z)&&{"aria-hidden":"true"},...z},[...j.map(([p,T])=>b.createElement(p,T)),...Array.isArray(m)?m:[m]]));/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const pe=(n,h)=>{const i=b.forwardRef(({className:d,...f},m)=>b.createElement(Wb,{ref:m,iconNode:h,className:Y0(`lucide-${qb(Z0(n))}`,`lucide-${n}`,d),...f}));return i.displayName=Z0(n),i};/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Qb=[["path",{d:"M12 5v14",key:"s699le"}],["path",{d:"m19 12-7 7-7-7",key:"1idqje"}]],D0=pe("arrow-down",Qb);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Xb=[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]],V0=pe("arrow-right",Xb);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Fb=[["path",{d:"m21 16-4 4-4-4",key:"f6ql7i"}],["path",{d:"M17 20V4",key:"1ejh1v"}],["path",{d:"m3 8 4-4 4 4",key:"11wl7u"}],["path",{d:"M7 4v16",key:"1glfcx"}]],Kb=pe("arrow-up-down",Fb);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const ep=[["path",{d:"m5 12 7-7 7 7",key:"hav0vg"}],["path",{d:"M12 19V5",key:"x0mq9r"}]],ad=pe("arrow-up",ep);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const tp=[["path",{d:"m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526",key:"1yiouv"}],["circle",{cx:"12",cy:"8",r:"6",key:"1vp47v"}]],sp=pe("award",tp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const ap=[["path",{d:"M12 7v14",key:"1akyts"}],["path",{d:"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",key:"ruj8y"}]],Hs=pe("book-open",ap);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const lp=[["path",{d:"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z",key:"1fy3hk"}]],W0=pe("bookmark",lp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const np=[["path",{d:"M12 8V4H8",key:"hb8ula"}],["rect",{width:"16",height:"12",x:"4",y:"8",rx:"2",key:"enze0r"}],["path",{d:"M2 14h2",key:"vft8re"}],["path",{d:"M20 14h2",key:"4cs60a"}],["path",{d:"M15 13v2",key:"1xurst"}],["path",{d:"M9 13v2",key:"rq6x2g"}]],rp=pe("bot",np);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const op=[["path",{d:"M10 12h4",key:"a56b0p"}],["path",{d:"M10 8h4",key:"1sr2af"}],["path",{d:"M14 21v-3a2 2 0 0 0-4 0v3",key:"1rgiei"}],["path",{d:"M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2",key:"secmi2"}],["path",{d:"M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16",key:"16ra0t"}]],M0=pe("building-2",op);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const ip=[["path",{d:"M8 2v4",key:"1cmpym"}],["path",{d:"M16 2v4",key:"4m81vk"}],["rect",{width:"18",height:"18",x:"3",y:"4",rx:"2",key:"1hopcy"}],["path",{d:"M3 10h18",key:"8toen8"}]],js=pe("calendar",ip);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const cp=[["path",{d:"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z",key:"18u6gg"}],["circle",{cx:"12",cy:"13",r:"3",key:"1vg3eu"}]],dp=pe("camera",cp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const hp=[["path",{d:"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2",key:"5owen"}],["circle",{cx:"7",cy:"17",r:"2",key:"u2ysq9"}],["path",{d:"M9 17h6",key:"r8uit2"}],["circle",{cx:"17",cy:"17",r:"2",key:"axvx0g"}]],ld=pe("car",hp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const mp=[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]],We=pe("check",mp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const up=[["path",{d:"m15 18-6-6 6-6",key:"1wnfg3"}]],Q0=pe("chevron-left",up);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const xp=[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]],ko=pe("chevron-right",xp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const fp=[["path",{d:"m17 11-5-5-5 5",key:"e8nh98"}],["path",{d:"m17 18-5-5-5 5",key:"2avn1x"}]],O0=pe("chevrons-up",fp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const bp=[["path",{d:"M10 9h4",key:"u4k05v"}],["path",{d:"M12 7v5",key:"ma6bk"}],["path",{d:"M14 21v-3a2 2 0 0 0-4 0v3",key:"1rgiei"}],["path",{d:"m18 9 3.52 2.147a1 1 0 0 1 .48.854V19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6.999a1 1 0 0 1 .48-.854L6 9",key:"flvdwo"}],["path",{d:"M6 21V7a1 1 0 0 1 .376-.782l5-3.999a1 1 0 0 1 1.249.001l5 4A1 1 0 0 1 18 7v14",key:"a5i0n2"}]],X0=pe("church",bp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const pp=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["line",{x1:"12",x2:"12",y1:"8",y2:"12",key:"1pkeuh"}],["line",{x1:"12",x2:"12.01",y1:"16",y2:"16",key:"4dfq90"}]],cs=pe("circle-alert",pp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const gp=[["path",{d:"M21.801 10A10 10 0 1 1 17 3.335",key:"yps3ct"}],["path",{d:"m9 11 3 3L22 4",key:"1pflzl"}]],yp=pe("circle-check-big",gp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const jp=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]],wt=pe("circle-check",jp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const vp=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3",key:"1u773s"}],["path",{d:"M12 17h.01",key:"p32p05"}]],ar=pe("circle-question-mark",vp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const wp=[["path",{d:"M12 6v6l4 2",key:"mmk7yg"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]],Rs=pe("clock",wp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Np=[["path",{d:"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z",key:"p7xjir"}]],Ao=pe("cloud",Np);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Sp=[["path",{d:"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",key:"9ktpf1"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]],Tp=pe("compass",Sp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Cp=[["rect",{width:"14",height:"14",x:"8",y:"8",rx:"2",ry:"2",key:"17jyea"}],["path",{d:"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",key:"zix9uf"}]],Gt=pe("copy",Cp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const zp=[["ellipse",{cx:"12",cy:"5",rx:"9",ry:"3",key:"msslwz"}],["path",{d:"M3 5V19A9 3 0 0 0 21 19V5",key:"1wlel7"}],["path",{d:"M3 12A9 3 0 0 0 21 12",key:"mv7ke4"}]],Mo=pe("database",zp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const kp=[["path",{d:"M12 15V3",key:"m9g1x1"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["path",{d:"m7 10 5 5 5-5",key:"brsn70"}]],At=pe("download",kp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Ap=[["path",{d:"M15 3h6v6",key:"1q9fwt"}],["path",{d:"M10 14 21 3",key:"gplh6r"}],["path",{d:"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",key:"a6xqqp"}]],Et=pe("external-link",Ap);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Ep=[["path",{d:"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49",key:"ct8e1f"}],["path",{d:"M14.084 14.158a3 3 0 0 1-4.242-4.242",key:"151rxh"}],["path",{d:"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143",key:"13bj9a"}],["path",{d:"m2 2 20 20",key:"1ooewy"}]],$s=pe("eye-off",Ep);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const _p=[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",key:"1nclc0"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]],xl=pe("eye",_p);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Zp=[["path",{d:"M10 12.5 8 15l2 2.5",key:"1tg20x"}],["path",{d:"m14 12.5 2 2.5-2 2.5",key:"yinavb"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z",key:"1mlx9k"}]],Vs=pe("file-code",Zp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Dp=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M16 13H8",key:"t4e002"}],["path",{d:"M16 17H8",key:"z1uh3a"}]],Ds=pe("file-text",Dp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Mp=[["path",{d:"M9 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v5",key:"1w6njk"}],["circle",{cx:"13",cy:"12",r:"2",key:"1j92g6"}],["path",{d:"M18 19c-2.8 0-5-2.2-5-5v8",key:"pkpw2h"}],["circle",{cx:"20",cy:"19",r:"2",key:"1obnsp"}]],F0=pe("folder-git-2",Mp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Op=[["path",{d:"M10.638 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v3.417",key:"10r6g4"}],["path",{d:"M14.62 18.8A2.25 2.25 0 1 1 18 15.836a2.25 2.25 0 1 1 3.38 2.966l-2.626 2.856a.998.998 0 0 1-1.507 0z",key:"15cy7q"}]],Js=pe("folder-heart",Op);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Gp=[["path",{d:"M9 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v.5",key:"1dkoa9"}],["path",{d:"M12 10v4h4",key:"1czhmt"}],["path",{d:"m12 14 1.535-1.605a5 5 0 0 1 8 1.5",key:"lvuxfi"}],["path",{d:"M22 22v-4h-4",key:"1ewp4q"}],["path",{d:"m22 18-1.535 1.605a5 5 0 0 1-8-1.5",key:"14ync0"}]],Rp=pe("folder-sync",Gp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Hp=[["path",{d:"M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",key:"sc7q7i"}]],Lp=pe("funnel",Hp);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Up=[["rect",{x:"3",y:"8",width:"18",height:"4",rx:"1",key:"bkv52"}],["path",{d:"M12 8v13",key:"1c76mn"}],["path",{d:"M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7",key:"6wjy6b"}],["path",{d:"M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5",key:"1ihvrl"}]],Pp=pe("gift",Up);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const Ip=[["line",{x1:"6",x2:"6",y1:"3",y2:"15",key:"17qcm7"}],["circle",{cx:"18",cy:"6",r:"3",key:"1h7g24"}],["circle",{cx:"6",cy:"18",r:"3",key:"fqmcym"}],["path",{d:"M18 9a9 9 0 0 1-9 9",key:"n2h4wq"}]],K0=pe("git-branch",Ip);/**
+ * @license lucide-react v0.546.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root director

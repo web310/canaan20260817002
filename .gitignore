@@ -7,4 +7,5 @@ coverage/
 .env*
 !.env.example
 *smtp_config.json
-data/
+/data/
+!src/data/

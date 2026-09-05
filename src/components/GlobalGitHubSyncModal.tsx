@@ -71,6 +71,14 @@ export const GlobalGitHubSyncModal: React.FC<GlobalGitHubSyncModalProps> = ({
   const [pushError, setPushError] = useState<string | null>(null);
   const [pushStep, setPushStep] = useState<string>('');
 
+  // Token testing state
+  const [isTestingToken, setIsTestingToken] = useState(false);
+  const [testResult, setTestResult] = useState<{
+    valid: boolean;
+    message: string;
+    canPush?: boolean;
+  } | null>(null);
+
   // Copy state
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const [restoreStatus, setRestoreStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -394,13 +402,34 @@ export interface BulletinData {
   readingRange: string;
   schedule: Array<{
     date: string;
+    dateEn?: string;
     oldTestament: string;
+    oldTestamentEn?: string;
     newTestament: string;
+    newTestamentEn?: string;
+    isToday?: boolean;
   }>;
   announcements?: string[];
   pastoralNoteZh?: string;
   pastoralNoteEn?: string;
   updatedAt?: string;
+  serviceDate?: string;
+  presider?: string;
+  speaker?: string;
+  speakerEn?: string;
+  sermonTitle?: string;
+  sermonTitleEn?: string;
+  sermonScripture?: string;
+  sermonScriptureEn?: string;
+  sermonSummary?: string;
+  sermonSummaryEn?: string;
+  sermonPointsZh?: string[];
+  sermonPoints?: string[];
+  memoryVerse?: string;
+  memoryVerseRef?: string;
+  weeklyReadingRange?: string;
+  weeklyReadingSchedule?: any[];
+  [key: string]: any;
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(allBulletin, null, 2)};
@@ -599,6 +628,89 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, nul
     } finally {
       setIsPushing(false);
       setPushStep('');
+    }
+  };
+
+  // Test GitHub Connection & Token Permissions
+  const handleTestConnection = async () => {
+    if (!githubToken.trim()) {
+      setTestResult({
+        valid: false,
+        message: lang === 'zh' ? '請先填入 GitHub Personal Access Token (PAT)' : 'Please enter your Token first'
+      });
+      return;
+    }
+    setIsTestingToken(true);
+    setTestResult(null);
+
+    try {
+      // 1. Try via backend /api/github/test-token
+      const res = await fetch('/api/github/test-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: githubToken.trim(),
+          owner: repoOwner.trim(),
+          repo: repoName.trim(),
+          branch: branchName.trim() || 'main'
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.valid) {
+          setTestResult({
+            valid: true,
+            canPush: data.canPush,
+            message: lang === 'zh'
+              ? `✅ 連線成功！已連接倉庫「${data.repo}」，Token 具備推送權限（${data.canPush ? '寫入許可' : '僅唯讀'}）。`
+              : `✅ Connection successful! Repo ${data.repo} accessible with push permission.`
+          });
+          return;
+        }
+      }
+
+      // 2. Fallback to direct client GitHub API check
+      const directRes = await fetch(`https://api.github.com/repos/${repoOwner.trim()}/${repoName.trim()}`, {
+        headers: {
+          Authorization: `Bearer ${githubToken.trim()}`,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      });
+
+      if (directRes.ok) {
+        const repoData = await directRes.json();
+        const canPush = repoData.permissions?.push !== false;
+        setTestResult({
+          valid: true,
+          canPush,
+          message: lang === 'zh'
+            ? `✅ 連線成功！已連接倉庫「${repoData.full_name}」，具備${canPush ? '推送寫入' : '僅讀取'}權限。`
+            : `✅ Connection successful! Repo ${repoData.full_name} accessible.`
+        });
+      } else {
+        const errData = await directRes.json().catch(() => ({}));
+        let errMsg = errData.message || `HTTP ${directRes.status}`;
+        if (directRes.status === 401) {
+          errMsg = lang === 'zh' ? 'Token 無效或過期 (401 Bad credentials)' : 'Token invalid or expired (401)';
+        } else if (directRes.status === 403) {
+          errMsg = lang === 'zh' ? '403 權限不足：若屬於 Organization，請確認是否獲 Organization 授權或啟用 repo 寫入' : '403 Forbidden: Insufficient permissions';
+        } else if (directRes.status === 404) {
+          errMsg = lang === 'zh' ? `404 找不到倉庫「${repoOwner}/${repoName}」，請檢查名稱拼寫` : '404 Repo not found';
+        }
+        setTestResult({
+          valid: false,
+          message: errMsg
+        });
+      }
+    } catch (err: any) {
+      setTestResult({
+        valid: false,
+        message: err.message || (lang === 'zh' ? '連線檢查失敗，請檢查網路' : 'Test connection failed')
+      });
+    } finally {
+      setIsTestingToken(false);
     }
   };
 
@@ -1007,6 +1119,42 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(allPrayers, nul
                       />
                     </div>
                   </div>
+
+                  {/* Test Connection Button & Status */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-800/80">
+                    <button
+                      type="button"
+                      onClick={handleTestConnection}
+                      disabled={isTestingToken || isPushing}
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 rounded-lg text-xs font-semibold border border-amber-500/30 transition-colors disabled:opacity-50"
+                    >
+                      {isTestingToken ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>{lang === 'zh' ? '正在驗證連線與權限...' : 'Testing connection...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{lang === 'zh' ? '🔍 測試 GitHub 連線與寫入權限' : '🔍 Test Connection & Permissions'}</span>
+                        </>
+                      )}
+                    </button>
+
+                    <span className="text-[11px] text-slate-400">
+                      {lang === 'zh' ? '設定會自動儲存於瀏覽器' : 'Settings auto-saved locally'}
+                    </span>
+                  </div>
+
+                  {testResult && (
+                    <div className={`p-3 rounded-lg text-xs font-mono border animate-in fade-in ${
+                      testResult.valid
+                        ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-200'
+                        : 'bg-rose-950/60 border-rose-500/40 text-rose-200'
+                    }`}>
+                      {testResult.message}
+                    </div>
+                  )}
                 </div>
 
                 {/* Big Action Button */}

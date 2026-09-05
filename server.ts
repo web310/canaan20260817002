@@ -1957,13 +1957,34 @@ export interface BulletinData {
   readingRange: string;
   schedule: Array<{
     date: string;
+    dateEn?: string;
     oldTestament: string;
+    oldTestamentEn?: string;
     newTestament: string;
+    newTestamentEn?: string;
+    isToday?: boolean;
   }>;
   announcements?: string[];
   pastoralNoteZh?: string;
   pastoralNoteEn?: string;
   updatedAt?: string;
+  serviceDate?: string;
+  presider?: string;
+  speaker?: string;
+  speakerEn?: string;
+  sermonTitle?: string;
+  sermonTitleEn?: string;
+  sermonScripture?: string;
+  sermonScriptureEn?: string;
+  sermonSummary?: string;
+  sermonSummaryEn?: string;
+  sermonPointsZh?: string[];
+  sermonPoints?: string[];
+  memoryVerse?: string;
+  memoryVerseRef?: string;
+  weeklyReadingRange?: string;
+  weeklyReadingSchedule?: any[];
+  [key: string]: any;
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = ${JSON.stringify(bulletinData, null, 2)};
@@ -2004,12 +2025,19 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
         }
       }, null, 2);
 
+      const churchDataPath = path.join(process.cwd(), "src", "data", "churchData.ts");
+      const annualReadingPath = path.join(process.cwd(), "src", "data", "annualBibleReading.ts");
+      const dailyDevotionPath = path.join(process.cwd(), "src", "data", "dailyDevotionData.ts");
+
       const files = [
         { path: "src/data/sermonsData.ts", content: sermonsTs },
         { path: "src/utils/sermonStorage.ts", content: sermonStorageTs },
         { path: "src/data/galleryData.ts", content: galleryTs },
         { path: "src/data/bulletinData.ts", content: bulletinTs },
         ...(prayersList.length > 0 ? [{ path: "src/data/prayersData.ts", content: prayersTs }] : []),
+        ...(fs.existsSync(churchDataPath) ? [{ path: "src/data/churchData.ts", content: fs.readFileSync(churchDataPath, "utf-8") }] : []),
+        ...(fs.existsSync(annualReadingPath) ? [{ path: "src/data/annualBibleReading.ts", content: fs.readFileSync(annualReadingPath, "utf-8") }] : []),
+        ...(fs.existsSync(dailyDevotionPath) ? [{ path: "src/data/dailyDevotionData.ts", content: fs.readFileSync(dailyDevotionPath, "utf-8") }] : []),
         { path: "public/canaan_master_data.json", content: masterBackupJson }
       ];
 
@@ -2054,20 +2082,70 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
           })
         });
 
-        if (!putRes.ok) {
-          const errJson: any = await putRes.json().catch(() => ({}));
-          const errMsg = errJson.message || `GitHub error updating ${f.path} (HTTP ${putRes.status})`;
-          if (errMsg.includes("Resource not accessible") || putRes.status === 403) {
+        let putResult = putRes;
+        if (putResult.status === 409) {
+          // 409 Conflict: Refetch latest sha and retry once
+          let retrySha: string | undefined = undefined;
+          try {
+            const retryGet = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${f.path}?ref=${activeBranch}&_nocache=${Date.now()}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/vnd.github+json",
+                "User-Agent": "CanaanChurchApp/1.0"
+              }
+            });
+            if (retryGet.ok) {
+              const retryInfo: any = await retryGet.json();
+              retrySha = retryInfo.sha;
+            }
+          } catch {}
+
+          putResult = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${f.path}`, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.github+json",
+              "Content-Type": "application/json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            },
+            body: JSON.stringify({
+              message: defaultMsg,
+              content: base64Content,
+              branch: activeBranch,
+              sha: retrySha
+            })
+          });
+        }
+
+        if (!putResult.ok) {
+          const errJson: any = await putResult.json().catch(() => ({}));
+          const errMsg = errJson.message || `GitHub error updating ${f.path} (HTTP ${putResult.status})`;
+          if (errMsg.includes("Resource not accessible") || putResult.status === 403) {
             return res.status(403).json({
-              error: `GitHub 權限不足 (Resource not accessible by personal access token)。\n💡 請確認您的 GitHub Personal Access Token (PAT) 是否具有對倉庫「${owner}/${repo}」的寫入權限：\n1. 若為 Classic Token (ghp_...)：需勾選「repo」完整權限。\n2. 若為 Fine-grained Token (github_pat_...)：需在 Repository Access 選取此倉庫，並在 Permissions -> Contents 設定為「Read and write」。`
+              error: `GitHub 權限不足 (403 Forbidden: Resource not accessible)。\n💡 若您的倉庫屬於 Organization（例如 canaannewlife）：\n1. 請確認該 Token 具有完整的「repo」存取權限。\n2. 若為 Organization，請確認該 Organization 是否授權了此 Token，或在 Organization Settings -> Third-party application access policy 開啟權限。\n3. 若使用 Fine-grained Token，需選取此倉庫並將 Contents 設為 Read & Write。`
             });
           }
-          return res.status(putRes.status).json({
+          if (putResult.status === 401) {
+            return res.status(401).json({
+              error: `GitHub 身份驗證失敗 (401 Bad credentials)。請確認您的 Personal Access Token 是否正確且尚未過期。`
+            });
+          }
+          if (putResult.status === 404) {
+            return res.status(404).json({
+              error: `找不到倉庫「${owner}/${repo}」或分支「${activeBranch}」(404 Not Found)。請檢查倉庫名稱拼寫或確認 Token 是否有此私有倉庫的存取權。`
+            });
+          }
+          if (putResult.status === 422) {
+            return res.status(422).json({
+              error: `GitHub 拒絕寫入 (422 Unprocessable Entity)。可能原因：該分支啟用保護規則 (Branch Protection 禁止直接推送到 ${activeBranch}) 或檔案格式受阻。\n訊息: ${errMsg}`
+            });
+          }
+          return res.status(putResult.status).json({
             error: errMsg
           });
         }
 
-        const resData: any = await putRes.json();
+        const resData: any = await putResult.json();
         if (resData.commit?.sha) {
           lastSha = resData.commit.sha.slice(0, 7);
           lastCommitUrl = resData.commit.html_url || lastCommitUrl;
@@ -2084,6 +2162,134 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
     } catch (err: any) {
       console.error("Server GitHub sync-all error:", err);
       return res.status(500).json({ error: err.message || "Failed to sync all data to GitHub" });
+    }
+  });
+
+  // Test GitHub token and repository access
+  app.post("/api/github/test-token", async (req: express.Request, res: express.Response) => {
+    try {
+      const { token, owner, repo, branch } = req.body;
+      if (!token) return res.status(400).json({ error: "Token is required" });
+      const targetOwner = owner || "canaannewlife";
+      const targetRepo = repo || "canaan-shin-sheng-church";
+      const targetBranch = branch || "main";
+
+      const repoRes = await fetch(`https://api.github.com/repos/${targetOwner}/${targetRepo}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "User-Agent": "CanaanChurchApp/1.0"
+        }
+      });
+
+      if (!repoRes.ok) {
+        const errJson: any = await repoRes.json().catch(() => ({}));
+        return res.status(repoRes.status).json({
+          valid: false,
+          error: errJson.message || `GitHub error (${repoRes.status})`
+        });
+      }
+
+      const repoInfo: any = await repoRes.json();
+      const permissions = repoInfo.permissions || {};
+
+      // Check branch
+      const branchRes = await fetch(`https://api.github.com/repos/${targetOwner}/${targetRepo}/branches/${targetBranch}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "User-Agent": "CanaanChurchApp/1.0"
+        }
+      });
+
+      return res.json({
+        valid: true,
+        repo: repoInfo.full_name,
+        isPrivate: repoInfo.private,
+        permissions,
+        canPush: permissions.push !== false,
+        branchExists: branchRes.ok
+      });
+    } catch (err: any) {
+      return res.status(500).json({ valid: false, error: err.message });
+    }
+  });
+
+  // Backend endpoint to sync prayers directly to GitHub repo
+  app.post("/api/github/sync-prayers", async (req: express.Request, res: express.Response) => {
+    try {
+      const { token, owner, repo, branch, path: targetPath, prayers, commitMessage } = req.body;
+      if (!token) return res.status(400).json({ error: "Token is required" });
+      const targetOwner = owner || "canaannewlife";
+      const targetRepo = repo || "canaan-shin-sheng-church";
+      const activeBranch = branch || "main";
+      const filePath = targetPath || "src/data/prayersData.ts";
+      const prayerList = Array.isArray(prayers) ? prayers : [];
+
+      const prayersTs = `import { PrayerRequest } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - PRAYER WALL MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Active Prayers: ${prayerList.length}
+// ============================================================================
+
+export const PRAYERS_DATA_VERSION = "version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}";
+
+export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayerList, null, 2)};
+`;
+
+      // Get current sha
+      let currentSha: string | undefined = undefined;
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${targetOwner}/${targetRepo}/contents/${filePath}?ref=${activeBranch}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.github+json",
+            "User-Agent": "CanaanChurchApp/1.0"
+          }
+        });
+        if (getRes.ok) {
+          const info: any = await getRes.json();
+          currentSha = info.sha;
+        }
+      } catch {}
+
+      const base64Content = Buffer.from(prayersTs, "utf-8").toString("base64");
+      const defaultMsg = commitMessage || `feat(prayers): sync latest prayer wall (${prayerList.length} prayers) - ${new Date().toISOString().slice(0, 10)}`;
+
+      const putRes = await fetch(`https://api.github.com/repos/${targetOwner}/${targetRepo}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "User-Agent": "CanaanChurchApp/1.0"
+        },
+        body: JSON.stringify({
+          message: defaultMsg,
+          content: base64Content,
+          branch: activeBranch,
+          sha: currentSha
+        })
+      });
+
+      if (!putRes.ok) {
+        const errJson: any = await putRes.json().catch(() => ({}));
+        return res.status(putRes.status).json({
+          error: errJson.message || `GitHub error (${putRes.status})`
+        });
+      }
+
+      const resData: any = await putRes.json();
+      return res.json({
+        success: true,
+        commitSha: resData.commit?.sha?.slice(0, 7) || "latest",
+        commitUrl: resData.commit?.html_url || `https://github.com/${targetOwner}/${targetRepo}`
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || "Failed to sync prayers" });
     }
   });
 
