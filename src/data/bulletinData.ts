@@ -44,140 +44,154 @@ export interface BulletinData {
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = {
-  "memoryVerseZh": "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
-  "memoryVerseEn": "Joshua told the people, 'Consecrate yourselves, for tomorrow the Lord will do amazing things among you.' (Joshua 3:5)",
-  "verseReference": "約書亞記 3:5 / Joshua 3:5",
-  "readingRange": "8/31 - 9/6",
+  "memoryVerseZh": "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。（馬太福音第 28 章第 19-20 節）",
+  "memoryVerseEn": "Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age. (Matthew 28:19-20)",
+  "verseReference": "馬太福音 28:19-20 / Matthew 28:19-20",
+  "readingRange": "9/7 - 9/13",
   "schedule": [
     {
-      "date": "8/31 (週一)",
-      "dateEn": "8/31 (Mon)",
-      "oldTestament": "詩篇 132-134",
-      "oldTestamentEn": "Psalms 132-134",
-      "newTestament": "哥林多前書 11:17-34",
-      "newTestamentEn": "1 Corinthians 11:17-34"
+      "date": "9/7 (週一)",
+      "dateEn": "9/7 (Mon)",
+      "oldTestament": "箴言 1-2",
+      "oldTestamentEn": "Proverbs 1-2",
+      "newTestament": "哥林多前書 16",
+      "newTestamentEn": "1 Corinthians 16"
     },
     {
-      "date": "9/01 (週二)",
-      "dateEn": "9/01 (Tue)",
-      "oldTestament": "詩篇 135-136",
-      "oldTestamentEn": "Psalms 135-136",
-      "newTestament": "哥林多前書 12",
-      "newTestamentEn": "1 Corinthians 12"
+      "date": "9/8 (週二)",
+      "dateEn": "9/8 (Tue)",
+      "oldTestament": "箴言 3-5",
+      "oldTestamentEn": "Proverbs 3-5",
+      "newTestament": "哥林多後書 1",
+      "newTestamentEn": "2 Corinthians 1"
     },
     {
-      "date": "9/02 (週三)",
-      "dateEn": "9/02 (Wed)",
-      "oldTestament": "詩篇 137-139",
-      "oldTestamentEn": "Psalms 137-139",
-      "newTestament": "哥林多前書 13",
-      "newTestamentEn": "1 Corinthians 13"
+      "date": "9/9 (週三)",
+      "dateEn": "9/9 (Wed)",
+      "oldTestament": "箴言 6-7",
+      "oldTestamentEn": "Proverbs 6-7",
+      "newTestament": "哥林多後書 2",
+      "newTestamentEn": "2 Corinthians 2"
     },
     {
-      "date": "9/03 (週四)",
-      "dateEn": "9/03 (Thu)",
-      "oldTestament": "詩篇 140-141",
-      "oldTestamentEn": "Psalms 140-141",
-      "newTestament": "哥林多前書 14:1-20",
-      "newTestamentEn": "1 Corinthians 14:1-20"
+      "date": "9/10 (週四)",
+      "dateEn": "9/10 (Thu)",
+      "oldTestament": "箴言 8-9",
+      "oldTestamentEn": "Proverbs 8-9",
+      "newTestament": "哥林多後書 3",
+      "newTestamentEn": "2 Corinthians 3"
     },
     {
-      "date": "9/04 (週五)",
-      "dateEn": "9/04 (Fri)",
-      "oldTestament": "詩篇 142-143",
-      "oldTestamentEn": "Psalms 142-143",
-      "newTestament": "哥林多前書 14:21-40",
-      "newTestamentEn": "1 Corinthians 14:21-40"
+      "date": "9/11 (週五)",
+      "dateEn": "9/11 (Fri)",
+      "oldTestament": "箴言 10-12",
+      "oldTestamentEn": "Proverbs 10-12",
+      "newTestament": "哥林多後書 4",
+      "newTestamentEn": "2 Corinthians 4"
     },
     {
-      "date": "9/05 (週六)",
-      "dateEn": "9/05 (Sat)",
-      "oldTestament": "詩篇 144-145",
-      "oldTestamentEn": "Psalms 144-145",
-      "newTestament": "哥林多前書 15:1-34",
-      "newTestamentEn": "1 Corinthians 15:1-34"
+      "date": "9/12 (週六)",
+      "dateEn": "9/12 (Sat)",
+      "oldTestament": "箴言 13-15",
+      "oldTestamentEn": "Proverbs 13-15",
+      "newTestament": "哥林多後書 5",
+      "newTestamentEn": "2 Corinthians 5"
     },
     {
-      "date": "9/06 (週日)",
-      "dateEn": "9/06 (Sun)",
-      "oldTestament": "詩篇 146-147",
-      "oldTestamentEn": "Psalms 146-147",
-      "newTestament": "哥林多前書 15:35-58",
-      "newTestamentEn": "1 Corinthians 15:35-58"
+      "date": "9/13 (週日)",
+      "dateEn": "9/13 (Sun)",
+      "oldTestament": "箴言 16-18",
+      "oldTestamentEn": "Proverbs 16-18",
+      "newTestament": "哥林多後書 6",
+      "newTestamentEn": "2 Corinthians 6"
     }
   ],
   "announcements": [
-    "歡迎初次來到加南新生基督教會的弟兄姊妹與新朋友，會後備有愛筵交通。",
-    "週四晚上 8:00 於線上 Zoom 舉行全教會禱告會 (ID: 310-626-6103, 密碼: 25226)。",
-    "禮拜天上午 10:00 於副堂進行主日學，11:00 於主堂舉行主日崇拜。"
+    "感謝 ITO 弟兄帶給我們「安提阿教會」的信息，提醒我們要在患難中忠心傳福音，跟隨基督，顧念神國度的需要，並同心敬拜、迫切禱告。求主幫助我們立志成為大使命的使者，活出基督的愛，與弟兄姐妹同心禱告。",
+    "下週將由孟蘇倫牧師前來證道，請弟兄姊妹代禱，求主賜福牧師的服事，賜下智慧與能力，使他忠心傳講神的話語，也預備我們的心，明白並遵行主的心意。",
+    "週間禱告會為每個禮拜四晚上八點，有線上禱告會(Zoom 的ID 及 Passcode 和禮拜天的一樣)。福音效果需要禱告大能，請大家踴躍參加。",
+    "9/12 (週六) 將舉行教會健行活動，相關消息請參閱 WeChat「新生健行隊」，或洽 Simon。",
+    "背誦經文：本週背誦經文在馬太福音第 28 章第 19-20 節。"
   ],
-  "updatedAt": "2026-08-30T10:00:00.000Z",
-  "serviceDate": "2026-08-16",
+  "updatedAt": "2026-09-06T10:00:00.000Z",
+  "serviceDate": "2026-09-06",
   "presider": "鄭育青 弟兄",
-  "speaker": "Ito 傳道",
-  "speakerEn": "Evangelist Ito",
-  "sermonTitle": "忠心忠僕，靠主行事",
-  "sermonTitleEn": "Abiding in Grace & Serving with Faithfulness",
-  "sermonScripture": "羅馬書第 12 章第 1-2 節",
-  "sermonScriptureEn": "Romans 12:1-2",
-  "sermonSummary": "「所以弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。」Ito 傳道勸勉弟兄姊妹心意更新而變化，在生活與事奉中靠主恩典忠心作主的忠僕。",
-  "sermonSummaryEn": "Reflecting on Romans 12 on presenting our bodies as living sacrifices holy and pleasing to God, renewing our minds, and discerning God's good and perfect will.",
+  "speaker": "ITO 弟兄",
+  "speakerEn": "Brother Ito",
+  "sermonTitle": "安提阿教會",
+  "sermonTitleEn": "The Antioch Church",
+  "sermonScripture": "使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節",
+  "sermonScriptureEn": "Acts 11:19-40, 13:1-4",
+  "sermonSummary": "加南新生基督教會主日崇拜，ITO 弟兄透過使徒行傳第 11 章第 19-40 節與第 13 章第 1-4 節傳講《安提阿教會》，勉勵弟兄姊妹在患難中忠心傳揚福音、緊跟隨基督、顧念神國度的需要，並同心敬拜與迫切禱告，立志成為大使命的使者與活出基督之愛的人。",
+  "sermonSummaryEn": "At Canaan Shin Sheng Christian Church Sunday Service, Brother Ito preached on 'The Antioch Church' from Acts 11:19-40 and Acts 13:1-4, urging believers to proclaim the Gospel in trials, follow Christ, meet kingdom needs, and pray in unity.",
   "sermonPointsZh": [
-    "一、將身體獻上當作活祭 — 聖潔與神所喜悅的事奉 (羅馬書 12:1)",
-    "二、不要效法這個世界 — 心意更新而變化 (羅馬書 12:2上)",
-    "三、察驗何為神的善良、純全、可喜悅的旨意 (羅馬書 12:2下)"
+    "1. 安提阿教會被神使用的特點",
+    "1) 一群患難中傳道的人",
+    "2) 一群跟隨基督的人",
+    "3) 顧念神國度的需要",
+    "4) 同心合意敬拜及禱告的教會",
+    "2. 立志成為安提阿教會",
+    "1) 立志成為一個大使命的使者",
+    "2) 立志成為活出愛的人",
+    "3) 立志與弟兄姐妹一起迫切禱告"
   ],
   "sermonPoints": [
-    "1. Presenting your bodies as a living sacrifice — Romans 12:1",
-    "2. Do not conform to this world, be transformed — Romans 12:2a",
-    "3. Discerning God's good, pleasing and perfect will — Romans 12:2b"
+    "1. Characteristics of the Antioch Church Used by God",
+    "1) People preaching in affliction",
+    "2) People following Christ faithfully",
+    "3) Caring for the needs of God's Kingdom",
+    "4) A church worshiping and praying in one accord",
+    "2. Resolving to Become the Antioch Church",
+    "1) Becoming ambassadors of the Great Commission",
+    "2) Living out Christ's love",
+    "3) Praying earnestly together with brothers and sisters"
   ],
-  "memoryVerse": "所以，弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。（羅馬書 12:1）",
-  "memoryVerseRef": "羅馬書 12:1",
-  "weeklyReadingRange": "8/17 - 8/23",
+  "memoryVerse": "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。（馬太福音第 28 章第 19-20 節）",
+  "memoryVerseRef": "馬太福音第 28 章第 19-20 節",
+  "weeklyReadingRange": "9/7 - 9/13",
   "weeklyReadingSchedule": [
     {
-      "date": "8/17 (週一)",
-      "oldTestament": "詩篇 97-99",
-      "newTestament": "羅馬書 16:1-16"
+      "date": "9/7 (週一)",
+      "oldTestament": "箴言 1-2",
+      "newTestament": "哥林多前書 16"
     },
     {
-      "date": "8/18 (週二)",
-      "oldTestament": "詩篇 100-101",
-      "newTestament": "羅馬書 16:17-27"
+      "date": "9/8 (週二)",
+      "oldTestament": "箴言 3-5",
+      "newTestament": "哥林多後書 1"
     },
     {
-      "date": "8/19 (週三)",
-      "oldTestament": "詩篇 102",
-      "newTestament": "哥林多前書 1:1-17"
+      "date": "9/9 (週三)",
+      "oldTestament": "箴言 6-7",
+      "newTestament": "哥林多後書 2"
     },
     {
-      "date": "8/20 (週四)",
-      "oldTestament": "詩篇 103",
-      "newTestament": "哥林多前書 1:18-31"
+      "date": "9/10 (週四)",
+      "oldTestament": "箴言 8-9",
+      "newTestament": "哥林多後書 3"
     },
     {
-      "date": "8/21 (週五)",
-      "oldTestament": "詩篇 104",
-      "newTestament": "哥林多前書 2"
+      "date": "9/11 (週五)",
+      "oldTestament": "箴言 10-12",
+      "newTestament": "哥林多後書 4"
     },
     {
-      "date": "8/22 (週六)",
-      "oldTestament": "詩篇 105",
-      "newTestament": "哥林多前書 3"
+      "date": "9/12 (週六)",
+      "oldTestament": "箴言 13-15",
+      "newTestament": "哥林多後書 5"
     },
     {
-      "date": "8/23 (週日)",
-      "oldTestament": "詩篇 106",
-      "newTestament": "哥林多前書 4"
+      "date": "9/13 (週日)",
+      "oldTestament": "箴言 16-18",
+      "newTestament": "哥林多後書 6"
     }
   ],
   "prayerRequests": [
-    "為教會冷氣安裝工程與招牌設計製作代禱",
-    "為青年事工與主日學備課同工守望代禱",
-    "為長老執事與全體會友身體健康關懷代禱",
-    "為每週四晚上 8:00 線上 Zoom 禱告會守望",
-    "為每月兩次細胞小組與健行團契外展代禱"
+    "為主日學及會友靈命成長禱告，求主賜福主日學事工，賜給講師智慧、愛心與力量，忠心傳講神的話語；求主使弟兄姊妹渴慕真理，在學習中生命得著造就與更新，在信仰與生活上不斷成長，更加成熟豐盛。",
+    "今日是 C3 教會在本教會聚會的最後一個主日，求主看顧保守他們未來的道路，引領前進的方向與服事，賜下平安、智慧與力量，使他們在新道路上繼續經歷主的恩典與帶領。",
+    "求主繼續保守談妮姊妹術後恢復，保護傷口，遠離發炎及肌肉、神經的突發狀況，賜她平安、力量與忍耐，天天經歷主的醫治與恩典，也藉著家人的陪伴與禱告堅固她。",
+    "為蔡長老、鄭長老及 Andrew 禱告，求主保守他們的身體健康，賜下力量與平安，保守身心靈蒙主看顧。",
+    "為彥勳弟兄目前前往中國及台灣，並處理母親相關事務禱告，求主一路保守平安，賜下智慧與力量，帶領各項事務順利；也為李艾姊即將外出旅遊禱告，求主保守旅途平安，一路看顧。"
   ],
   "zoomPasscode": "25226",
   "videoUrl": ""

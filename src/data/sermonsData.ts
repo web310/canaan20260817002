@@ -12,6 +12,45 @@ export const SERMONS_DATA_VERSION = "version-2026-09-05-mtoqrkbl";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
+    "id": "sermon-20260906",
+    "title": "The Antioch Church",
+    "titleZh": "安提阿教會",
+    "speaker": "Brother Ito",
+    "speakerZh": "ITO 弟兄",
+    "date": "2026-09-06",
+    "scripture": "Acts 11:19-40, 13:1-4",
+    "scriptureZh": "使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "At Canaan Shin Sheng Christian Church Sunday Service, Brother Ito preached on 'The Antioch Church' from Acts 11:19-40 and Acts 13:1-4, urging believers to proclaim the Gospel in trials, follow Christ, meet kingdom needs, and pray in unity.",
+    "summaryZh": "加南新生基督教會主日崇拜，ITO 弟兄透過使徒行傳第 11 章第 19-40 節與第 13 章第 1-4 節傳講《安提阿教會》，勉勵弟兄姊妹在患難中忠心傳揚福音、緊跟隨基督、顧念神國度的需要，並同心敬拜與迫切禱告，立志成為大使命的使者與活出基督之愛的人。",
+    "points": [
+      "1. Characteristics of the Antioch Church Used by God",
+      "1) People preaching in affliction",
+      "2) People following Christ faithfully",
+      "3) Caring for the needs of God's Kingdom",
+      "4) A church worshiping and praying in one accord",
+      "2. Resolving to Become the Antioch Church",
+      "1) Becoming ambassadors of the Great Commission",
+      "2) Living out Christ's love",
+      "3) Praying earnestly together with brothers and sisters"
+    ],
+    "pointsZh": [
+      "1. 安提阿教會被神使用的特點",
+      "1) 一群患難中傳道的人",
+      "2) 一群跟隨基督的人",
+      "3) 顧念神國度的需要",
+      "4) 同心合意敬拜及禱告的教會",
+      "2. 立志成為安提阿教會",
+      "1) 立志成為一個大使命的使者",
+      "2) 立志成為活出愛的人",
+      "3) 立志與弟兄姐妹一起迫切禱告"
+    ],
+    "videoPasscode": "25226",
+    "showVideo": true,
+    "showAudio": true
+  },
+  {
     "id": "sermon-1",
     "title": "Walking a Path We Have Never Walked Before",
     "titleZh": "走一條我們從未走過的路",

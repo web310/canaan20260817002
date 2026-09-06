@@ -70,51 +70,53 @@ export const EmailJSConfigModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative my-8 animate-in fade-in zoom-in duration-200">
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="flex items-center space-x-3 mb-5">
-          <div className="p-3 bg-amber-100 text-amber-900 rounded-2xl">
-            <Mail className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h3 className="text-xl font-bold text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-2 sm:p-4 overflow-hidden">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200 overflow-hidden">
+        {/* Sticky Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 bg-amber-100 text-amber-900 rounded-xl shrink-0">
+              <Mail className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 {lang === 'zh' ? 'EmailJS 自動寄信服務設定' : 'EmailJS Auto-Email Configuration'}
               </h3>
+              <p className="text-xs text-slate-500">
+                {lang === 'zh' ? `官方通知收件信箱：${CHURCH_INFO.email}` : `Official Church Inbox: ${CHURCH_INFO.email}`}
+              </p>
             </div>
-            <p className="text-xs text-slate-500">
-              {lang === 'zh' ? `官方通知收件信箱：${CHURCH_INFO.email}` : `Official Church Inbox: ${CHURCH_INFO.email}`}
-            </p>
           </div>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-100 transition-colors shrink-0 ml-2"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Status Badge */}
-        <div className="mb-4 flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
-          <span className="text-slate-600 font-medium">{lang === 'zh' ? '當前金鑰來源：' : 'Current Key Source:'}</span>
-          {config.source === 'env' ? (
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]">
-              <Check className="w-3 h-3 text-emerald-600" />
-              <span>{lang === 'zh' ? '已讀取 Cloudflare Pages 環境變數' : 'Loaded from Env Variables'}</span>
-            </span>
-          ) : config.source === 'custom' ? (
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[11px]">
-              <ShieldCheck className="w-3 h-3 text-amber-700" />
-              <span>{lang === 'zh' ? '自訂本機管理員覆寫' : 'Custom Local Override'}</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 font-semibold text-[11px]">
-              <AlertCircle className="w-3 h-3 text-slate-500" />
-              <span>{lang === 'zh' ? '尚未設定 (使用預設 Mailto)' : 'Not Configured (Mailto Fallback)'}</span>
-            </span>
-          )}
-        </div>
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+          {/* Status Badge */}
+          <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
+            <span className="text-slate-600 font-medium">{lang === 'zh' ? '當前金鑰來源：' : 'Current Key Source:'}</span>
+            {config.source === 'env' ? (
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]">
+                <Check className="w-3 h-3 text-emerald-600" />
+                <span>{lang === 'zh' ? '已讀取 Cloudflare Pages 環境變數' : 'Loaded from Env Variables'}</span>
+              </span>
+            ) : config.source === 'custom' ? (
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[11px]">
+                <ShieldCheck className="w-3 h-3 text-amber-700" />
+                <span>{lang === 'zh' ? '自訂本機管理員覆寫' : 'Custom Local Override'}</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 font-semibold text-[11px]">
+                <AlertCircle className="w-3 h-3 text-slate-500" />
+                <span>{lang === 'zh' ? '尚未設定 (使用預設 Mailto)' : 'Not Configured (Mailto Fallback)'}</span>
+              </span>
+            )}
+          </div>
 
         {/* Security Access Control Banner */}
         {!adminEmail && (
@@ -288,6 +290,7 @@ export const EmailJSConfigModal: React.FC<Props> = ({
             )}
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

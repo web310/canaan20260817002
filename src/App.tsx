@@ -93,7 +93,11 @@ export default function App() {
         />
 
         {/* Events & Calendar */}
-        <EventsCalendar lang={lang} />
+        <EventsCalendar 
+          lang={lang} 
+          adminEmail={adminEmail}
+          onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+        />
 
         {/* Photo Gallery & Google Photos Albums */}
         <PhotoGallerySection 

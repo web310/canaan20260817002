@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Language, PrayerRequest, PendingPrayerSubmission } from '../types';
 import { INITIAL_PRAYERS, CHURCH_INFO } from '../data/churchData';
-import { deduplicatePrayers } from '../utils/prayerHelper';
+import { deduplicatePrayers, getPrayerTopicKey } from '../utils/prayerHelper';
 import { 
   Heart, Plus, ShieldCheck, Lock, Check, Send, 
   Filter, X, Sparkles, MessageSquare, RotateCcw, 
   Mail, Phone, ShieldAlert, Inbox, CheckCircle2, UserCheck, Edit3,
-  Github, FolderGit2
+  Github, FolderGit2, Trash2
 } from 'lucide-react';
 import { translateAuthorToEn, translatePrayerTitleToEn, translatePrayerContentToEn } from '../utils/translationHelper';
 import { sendPrayerEmailJS } from '../lib/emailService';
 import { AdminPrayerManagementModal } from './AdminPrayerManagementModal';
 import { PrayerGitHubSyncModal } from './PrayerGitHubSyncModal';
+
+// Helpers to track permanently deleted prayers so they are never resurrected
+const getDeletedPrayerKeys = (): Set<string> => {
+  try {
+    const saved = localStorage.getItem('canaan_deleted_prayer_ids');
+    if (saved) {
+      const parsed: string[] = JSON.parse(saved);
+      return new Set(parsed.filter(Boolean));
+    }
+  } catch {}
+  return new Set();
+};
+
+const isPrayerDeleted = (prayer: PrayerRequest, deletedSet: Set<string>): boolean => {
+  if (!prayer) return false;
+  if (deletedSet.has(prayer.id)) return true;
+  const topicKey = getPrayerTopicKey(prayer);
+  if (topicKey && deletedSet.has(topicKey)) return true;
+  if (prayer.titleZh && deletedSet.has(prayer.titleZh)) return true;
+  if (prayer.title && deletedSet.has(prayer.title)) return true;
+  return false;
+};
 
 interface PrayerProps {
   lang: Language;
@@ -29,29 +51,20 @@ export const PrayerWall: React.FC<PrayerProps> = ({
   const isAdmin = Boolean(adminEmail);
 
   const [prayers, setPrayers] = useState<PrayerRequest[]>(() => {
+    const deletedSet = getDeletedPrayerKeys();
     try {
       const saved = localStorage.getItem('canaan_prayers_data');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const merged = parsed.map((p: PrayerRequest) => {
-            const matchedInit = INITIAL_PRAYERS.find(init => init.id === p.id);
-            if (matchedInit) {
-              return {
-                ...matchedInit,
-                prayedCount: Math.max(p.prayedCount || 0, matchedInit.prayedCount || 0),
-              };
-            }
-            return p;
-          });
-          // Merge with initial prayers and deduplicate by keeping newest date
-          return deduplicatePrayers([...INITIAL_PRAYERS, ...merged]);
+          const filtered = parsed.filter(p => !isPrayerDeleted(p, deletedSet));
+          return deduplicatePrayers(filtered);
         }
       }
     } catch {
       // fallback
     }
-    return deduplicatePrayers(INITIAL_PRAYERS);
+    return deduplicatePrayers(INITIAL_PRAYERS.filter(p => !isPrayerDeleted(p, deletedSet)));
   });
 
   const [filterCategory, setFilterCategory] = useState<string>('all');
@@ -59,6 +72,8 @@ export const PrayerWall: React.FC<PrayerProps> = ({
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isAdminManageOpen, setIsAdminManageOpen] = useState(false);
   const [isPrayerSyncModalOpen, setIsPrayerSyncModalOpen] = useState(false);
+  const [selectedPrayerForEdit, setSelectedPrayerForEdit] = useState<PrayerRequest | null>(null);
+  const [deletingCardPrayerId, setDeletingCardPrayerId] = useState<string | null>(null);
 
   // Form State
   const [authorName, setAuthorName] = useState('');
@@ -85,6 +100,25 @@ export const PrayerWall: React.FC<PrayerProps> = ({
     return 0;
   });
 
+  // Fetch latest prayers from backend on mount
+  useEffect(() => {
+    fetch('/api/prayers')
+      .then(res => res.json())
+      .then(result => {
+        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+          const deletedSet = getDeletedPrayerKeys();
+          const validPrayers = result.data.filter((p: PrayerRequest) => !isPrayerDeleted(p, deletedSet));
+          if (validPrayers.length > 0) {
+            setPrayers(deduplicatePrayers(validPrayers));
+            try {
+              localStorage.setItem('canaan_prayers_data', JSON.stringify(deduplicatePrayers(validPrayers)));
+            } catch {}
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Save to localStorage whenever prayers change
   useEffect(() => {
     try {
@@ -97,8 +131,11 @@ export const PrayerWall: React.FC<PrayerProps> = ({
   // Listen to external prayer updates (e.g. from Bulletin Admin Modal, Admin Prayer Modal or storage)
   useEffect(() => {
     const handlePrayersUpdated = (e: any) => {
-      if (e.detail?.prayers && Array.isArray(e.detail.prayers)) {
-        setPrayers(deduplicatePrayers(e.detail.prayers));
+      const prayersList = e.detail?.prayers || (Array.isArray(e.detail) ? e.detail : null);
+      if (prayersList && Array.isArray(prayersList)) {
+        const deletedSet = getDeletedPrayerKeys();
+        const filtered = prayersList.filter((p: PrayerRequest) => !isPrayerDeleted(p, deletedSet));
+        setPrayers(deduplicatePrayers(filtered));
       }
     };
 
@@ -110,25 +147,30 @@ export const PrayerWall: React.FC<PrayerProps> = ({
 
     const handleBulletinUpdated = (e: any) => {
       if (e.detail?.prayerRequests && Array.isArray(e.detail.prayerRequests) && e.detail.prayerRequests.length > 0) {
-        const bulletinPrayers: PrayerRequest[] = e.detail.prayerRequests.map((req: string, idx: number) => ({
-          id: `bulletin-prayer-${idx + 1}-${Date.now()}`,
-          author: lang === 'zh' ? '教會同工會' : 'Church Board',
-          authorZh: '教會同工會',
-          authorEn: 'Church Board',
-          category: idx === 0 ? 'general' : idx === 1 ? 'faith' : 'health',
-          title: req,
-          titleZh: req,
-          titleEn: req,
-          content: `${req}。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。`,
-          contentZh: `${req}。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。`,
-          contentEn: `${req}. Please join together in prayer for God's grace and guidance.`,
-          date: e.detail.serviceDate || new Date().toISOString().split('T')[0],
-          isConfidential: false,
-          prayedCount: 15 + idx * 5
-        }));
+        const deletedSet = getDeletedPrayerKeys();
+        const bulletinPrayers: PrayerRequest[] = e.detail.prayerRequests
+          .map((req: string, idx: number) => ({
+            id: `bulletin-prayer-${idx + 1}-${Date.now()}`,
+            author: lang === 'zh' ? '教會同工會' : 'Church Board',
+            authorZh: '教會同工會',
+            authorEn: 'Church Board',
+            category: idx === 0 ? 'general' : idx === 1 ? 'faith' : 'health',
+            title: req,
+            titleZh: req,
+            titleEn: req,
+            content: `${req}。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。`,
+            contentZh: `${req}。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。`,
+            contentEn: `${req}. Please join together in prayer for God's grace and guidance.`,
+            date: e.detail.serviceDate || new Date().toISOString().split('T')[0],
+            isConfidential: false,
+            prayedCount: 15 + idx * 5
+          }))
+          .filter((p: PrayerRequest) => !isPrayerDeleted(p, deletedSet));
         
+        if (bulletinPrayers.length === 0) return;
+
         setPrayers(prev => {
-          const merged = [...bulletinPrayers, ...prev.filter(p => !p.id.startsWith('bulletin-prayer'))];
+          const merged = [...bulletinPrayers, ...prev.filter(p => !p.id.startsWith('bulletin-prayer') && !isPrayerDeleted(p, deletedSet))];
           const deduped = deduplicatePrayers(merged);
           try {
             localStorage.setItem('canaan_prayers_data', JSON.stringify(deduped));
@@ -142,7 +184,10 @@ export const PrayerWall: React.FC<PrayerProps> = ({
       if (e.key === 'canaan_prayers_data' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
-          if (Array.isArray(parsed)) setPrayers(deduplicatePrayers(parsed));
+          if (Array.isArray(parsed)) {
+            const deletedSet = getDeletedPrayerKeys();
+            setPrayers(deduplicatePrayers(parsed.filter(p => !isPrayerDeleted(p, deletedSet))));
+          }
         } catch {}
       }
       if (e.key === 'canaan_pending_prayers' && e.newValue) {
@@ -179,19 +224,60 @@ export const PrayerWall: React.FC<PrayerProps> = ({
     setPrayers(prev => prev.map(p => p.id === id ? { ...p, prayedCount: p.prayedCount + 1 } : p));
   };
 
+  // Delete prayer directly from card (Admin only)
+  const handleCardDeletePrayer = (targetPrayer: PrayerRequest) => {
+    const updatedPrayers = prayers.filter(p => p.id !== targetPrayer.id);
+    setPrayers(updatedPrayers);
+    setDeletingCardPrayerId(null);
+
+    // Save to deleted blacklist in localStorage so it will NEVER be resurrected
+    try {
+      const savedDeleted = localStorage.getItem('canaan_deleted_prayer_ids');
+      const list: string[] = savedDeleted ? JSON.parse(savedDeleted) : [];
+      const topicKey = getPrayerTopicKey(targetPrayer);
+      const titleStr = targetPrayer.titleZh || targetPrayer.title || '';
+      const updatedDeleted = Array.from(new Set([...list, targetPrayer.id, topicKey, titleStr].filter(Boolean)));
+      localStorage.setItem('canaan_deleted_prayer_ids', JSON.stringify(updatedDeleted));
+      localStorage.setItem('canaan_prayers_data', JSON.stringify(updatedPrayers));
+    } catch (e) {
+      console.warn("Could not save to canaan_deleted_prayer_ids:", e);
+    }
+
+    // Persist deletion to server backend
+    fetch(`/api/prayers/${encodeURIComponent(targetPrayer.id)}`, { method: 'DELETE' })
+      .catch(() => {
+        fetch('/api/prayers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prayers: updatedPrayers })
+        }).catch(() => {});
+      });
+
+    window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: updatedPrayers } }));
+    showToast(lang === 'zh' ? `已從代禱牆下架並刪除【${targetPrayer.titleZh || targetPrayer.title}】` : 'Removed prayer from wall');
+  };
+
   // Sync to official prayers (Admin only)
   const handleResetToOfficialPrayers = () => {
     if (!isAdmin) {
       onOpenAdminLogin();
       return;
     }
+    try {
+      localStorage.removeItem('canaan_deleted_prayer_ids');
+    } catch {}
     const cleanList = deduplicatePrayers(INITIAL_PRAYERS);
     setPrayers(cleanList);
     try {
       localStorage.setItem('canaan_prayers_data', JSON.stringify(cleanList));
     } catch {}
+    fetch('/api/prayers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prayers: cleanList })
+    }).catch(() => {});
     window.dispatchEvent(new CustomEvent('canaan_prayers_updated', { detail: { prayers: cleanList } }));
-    showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項並完成去重！' : 'Synced with latest official church prayer requests!');
+    showToast(lang === 'zh' ? '已成功重設並同步教會官方預設代禱事項！' : 'Synced with latest official church prayer requests!');
   };
 
   const categoryLabelMap = {
@@ -450,17 +536,48 @@ export const PrayerWall: React.FC<PrayerProps> = ({
                 key={prayer.id}
                 className="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/80 hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 relative group"
               >
-                {/* Admin quick edit badge */}
+                {/* Admin quick edit & delete controls */}
                 {isAdmin && (
-                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-3 right-3 flex items-center space-x-1.5 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10">
                     <button
-                      onClick={() => setIsAdminManageOpen(true)}
-                      className="p-1 rounded-lg bg-slate-900/80 text-amber-300 hover:text-white border border-amber-500/30 text-[10px] flex items-center space-x-1"
-                      title={lang === 'zh' ? '管理員編輯此代禱' : 'Edit prayer'}
+                      onClick={() => {
+                        setSelectedPrayerForEdit(prayer);
+                        setIsAdminManageOpen(true);
+                      }}
+                      className="px-2 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-amber-300 hover:text-white border border-amber-500/40 text-[11px] font-semibold flex items-center space-x-1 shadow transition-colors"
+                      title={lang === 'zh' ? '編輯此代禱' : 'Edit prayer'}
                     >
-                      <Edit3 className="w-3 h-3" />
-                      <span>{lang === 'zh' ? '管理' : 'Manage'}</span>
+                      <Edit3 className="w-3 h-3 text-amber-400" />
+                      <span>{lang === 'zh' ? '編輯' : 'Edit'}</span>
                     </button>
+
+                    {deletingCardPrayerId === prayer.id ? (
+                      <div className="flex items-center space-x-1 bg-rose-950/95 border border-rose-500/70 px-2 py-0.5 rounded-lg shadow-lg">
+                        <span className="text-[11px] text-rose-200 font-medium whitespace-nowrap">
+                          {lang === 'zh' ? '確認刪除？' : 'Delete?'}
+                        </span>
+                        <button
+                          onClick={() => handleCardDeletePrayer(prayer)}
+                          className="px-1.5 py-0.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-[11px] font-bold"
+                        >
+                          {lang === 'zh' ? '確定' : 'Yes'}
+                        </button>
+                        <button
+                          onClick={() => setDeletingCardPrayerId(null)}
+                          className="px-1 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px]"
+                        >
+                          {lang === 'zh' ? '取消' : 'No'}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setDeletingCardPrayerId(prayer.id)}
+                        className="p-1 rounded-lg bg-slate-900/90 hover:bg-rose-600/30 text-slate-400 hover:text-rose-300 border border-slate-700 hover:border-rose-500/50 text-[11px] transition-colors shadow"
+                        title={lang === 'zh' ? '下架並刪除此代禱' : 'Remove prayer from wall'}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -713,7 +830,10 @@ export const PrayerWall: React.FC<PrayerProps> = ({
         {isAdmin && (
           <AdminPrayerManagementModal
             isOpen={isAdminManageOpen}
-            onClose={() => setIsAdminManageOpen(false)}
+            onClose={() => {
+              setIsAdminManageOpen(false);
+              setSelectedPrayerForEdit(null);
+            }}
             lang={lang}
             prayers={prayers}
             onUpdatePrayers={(newPrayers) => {
@@ -725,6 +845,8 @@ export const PrayerWall: React.FC<PrayerProps> = ({
             }}
             showToast={showToast}
             onOpenGitHubSync={() => setIsPrayerSyncModalOpen(true)}
+            initialTab={selectedPrayerForEdit ? 'published' : undefined}
+            initialPrayerToEdit={selectedPrayerForEdit}
           />
         )}
 

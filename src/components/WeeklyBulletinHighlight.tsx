@@ -24,6 +24,23 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
   });
 
   useEffect(() => {
+    // Fetch initial master bulletin from backend if available
+    fetch('/api/bulletin')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setBulletinData((prev: any) => prev || data.data);
+          try {
+            if (!localStorage.getItem('canaan_bulletin_data')) {
+              localStorage.setItem('canaan_bulletin_data', JSON.stringify(data.data));
+            }
+          } catch {
+            // ignore
+          }
+        }
+      })
+      .catch(() => {});
+
     const handleBulletinUpdated = (e: any) => {
       if (e.detail) {
         setBulletinData(e.detail);

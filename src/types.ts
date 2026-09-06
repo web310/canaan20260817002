@@ -38,19 +38,35 @@ export interface Ministry {
   tags: string[];
 }
 
+export type EventCategory = 'worship' | 'prayer' | 'fellowship' | 'education' | 'devotion' | 'special';
+
 export interface ChurchEvent {
   id: string;
+  category: EventCategory;
   title: string;
   titleZh: string;
-  date: string;
+  date?: string; // YYYY-MM-DD
   time: string;
   timeZh: string;
   location: string;
   locationZh: string;
   description: string;
   descriptionZh: string;
-  category: 'worship' | 'prayer' | 'fellowship' | 'special';
+  recurrenceRuleZh: string;
+  recurrenceRuleEn: string;
+  recurrenceType?: 'weekly' | 'biweekly_month' | 'specific_date' | 'custom';
+  dayOfWeek?: number; // 0=Sun, 1=Mon, ..., 6=Sat
   zoomId?: string;
+  zoomPasscode?: string;
+  isCustom?: boolean;
+  order?: number;
+  // Computed display fields
+  dateFormattedZh?: string;
+  dateFormattedEn?: string;
+  ordinalTextZh?: string;
+  ordinalTextEn?: string;
+  isToday?: boolean;
+  daysUntil?: number;
 }
 
 export interface PrayerRequest {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, PrayerRequest, PendingPrayerSubmission } from '../types';
 import { INITIAL_PRAYERS, CHURCH_INFO } from '../data/churchData';
-import { deduplicatePrayers } from '../utils/prayerHelper';
+import { deduplicatePrayers, getPrayerTopicKey } from '../utils/prayerHelper';
 import { 
   X, Check, Trash2, Edit3, ShieldAlert, Plus, 
   RotateCcw, Mail, Eye, Sparkles, Inbox, CheckCircle2, 
@@ -17,6 +17,8 @@ interface AdminPrayerManagementModalProps {
   onUpdatePrayers: (newPrayers: PrayerRequest[]) => void;
   showToast: (msg: string) => void;
   onOpenGitHubSync?: () => void;
+  initialTab?: 'pending' | 'published' | 'add_new';
+  initialPrayerToEdit?: PrayerRequest | null;
 }
 
 export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProps> = ({
@@ -26,7 +28,9 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
   prayers,
   onUpdatePrayers,
   showToast,
-  onOpenGitHubSync
+  onOpenGitHubSync,
+  initialTab,
+  initialPrayerToEdit
 }) => {
   const [activeTab, setActiveTab] = useState<'pending' | 'published' | 'add_new'>('pending');
   const [pendingList, setPendingList] = useState<PendingPrayerSubmission[]>(() => {
@@ -41,6 +45,18 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
   // Editing state for an item
   const [editingPrayer, setEditingPrayer] = useState<PrayerRequest | null>(null);
   const [editingPending, setEditingPending] = useState<PendingPrayerSubmission | null>(null);
+  const [deletingPrayerId, setDeletingPrayerId] = useState<string | null>(null);
+  const [deletingPendingId, setDeletingPendingId] = useState<string | null>(null);
+
+  // Sync initial tab and editing prayer when opened
+  useEffect(() => {
+    if (isOpen) {
+      if (initialTab) setActiveTab(initialTab);
+      if (initialPrayerToEdit) setEditingPrayer(initialPrayerToEdit);
+      setDeletingPrayerId(null);
+      setDeletingPendingId(null);
+    }
+  }, [isOpen, initialTab, initialPrayerToEdit]);
 
   // New Prayer form state
   const [newAuthor, setNewAuthor] = useState('');
@@ -117,20 +133,47 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
     showToast(lang === 'zh' ? '已標記為教牧同工已私下授理代禱 (不公開)' : 'Marked as handled privately');
   };
 
-  // Action: Delete pending prayer
-  const handleDeletePending = (id: string) => {
-    if (!window.confirm(lang === 'zh' ? '確定要刪除這筆代禱登記紀錄嗎？' : 'Delete this pending prayer request?')) return;
+  // Action: Delete pending prayer (safe confirmation)
+  const confirmDeletePending = (id: string) => {
     const updatedPending = pendingList.filter(p => p.id !== id);
     savePendingList(updatedPending);
+    setDeletingPendingId(null);
     showToast(lang === 'zh' ? '已刪除代禱紀錄' : 'Deleted request');
   };
 
-  // Action: Delete published prayer
-  const handleDeletePublished = (id: string) => {
-    if (!window.confirm(lang === 'zh' ? '確定要從代禱牆下架並刪除此代禱嗎？' : 'Remove this prayer from the prayer wall?')) return;
-    const updatedPrayers = prayers.filter(p => p.id !== id);
+  // Action: Delete published prayer (safe inline confirmation + permanent tracking)
+  const confirmDeletePublished = (targetPrayer: PrayerRequest) => {
+    const updatedPrayers = prayers.filter(p => p.id !== targetPrayer.id);
+
+    // Save to deleted blacklist in localStorage so it will NEVER be resurrected
+    try {
+      const savedDeleted = localStorage.getItem('canaan_deleted_prayer_ids');
+      const list: string[] = savedDeleted ? JSON.parse(savedDeleted) : [];
+      const topicKey = getPrayerTopicKey(targetPrayer);
+      const titleStr = targetPrayer.titleZh || targetPrayer.title || '';
+      const updatedDeleted = Array.from(new Set([...list, targetPrayer.id, topicKey, titleStr].filter(Boolean)));
+      localStorage.setItem('canaan_deleted_prayer_ids', JSON.stringify(updatedDeleted));
+    } catch (e) {
+      console.warn("Could not save to canaan_deleted_prayer_ids:", e);
+    }
+
     onUpdatePrayers(updatedPrayers);
-    showToast(lang === 'zh' ? '已從代禱牆移除' : 'Removed from prayer wall');
+
+    // Persist deletion to server backend
+    fetch(`/api/prayers/${encodeURIComponent(targetPrayer.id)}`, { method: 'DELETE' })
+      .catch(() => {
+        fetch('/api/prayers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prayers: updatedPrayers })
+        }).catch(() => {});
+      });
+
+    setDeletingPrayerId(null);
+    if (editingPrayer?.id === targetPrayer.id) {
+      setEditingPrayer(null);
+    }
+    showToast(lang === 'zh' ? `已從代禱牆下架並刪除【${targetPrayer.titleZh || targetPrayer.title}】` : 'Removed prayer from wall');
   };
 
   // Action: Save edited published prayer
@@ -140,6 +183,11 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
 
     const updatedPrayers = prayers.map(p => p.id === editingPrayer.id ? editingPrayer : p);
     onUpdatePrayers(updatedPrayers);
+    fetch('/api/prayers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prayer: editingPrayer })
+    }).catch(() => {});
     setEditingPrayer(null);
     showToast(lang === 'zh' ? '已儲存代禱更新！' : 'Prayer updated successfully!');
   };
@@ -169,6 +217,11 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
 
     const updated = deduplicatePrayers([newPrayer, ...prayers]);
     onUpdatePrayers(updated);
+    fetch('/api/prayers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prayers: updated })
+    }).catch(() => {});
 
     setNewAuthor('');
     setNewTitle('');
@@ -179,8 +232,17 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
 
   // Action: Reset to official default prayers
   const handleResetToOfficialPrayers = () => {
-    if (!window.confirm(lang === 'zh' ? '確定要將代禱牆重設為教會官方預設代禱事項嗎？' : 'Reset prayer wall to default official prayers?')) return;
-    onUpdatePrayers(deduplicatePrayers(INITIAL_PRAYERS));
+    if (!window.confirm(lang === 'zh' ? '確定要將代禱牆重設為教會官方預設代禱事項嗎？這將會清除已刪除記錄。' : 'Reset prayer wall to default official prayers? This will clear deleted records.')) return;
+    try {
+      localStorage.removeItem('canaan_deleted_prayer_ids');
+    } catch {}
+    const fresh = deduplicatePrayers(INITIAL_PRAYERS);
+    onUpdatePrayers(fresh);
+    fetch('/api/prayers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prayers: fresh })
+    }).catch(() => {});
     showToast(lang === 'zh' ? '已成功同步最新教會官方代禱事項並完成去重！' : 'Synced with latest official church prayer requests!');
   };
 
@@ -444,13 +506,34 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
                               </>
                             )}
 
-                            <button
-                              onClick={() => handleDeletePending(item.id)}
-                              className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                              title={lang === 'zh' ? '刪除此筆代禱' : 'Delete request'}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            {deletingPendingId === item.id ? (
+                              <div className="flex items-center space-x-1.5 bg-rose-950/80 border border-rose-500/50 px-2.5 py-1 rounded-xl text-xs animate-fadeIn">
+                                <span className="text-rose-300 font-semibold">{lang === 'zh' ? '確認刪除？' : 'Delete?'}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => confirmDeletePending(item.id)}
+                                  className="px-2 py-0.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold shadow"
+                                >
+                                  {lang === 'zh' ? '確定' : 'Yes'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setDeletingPendingId(null)}
+                                  className="px-1.5 py-0.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs"
+                                >
+                                  {lang === 'zh' ? '取消' : 'No'}
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setDeletingPendingId(item.id)}
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                                title={lang === 'zh' ? '刪除此筆代禱' : 'Delete request'}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
 
@@ -475,7 +558,7 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
                     </h4>
                     <button
                       type="button"
-                      onClick={() => setEditingPrayer(null)}
+                      onClick={() => { setEditingPrayer(null); setDeletingPrayerId(null); }}
                       className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-slate-700"
                     >
                       {lang === 'zh' ? '取消' : 'Cancel'}
@@ -539,20 +622,52 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
                     />
                   </div>
 
-                  <div className="flex items-center justify-end space-x-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setEditingPrayer(null)}
-                      className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold"
-                    >
-                      {lang === 'zh' ? '取消' : 'Cancel'}
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow"
-                    >
-                      {lang === 'zh' ? '儲存修改' : 'Save Changes'}
-                    </button>
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    {/* Direct delete button inside edit form */}
+                    {deletingPrayerId === editingPrayer.id ? (
+                      <div className="flex items-center space-x-2 bg-rose-950/90 border border-rose-500/60 px-3 py-1.5 rounded-xl text-xs">
+                        <span className="text-rose-300 font-semibold">{lang === 'zh' ? '確定下架並刪除？' : 'Delete prayer?'}</span>
+                        <button
+                          type="button"
+                          onClick={() => confirmDeletePublished(editingPrayer)}
+                          className="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold shadow"
+                        >
+                          {lang === 'zh' ? '確認刪除' : 'Yes, Delete'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeletingPrayerId(null)}
+                          className="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs"
+                        >
+                          {lang === 'zh' ? '取消' : 'Cancel'}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setDeletingPrayerId(editingPrayer.id)}
+                        className="px-3.5 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                        <span>{lang === 'zh' ? '從代禱牆下架刪除' : 'Delete from Wall'}</span>
+                      </button>
+                    )}
+
+                    <div className="flex items-center space-x-2 ml-auto">
+                      <button
+                        type="button"
+                        onClick={() => { setEditingPrayer(null); setDeletingPrayerId(null); }}
+                        className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold"
+                      >
+                        {lang === 'zh' ? '取消' : 'Cancel'}
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow"
+                      >
+                        {lang === 'zh' ? '儲存修改' : 'Save Changes'}
+                      </button>
+                    </div>
                   </div>
                 </form>
               ) : (
@@ -594,13 +709,34 @@ export const AdminPrayerManagementModal: React.FC<AdminPrayerManagementModalProp
                           <span>{lang === 'zh' ? '編輯' : 'Edit'}</span>
                         </button>
 
-                        <button
-                          onClick={() => handleDeletePublished(p.id)}
-                          className="p-1.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                          title={lang === 'zh' ? '下架並刪除' : 'Remove from wall'}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {deletingPrayerId === p.id ? (
+                          <div className="flex items-center space-x-1.5 bg-rose-950/90 border border-rose-500/60 px-2.5 py-1.5 rounded-xl text-xs animate-fadeIn">
+                            <span className="text-rose-300 font-semibold">{lang === 'zh' ? '確認下架？' : 'Delete?'}</span>
+                            <button
+                              type="button"
+                              onClick={() => confirmDeletePublished(p)}
+                              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold shadow transition-colors"
+                            >
+                              {lang === 'zh' ? '確定' : 'Yes'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingPrayerId(null)}
+                              className="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs transition-colors"
+                            >
+                              {lang === 'zh' ? '取消' : 'Cancel'}
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setDeletingPrayerId(p.id)}
+                            className="p-1.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                            title={lang === 'zh' ? '下架並刪除' : 'Remove from wall'}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}

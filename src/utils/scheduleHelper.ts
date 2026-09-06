@@ -1,6 +1,9 @@
+import { ChurchEvent, EventCategory } from '../types';
+import { INITIAL_DEFAULT_EVENTS } from '../data/eventsData';
+
 export interface ComputedChurchEvent {
   id: string;
-  category: 'worship' | 'prayer' | 'fellowship' | 'education';
+  category: EventCategory;
   title: string;
   titleZh: string;
   date: string; // YYYY-MM-DD
@@ -278,18 +281,173 @@ export function getNextSundaySchool(now: Date = new Date()): ComputedChurchEvent
 }
 
 /**
- * Returns all 4 dynamic church upcoming events in correct chronological order
+ * Computes date, formatted strings and days countdown for any event (default or custom)
  */
-export function getUpcomingChurchEvents(now: Date = new Date()): ComputedChurchEvent[] {
-  const sundaySchool = getNextSundaySchool(now);
-  const sunday = getNextSundayService(now);
-  const prayer = getNextThursdayPrayer(now);
-  const cell = getNextCellGroupSaturday(now);
+export function computeSingleEvent(evt: ChurchEvent, now: Date = new Date()): ComputedChurchEvent {
+  if (evt.id === 'sunday-school' && (!evt.recurrenceType || evt.recurrenceType === 'weekly')) {
+    const base = getNextSundaySchool(now);
+    return {
+      ...base,
+      ...evt,
+      category: evt.category || base.category,
+      title: evt.title || base.title,
+      titleZh: evt.titleZh || base.titleZh,
+      time: evt.time || base.time,
+      timeZh: evt.timeZh || base.timeZh,
+      location: evt.location || base.location,
+      locationZh: evt.locationZh || base.locationZh,
+      description: evt.description || base.description,
+      descriptionZh: evt.descriptionZh || base.descriptionZh,
+      recurrenceRuleZh: evt.recurrenceRuleZh || base.recurrenceRuleZh,
+      recurrenceRuleEn: evt.recurrenceRuleEn || base.recurrenceRuleEn,
+      zoomId: evt.zoomId ?? base.zoomId,
+      zoomPasscode: evt.zoomPasscode ?? base.zoomPasscode,
+    };
+  }
 
-  const list: ComputedChurchEvent[] = [sundaySchool, sunday, prayer, cell];
+  if (evt.id === 'worship-service' && (!evt.recurrenceType || evt.recurrenceType === 'weekly')) {
+    const base = getNextSundayService(now);
+    return {
+      ...base,
+      ...evt,
+      category: evt.category || base.category,
+      title: evt.title || base.title,
+      titleZh: evt.titleZh || base.titleZh,
+      time: evt.time || base.time,
+      timeZh: evt.timeZh || base.timeZh,
+      location: evt.location || base.location,
+      locationZh: evt.locationZh || base.locationZh,
+      description: evt.description || base.description,
+      descriptionZh: evt.descriptionZh || base.descriptionZh,
+      recurrenceRuleZh: evt.recurrenceRuleZh || base.recurrenceRuleZh,
+      recurrenceRuleEn: evt.recurrenceRuleEn || base.recurrenceRuleEn,
+      zoomId: evt.zoomId ?? base.zoomId,
+      zoomPasscode: evt.zoomPasscode ?? base.zoomPasscode,
+    };
+  }
+
+  if (evt.id === 'prayer-meeting' && (!evt.recurrenceType || evt.recurrenceType === 'weekly')) {
+    const base = getNextThursdayPrayer(now);
+    return {
+      ...base,
+      ...evt,
+      category: evt.category || base.category,
+      title: evt.title || base.title,
+      titleZh: evt.titleZh || base.titleZh,
+      time: evt.time || base.time,
+      timeZh: evt.timeZh || base.timeZh,
+      location: evt.location || base.location,
+      locationZh: evt.locationZh || base.locationZh,
+      description: evt.description || base.description,
+      descriptionZh: evt.descriptionZh || base.descriptionZh,
+      recurrenceRuleZh: evt.recurrenceRuleZh || base.recurrenceRuleZh,
+      recurrenceRuleEn: evt.recurrenceRuleEn || base.recurrenceRuleEn,
+      zoomId: evt.zoomId ?? base.zoomId,
+      zoomPasscode: evt.zoomPasscode ?? base.zoomPasscode,
+    };
+  }
+
+  if (evt.id === 'cell-group' && (!evt.recurrenceType || evt.recurrenceType === 'biweekly_month')) {
+    const base = getNextCellGroupSaturday(now);
+    return {
+      ...base,
+      ...evt,
+      category: evt.category || base.category,
+      title: evt.title || base.title,
+      titleZh: evt.titleZh || base.titleZh,
+      time: evt.time || base.time,
+      timeZh: evt.timeZh || base.timeZh,
+      location: evt.location || base.location,
+      locationZh: evt.locationZh || base.locationZh,
+      description: evt.description || base.description,
+      descriptionZh: evt.descriptionZh || base.descriptionZh,
+      recurrenceRuleZh: evt.recurrenceRuleZh || base.recurrenceRuleZh,
+      recurrenceRuleEn: evt.recurrenceRuleEn || base.recurrenceRuleEn,
+      zoomId: evt.zoomId ?? base.zoomId,
+      zoomPasscode: evt.zoomPasscode ?? base.zoomPasscode,
+    };
+  }
+
+  // Weekly repeating event on a specific day of week
+  if (evt.recurrenceType === 'weekly' && typeof evt.dayOfWeek === 'number') {
+    const target = new Date(now);
+    const currDay = target.getDay();
+    let diffDays = (evt.dayOfWeek - currDay + 7) % 7;
+    if (diffDays === 0) {
+      // If today, check whether the event has finished
+      let endHour = 21;
+      if (evt.time.includes('12:30')) endHour = 12;
+      else if (evt.time.includes('10:50')) endHour = 10;
+      else if (evt.time.includes('4:00 PM') || evt.time.includes('16:00')) endHour = 16;
+      else if (evt.time.includes('9:15 PM') || evt.time.includes('21:15')) endHour = 21;
+      
+      const passed = target.getHours() > endHour;
+      if (passed) {
+        diffDays = 7;
+      }
+    }
+    target.setDate(target.getDate() + diffDays);
+    const dateStr = toISODate(target);
+    const daysUntil = getDaysUntil(target, now);
+    return {
+      ...evt,
+      date: dateStr,
+      dateFormattedZh: formatDate(target, 'zh'),
+      dateFormattedEn: formatDate(target, 'en'),
+      daysUntil,
+      isToday: daysUntil === 0,
+    };
+  }
+
+  // Specific date or already has explicit date
+  if (evt.date) {
+    const parts = evt.date.split('-');
+    const target = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const daysUntil = getDaysUntil(target, now);
+    return {
+      ...evt,
+      date: evt.date,
+      dateFormattedZh: formatDate(target, 'zh'),
+      dateFormattedEn: formatDate(target, 'en'),
+      daysUntil,
+      isToday: daysUntil === 0,
+    };
+  }
+
+  // Fallback: Default to today
+  const target = new Date(now);
+  const dateStr = toISODate(target);
+  return {
+    ...evt,
+    date: dateStr,
+    dateFormattedZh: formatDate(target, 'zh'),
+    dateFormattedEn: formatDate(target, 'en'),
+    daysUntil: 0,
+    isToday: true,
+  };
+}
+
+/**
+ * Returns computed church events from any custom/saved list, sorted by nearest upcoming date
+ */
+export function computeAllChurchEvents(events: ChurchEvent[], now: Date = new Date()): ComputedChurchEvent[] {
+  if (!events || events.length === 0) {
+    events = INITIAL_DEFAULT_EVENTS;
+  }
+  const list = events.map(e => computeSingleEvent(e, now));
   return list.sort((a, b) => {
-    const timeA = new Date(`${a.date}T${a.time.includes('10:00') ? '10:00:00' : a.time.includes('11:00') ? '11:00:00' : a.time.includes('2:00') ? '14:00:00' : '20:00:00'}`).getTime();
-    const timeB = new Date(`${b.date}T${b.time.includes('10:00') ? '10:00:00' : b.time.includes('11:00') ? '11:00:00' : b.time.includes('2:00') ? '14:00:00' : '20:00:00'}`).getTime();
-    return timeA - timeB;
+    // Sort upcoming first (0 or positive daysUntil), then nearest days
+    const scoreA = a.daysUntil < 0 ? 1000 + Math.abs(a.daysUntil) : a.daysUntil;
+    const scoreB = b.daysUntil < 0 ? 1000 + Math.abs(b.daysUntil) : b.daysUntil;
+    if (scoreA !== scoreB) return scoreA - scoreB;
+    return (a.order || 99) - (b.order || 99);
   });
 }
+
+/**
+ * Returns all default church upcoming events in correct chronological order
+ */
+export function getUpcomingChurchEvents(now: Date = new Date()): ComputedChurchEvent[] {
+  return computeAllChurchEvents(INITIAL_DEFAULT_EVENTS, now);
+}
+
