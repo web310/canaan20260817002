@@ -3,12 +3,12 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-05T18:54:02.145Z
+// Updated at: 2026-09-06T20:59:35.210Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
-// Total Sermons: 3
+// Total Sermons: 4
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-05-mtoqrkbl";
+export const SERMONS_DATA_VERSION = "version-2026-09-06-mtqaovje";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
@@ -22,7 +22,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     "scriptureZh": "使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節",
     "series": "Sunday Message",
     "seriesZh": "主日證道",
-    "summary": "At Canaan Shin Sheng Christian Church Sunday Service, Brother Ito preached on 'The Antioch Church' from Acts 11:19-40 and Acts 13:1-4, urging believers to proclaim the Gospel in trials, follow Christ, meet kingdom needs, and pray in unity.",
+    "summary": "At Canaan Shin Sheng Christian Church Sunday Service, Brother Ito preached on 'The Antioch Church' from Acts 11:19-40 and Acts 13:1-4, urging believers to proclaim the Gospel in trials, follow Christ faithfully, meet kingdom needs, and pray in unity as ambassadors of the Great Commission.",
     "summaryZh": "加南新生基督教會主日崇拜，ITO 弟兄透過使徒行傳第 11 章第 19-40 節與第 13 章第 1-4 節傳講《安提阿教會》，勉勵弟兄姊妹在患難中忠心傳揚福音、緊跟隨基督、顧念神國度的需要，並同心敬拜與迫切禱告，立志成為大使命的使者與活出基督之愛的人。",
     "points": [
       "1. Characteristics of the Antioch Church Used by God",
