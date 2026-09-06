@@ -3,11 +3,11 @@ import { PrayerRequest } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - PRAYER WALL MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-05T18:54:02.145Z
-// Total Active Prayers: 9
+// Updated at: 2026-09-06T20:59:35.210Z
+// Total Active Prayers: 8
 // ============================================================================
 
-export const PRAYERS_DATA_VERSION = "version-2026-09-05-mtoqrkbl";
+export const PRAYERS_DATA_VERSION = "version-2026-09-06-mtqaovje";
 
 export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
@@ -41,22 +41,6 @@ export const INITIAL_PRAYERS: PrayerRequest[] = [
     "date": "2026-08-30",
     "isConfidential": false,
     "prayedCount": 39
-  },
-  {
-    "id": "bulletin-prayer-1-1788053168913",
-    "author": "教會同工會",
-    "authorZh": "教會同工會",
-    "authorEn": "Church Board",
-    "category": "general",
-    "title": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
-    "titleZh": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
-    "titleEn": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
-    "content": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-    "contentZh": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-    "contentEn": "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。. Please join together in prayer for God's grace and guidance.",
-    "date": "2026-08-30",
-    "isConfidential": false,
-    "prayedCount": 31
   },
   {
     "id": "bulletin-prayer-3-1788053168913",
