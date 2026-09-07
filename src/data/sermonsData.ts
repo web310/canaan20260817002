@@ -3,12 +3,12 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-07T20:02:58.861Z
-// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
-// Total Sermons: 3
+// Updated at: 2026-09-07T22:04:00.000Z
+// Authoritative Constant: SERMON_CONTENT_LIST (Retaining 6 latest Sunday sermons)
+// Total Sermons: 6
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-07-mtro3xkd";
+export const SERMONS_DATA_VERSION = "version-2026-09-07-6sermons";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
@@ -103,6 +103,92 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "2. 挺身來關愛鄰舍 (使徒行傳 28:4-8)",
       "3. 主恩典是夠用的",
       "4. 專心尋求神引領"
+    ],
+    "videoPasscode": "25226",
+    "showVideo": true,
+    "showAudio": true
+  },
+  {
+    "id": "sermon-4",
+    "title": "Is Life Really Gone in the Blink of an Eye?",
+    "titleZh": "人生真的轉眼成空嗎？",
+    "speaker": "Rev. Meng Sulun",
+    "speakerZh": "孟蘇倫 牧師",
+    "date": "2026-08-09",
+    "scripture": "Ecclesiastes 1:2-3",
+    "scriptureZh": "傳道書第 1 章第 2-3 節",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
+    "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』在日光之下尋找上帝賜予永恆的生命目的與公義冠冕。",
+    "points": [
+      "Vanity under the sun — Ecclesiastes 1:2-3",
+      "Everything beautiful in its time — Ecclesiastes 3:11",
+      "The whole duty of humanity — Ecclesiastes 12:13"
+    ],
+    "pointsZh": [
+      "日光之下的虛空 — 傳道書 1:2-3",
+      "神造萬物，各按其時成為美好 — 傳道書 3:11",
+      "人所當盡的分 — 傳道書 12:13"
+    ],
+    "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
+    "videoPasscode": "8s4y?JHX",
+    "showVideo": true,
+    "showAudio": true
+  },
+  {
+    "id": "sermon-5",
+    "title": "Those Who Are Well Do Not Need a Physician",
+    "titleZh": "康健的人用不著醫生",
+    "speaker": "Rev. Yijun Guo",
+    "speakerZh": "郭易君 牧師",
+    "date": "2026-08-02",
+    "scripture": "Luke 5:27-32",
+    "scriptureZh": "路加福音第 5 章第 27-32 節",
+    "series": "Sunday Worship",
+    "seriesZh": "主日崇拜",
+    "summary": "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
+    "summaryZh": "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
+    "points": [
+      "1. Sitting at the Tax Booth (5:27a)",
+      "2. Follow Me (5:27b)",
+      "3. Followed Jesus (5:28)",
+      "4. Hosted a Great Feast (5:29-30)",
+      "5. Physician of Souls (5:31)"
+    ],
+    "pointsZh": [
+      "一、坐在稅關上 （5:27上）",
+      "二、你跟從我來 （5:27下）",
+      "三、跟從了耶穌 （5:28）",
+      "四、他大擺筵席 （5:29-30）",
+      "五、靈魂的醫生 （5:31）"
+    ],
+    "videoPasscode": "25226",
+    "showVideo": true,
+    "showAudio": true
+  },
+  {
+    "id": "sermon-6",
+    "title": "The Lord Jesus Personally Teaches Service",
+    "titleZh": "主耶穌親自教導事奉",
+    "speaker": "Brother Shaoxin Li",
+    "speakerZh": "李紹信 弟兄",
+    "date": "2026-07-26",
+    "scripture": "Luke 10:1-12, 17-21",
+    "scriptureZh": "路加福音第 10 章第 1-12，17-21 節",
+    "series": "Sunday Worship",
+    "seriesZh": "主日崇拜",
+    "summary": "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
+    "summaryZh": "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
+    "points": [
+      "1. The Lord Personally Sends Disciples (Luke 10:1-3)",
+      "2. Principles and Attitudes of Ministry (Luke 10:4-12)",
+      "3. Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
+    ],
+    "pointsZh": [
+      "一、主親自差遣門徒 (路加福音 10:1-3)",
+      "二、事奉的原則與態度 (路加福音 10:4-12)",
+      "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
     "videoPasscode": "25226",
     "showVideo": true,
