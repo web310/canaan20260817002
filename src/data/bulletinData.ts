@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-06T21:58:16.026Z
+// Updated at: 2026-09-07T19:07:00.109Z
 // ============================================================================
 
 export interface BulletinData {
@@ -107,76 +107,77 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
     }
   ],
   "announcements": [
-    "歡迎第一次來參加崇拜的新朋友，願神大大賜福您和您的家庭！",
-    "感謝萬志俠牧師今天前來證道分享《走一條我們從未走過的路》（約書亞記第三章），提醒我們緊隨神腳步、同心合一、憑信心見證神的奇妙作為。",
-    "每週四晚上 8:00 線上守望禱告會 (Zoom ID: 310-626-6103，密碼: 25226)，歡迎弟兄姊妹同心代求。"
+    "歡迎初次來到加南新生基督教會的弟兄姊妹與新朋友，會後備有愛筵交通。",
+    "週四晚上 8:00 於線上 Zoom 舉行全教會禱告會 (ID: 310-626-6103, 密碼: 25226)。",
+    "禮拜天上午 10:00 於副堂進行主日學，11:00 於主堂舉行主日崇拜。"
   ],
   "updatedAt": "2026-09-06T10:00:00.000Z",
-  "serviceDate": "2026-08-30",
+  "serviceDate": "2026-08-16",
   "presider": "鄭育青 弟兄",
-  "speaker": "萬志俠 牧師",
-  "speakerEn": "Rev. Zhixia Wan",
-  "sermonTitle": "走一條我們從未走過的路",
-  "sermonTitleEn": "Walking a Path We Have Never Walked Before",
-  "sermonScripture": "約書亞記第三章（約書亞記 3:1-17）",
-  "sermonScriptureEn": "Joshua 3:1-17",
-  "sermonSummary": "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
-  "sermonSummaryEn": "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
+  "speaker": "Ito 傳道",
+  "speakerEn": "Evangelist Ito",
+  "sermonTitle": "忠心忠僕，靠主行事",
+  "sermonTitleEn": "Abiding in Grace & Serving with Faithfulness",
+  "sermonScripture": "羅馬書第 12 章第 1-2 節",
+  "sermonScriptureEn": "Romans 12:1-2",
+  "sermonSummary": "「所以弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。」Ito 傳道勸勉弟兄姊妹心意更新而變化，在生活與事奉中靠主恩典忠心作主的忠僕。",
+  "sermonSummaryEn": "Reflecting on Romans 12 on presenting our bodies as living sacrifices holy and pleasing to God, renewing our minds, and discerning God's good and perfect will.",
   "sermonPointsZh": [
-    "1. 踏上新的旅程，我們必須緊隨神的腳步。",
-    "2. 眾人要合一，神要讓我們整個教會被成全。",
-    "3. 出于信心的旅程，必能親眼見證神的作為。"
+    "一、將身體獻上當作活祭 — 聖潔與神所喜悅的事奉 (羅馬書 12:1)",
+    "二、不要效法這個世界 — 心意更新而變化 (羅馬書 12:2上)",
+    "三、察驗何為神的善良、純全、可喜悅的旨意 (羅馬書 12:2下)"
   ],
   "sermonPoints": [
-    "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
-    "2. All must be united; God will perfect and fulfill our entire church.",
-    "3. A journey born of faith will surely witness God's mighty works firsthand."
+    "1. Presenting your bodies as a living sacrifice — Romans 12:1",
+    "2. Do not conform to this world, be transformed — Romans 12:2a",
+    "3. Discerning God's good, pleasing and perfect will — Romans 12:2b"
   ],
-  "memoryVerse": "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
-  "memoryVerseRef": "約書亞記 3:5",
-  "weeklyReadingRange": "8/31 - 9/6",
+  "memoryVerse": "所以，弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。（羅馬書 12:1）",
+  "memoryVerseRef": "羅馬書 12:1",
+  "weeklyReadingRange": "8/17 - 8/23",
   "weeklyReadingSchedule": [
     {
-      "date": "8/31 (週一)",
-      "oldTestament": "詩篇 132-134",
-      "newTestament": "哥林多前書 11:17-34"
+      "date": "8/17 (週一)",
+      "oldTestament": "詩篇 97-99",
+      "newTestament": "羅馬書 16:1-16"
     },
     {
-      "date": "9/01 (週二)",
-      "oldTestament": "詩篇 135-136",
-      "newTestament": "哥林多前書 12"
+      "date": "8/18 (週二)",
+      "oldTestament": "詩篇 100-101",
+      "newTestament": "羅馬書 16:17-27"
     },
     {
-      "date": "9/02 (週三)",
-      "oldTestament": "詩篇 137-139",
-      "newTestament": "哥林多前書 13"
+      "date": "8/19 (週三)",
+      "oldTestament": "詩篇 102",
+      "newTestament": "哥林多前書 1:1-17"
     },
     {
-      "date": "9/03 (週四)",
-      "oldTestament": "詩篇 140-141",
-      "newTestament": "哥林多前書 14:1-20"
+      "date": "8/20 (週四)",
+      "oldTestament": "詩篇 103",
+      "newTestament": "哥林多前書 1:18-31"
     },
     {
-      "date": "9/04 (週五)",
-      "oldTestament": "詩篇 142-143",
-      "newTestament": "哥林多前書 14:21-40"
+      "date": "8/21 (週五)",
+      "oldTestament": "詩篇 104",
+      "newTestament": "哥林多前書 2"
     },
     {
-      "date": "9/05 (週六)",
-      "oldTestament": "詩篇 144-145",
-      "newTestament": "哥林多前書 15:1-34"
+      "date": "8/22 (週六)",
+      "oldTestament": "詩篇 105",
+      "newTestament": "哥林多前書 3"
     },
     {
-      "date": "9/06 (週日)",
-      "oldTestament": "詩篇 146-147",
-      "newTestament": "哥林多前書 15:35-58"
+      "date": "8/23 (週日)",
+      "oldTestament": "詩篇 106",
+      "newTestament": "哥林多前書 4"
     }
   ],
   "prayerRequests": [
-    "為萬志俠牧師今天在我們當中的證道服事感恩，求主親自賜福萬牧師的家庭與事奉，使神的話語在弟兄姊妹心中扎根結果。",
-    "因 C3 教會總部規劃，我們教會與 C3 的租約將於 9/6 結束。求主親自帶領後續各項聚會場地安排，為加南新生基督教會開道路，賜下合適的敬拜處所。",
-    "求主帶領發展年輕世代事工，預備合適的同工與方向，吸引更多年輕人來教會，在真理中成長、彼此扶持。",
-    "為術後休養中的談妮傳道及其家人代禱，求主保守身心早日康復；也為身體欠安與跌倒的會友禱告，求主賜下醫治與平安。"
+    "為教會冷氣安裝工程與招牌設計製作代禱",
+    "為青年事工與主日學備課同工守望代禱",
+    "為長老執事與全體會友身體健康關懷代禱",
+    "為每週四晚上 8:00 線上 Zoom 禱告會守望",
+    "為每月兩次細胞小組與健行團契外展代禱"
   ],
   "zoomPasscode": "25226",
   "videoUrl": ""
