@@ -921,33 +921,6 @@ Strictly output your answer as a JSON object matching this schema:
       showAudio: true
     },
     {
-      id: "sermon-1",
-      title: "Walking a Path We Have Never Walked Before",
-      titleZh: "走一條我們從未走過的路",
-      speaker: "Rev. Zhixia Wan",
-      speakerZh: "萬志俠 牧師",
-      date: "2026-08-30",
-      scripture: "Joshua 3:1-17",
-      scriptureZh: "約書亞記第三章（約書亞記 3:1-17）",
-      series: "Sunday Message",
-      seriesZh: "主日證道",
-      summary: "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
-      summaryZh: "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
-      points: [
-        "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
-        "2. All must be united; God will perfect and fulfill our entire church.",
-        "3. A journey born of faith will surely witness God's mighty works firsthand."
-      ],
-      pointsZh: [
-        "1. 踏上新的旅程，我們必須緊隨神的腳步。",
-        "2. 眾人要合一，神要讓我們整個教會被成全。",
-        "3. 出于信心的旅程，必能親眼見證神的作為。"
-      ],
-      videoPasscode: "25226",
-      showVideo: true,
-      showAudio: true
-    },
-    {
       id: "sermon-2",
       title: "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
       titleZh: "曠野裡的微聲——從疲憊到更新",
