@@ -1031,6 +1031,27 @@ Strictly output your answer as a JSON object matching this schema:
 
   const DEFAULT_EVENTS_LIST = [
     {
+      id: "event-1788806584933",
+      category: "devotion",
+      title: "Canaan Shin Sheng Hiking Group",
+      titleZh: "新生健行隊",
+      date: "2026-09-12",
+      time: "9:30 AM - 12:00 PM",
+      timeZh: "上午 9:30 - 12:00",
+      location: "Robert Ryan Park",
+      locationZh: "Robert Ryan Park",
+      description: "Event: Canaan Shin Sheng Hiking Group – Robert Ryan Park (30359 Hawthorne Blvd, RPV) to PV3 Scenic Overlook\nDate: Saturday, September 12, 2026, 9:30 AM – 12:00 PM. Meeting Point: 9:15 AM at the picnic area on the west side of Robert Ryan Park (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8). Departure: 9:30 AM sharp; the hike proceeds to the PV3 scenic overlook (southeast view). Please refer to the route map for the outbound and return paths. Lunch: 11:00 AM at the starting point (picnic tables); sandwiches, fruit, salad, bread, snacks, and water will be provided.\nRegistration: Please sign up via the Newcomers Hiking Group LINE or WeChat groups, or send a text message to Simon Ma at (310) 989-4528.",
+      descriptionZh: "Event: 新生健行隊 Robert Ryan Park（30359 Hawthorne Bl. RPV） → PV 3 峽灣美景 觀景點\nDate：9/12/2026(六) 9:30 am – 12pm 集合地點: 9:15am 在Robert Ryan Park 公園內西邊的野餐區集合 (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8) 9:30am 準時出發到東南邊灣景點 PV3 東南邊的景觀。請參閱出發/回程 路線圖。 午餐地點: 11am 在公園的出發點（野餐桌）招待三明治，水果，沙拉，麵包，點心，水。\n報名：請在新生健行隊的LINE 群 或 微信群， 或傳簡報給 Simon Ma （310） 989-4528",
+      recurrenceRuleZh: "特別聚會日程",
+      recurrenceRuleEn: "Special Gathering Schedule",
+      recurrenceType: "specific_date",
+      dayOfWeek: 0,
+      zoomId: "",
+      zoomPasscode: "",
+      isCustom: true,
+      order: 10
+    },
+    {
       id: 'sunday-school',
       category: 'education',
       title: 'Sunday School (Adults & Children)',
@@ -2370,6 +2391,7 @@ Return ONLY valid JSON.
 
       const activeBranch = branch || "main";
       const sermonsList = Array.isArray(data?.sermons) ? data.sermons : inMemorySermons;
+      const eventsList = Array.isArray(data?.events) ? data.events : inMemoryEvents;
       const photosList = Array.isArray(data?.photos) ? data.photos : [];
       const categoriesList = Array.isArray(data?.categories) ? data.categories : [];
       const albumsList = Array.isArray(data?.albums) ? data.albums : [];
@@ -2380,6 +2402,12 @@ Return ONLY valid JSON.
       if (Array.isArray(data?.sermons)) {
         inMemorySermons = data.sermons;
         persistSermonsToFile(data.sermons);
+      }
+
+      // Update in-memory events
+      if (Array.isArray(data?.events)) {
+        inMemoryEvents = data.events;
+        persistEventsToFile(data.events);
       }
 
       // Generate file contents
@@ -2401,6 +2429,18 @@ export const SERMON_CONTENT_LIST: Sermon[] = ${JSON.stringify(sermonsList, null,
 // Backwards compatibility aliases
 export const INITIAL_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
 export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
+`;
+
+      const eventsTs = `import { ChurchEvent } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Events: ${eventsList.length}
+// ============================================================================
+
+export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = ${JSON.stringify(eventsList, null, 2)};
 `;
 
       const sermonStorageTs = `import { Sermon } from '../types';
@@ -2476,6 +2516,32 @@ import outdoorImg from '../assets/images/chinese_church_hero_1786495867006.jpg';
 export const GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL = "https://photos.app.goo.gl/S4i2xq8Ghh5QwdYg7";
 export const GOOGLE_SITES_GALLERY_URL = "https://sites.google.com/a/canaannewlife.org/cnl/%E7%85%A7%E7%89%87%E8%B5%B0%E5%BB%8A";
 export const GOOGLE_PHOTOS_DEFAULT_URL = "https://photos.app.goo.gl/S4i2xq8Ghh5QwdYg7";
+
+export const LOCAL_ASSET_MAP: Record<string, string> = {
+  'canaan_worship_choir_1786671374150.jpg': choirImg,
+  'canaan_baptism_service_1786671385015.jpg': baptismImg,
+  'canaan_retreat_camp_1786671399070.jpg': retreatImg,
+  'canaan_christmas_praise_1786671410013.jpg': christmasImg,
+  'canaan_love_feast_1786671419624.jpg': feastImg,
+  'canaan_family_sunday_1786671430385.jpg': familyImg,
+  'canaan_fellowship_1786434097997.jpg': fellowshipImg,
+  'chinese_fellowship_photo_1786495882516.jpg': cellGroupImg,
+  'canaan_church_hero_1786434083190.jpg': churchHeroImg,
+  'chinese_church_hero_1786495867006.jpg': outdoorImg
+};
+
+export const resolveGalleryImageUrl = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  for (const [filename, importedAsset] of Object.entries(LOCAL_ASSET_MAP)) {
+    if (url.includes(filename)) {
+      return importedAsset;
+    }
+  }
+  return url;
+};
 
 export const INITIAL_GOOGLE_ALBUMS: GoogleAlbum[] = ${JSON.stringify(albumsList, null, 2)};
 
@@ -2601,6 +2667,7 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
         version: "2.0",
         stats: {
           totalSermons: sermonsList.length,
+          totalEvents: eventsList.length,
           totalPhotos: photosList.length,
           totalCategories: categoriesList.length,
           totalAlbums: albumsList.length,
@@ -2608,6 +2675,7 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
         },
         data: {
           sermons: sermonsList,
+          events: eventsList,
           photos: photosList,
           categories: categoriesList,
           albums: albumsList,
@@ -2623,6 +2691,7 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
       const files = [
         { path: "src/data/sermonsData.ts", content: sermonsTs },
         { path: "src/utils/sermonStorage.ts", content: sermonStorageTs },
+        { path: "src/data/eventsData.ts", content: eventsTs },
         { path: "src/data/galleryData.ts", content: galleryTs },
         { path: "src/data/bulletinData.ts", content: bulletinTs },
         ...(prayersList.length > 0 ? [{ path: "src/data/prayersData.ts", content: prayersTs }] : []),
@@ -2635,7 +2704,7 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
       // Update files sequentially via GitHub REST API
       let lastSha = "latest";
       let lastCommitUrl = `https://github.com/${owner}/${repo}`;
-      const defaultMsg = commitMessage || `feat(data): sync all church data (${sermonsList.length} sermons, ${photosList.length} photos) - ${new Date().toISOString().slice(0, 10)}`;
+      const defaultMsg = commitMessage || `feat(data): sync all church data (${sermonsList.length} sermons, ${eventsList.length} events, ${photosList.length} photos) - ${new Date().toISOString().slice(0, 10)}`;
 
       for (const f of files) {
         // Fetch current sha
@@ -2884,6 +2953,156 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayerList, nul
     }
   });
 
+  // Backend endpoint to sync events & gatherings directly to GitHub repo
+  app.post("/api/github/sync-events", async (req: express.Request, res: express.Response) => {
+    try {
+      const { token, owner, repo, branch, path: targetPath, events, commitMessage } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ error: "GitHub Personal Access Token is required" });
+      }
+      if (!owner || !repo) {
+        return res.status(400).json({ error: "Repository owner and repo name are required" });
+      }
+
+      const activeBranch = branch || "main";
+      const activePath = targetPath || "src/data/eventsData.ts";
+      const eventsList = Array.isArray(events) ? events : inMemoryEvents;
+
+      // Update in-memory events and local persistence
+      if (Array.isArray(events)) {
+        inMemoryEvents = events;
+        persistEventsToFile(events);
+      }
+
+      const eventsTs = `import { ChurchEvent } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Events: ${eventsList.length}
+// ============================================================================
+
+export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = ${JSON.stringify(eventsList, null, 2)};
+`;
+
+      const base64Content = Buffer.from(eventsTs, "utf-8").toString("base64");
+
+      // 1. Fetch current file sha if exists
+      let currentSha: string | undefined = undefined;
+      const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${activePath}?ref=${activeBranch}`;
+      
+      const authHeader = token.startsWith("Bearer ") || token.startsWith("token ") ? token : `Bearer ${token}`;
+      const getRes = await fetch(getFileUrl, {
+        headers: {
+          Authorization: authHeader,
+          Accept: "application/vnd.github+json",
+          "User-Agent": "CanaanChurchApp/1.0"
+        }
+      });
+
+      if (getRes.ok) {
+        const fileInfo: any = await getRes.json();
+        currentSha = fileInfo.sha;
+      }
+
+      // 2. Put file contents
+      const putFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${activePath}`;
+      const defaultMsg = commitMessage || `feat(events): update church gatherings and events (${eventsList.length} records) - ${new Date().toISOString().slice(0, 10)}`;
+      
+      let putRes = await fetch(putFileUrl, {
+        method: "PUT",
+        headers: {
+          Authorization: authHeader,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "User-Agent": "CanaanChurchApp/1.0"
+        },
+        body: JSON.stringify({
+          message: defaultMsg,
+          content: base64Content,
+          branch: activeBranch,
+          sha: currentSha
+        })
+      });
+
+      if (putRes.status === 401 && !token.startsWith("token ")) {
+        const fallbackAuth = `token ${token.replace(/^Bearer\s+/i, '')}`;
+        putRes = await fetch(putFileUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: fallbackAuth,
+            Accept: "application/vnd.github+json",
+            "Content-Type": "application/json",
+            "User-Agent": "CanaanChurchApp/1.0"
+          },
+          body: JSON.stringify({
+            message: defaultMsg,
+            content: base64Content,
+            branch: activeBranch,
+            sha: currentSha
+          })
+        });
+      }
+
+      if (!putRes.ok) {
+        const errJson: any = await putRes.json().catch(() => ({}));
+        return res.status(putRes.status).json({
+          error: errJson.message || `GitHub commit failed (${putRes.status})`
+        });
+      }
+
+      const commitResult: any = await putRes.json();
+
+      // Also sync public/canaan_master_data.json if exists
+      const masterPath = path.join(process.cwd(), "public", "canaan_master_data.json");
+      if (fs.existsSync(masterPath)) {
+        try {
+          const masterRaw = fs.readFileSync(masterPath, "utf-8");
+          let masterSha: string | undefined = undefined;
+          const getMasterRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/canaan_master_data.json?ref=${activeBranch}`, {
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            }
+          });
+          if (getMasterRes.ok) {
+            const masterInfo: any = await getMasterRes.json();
+            masterSha = masterInfo.sha;
+          }
+          await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/canaan_master_data.json`, {
+            method: "PUT",
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "Content-Type": "application/json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            },
+            body: JSON.stringify({
+              message: `chore(data): update master snapshot with latest events (${eventsList.length})`,
+              content: Buffer.from(masterRaw, "utf-8").toString("base64"),
+              branch: activeBranch,
+              sha: masterSha
+            })
+          });
+        } catch (mErr) {
+          console.warn("Could not sync remote canaan_master_data.json:", mErr);
+        }
+      }
+
+      return res.json({
+        success: true,
+        commitSha: commitResult.commit?.sha?.slice(0, 7) || "latest",
+        commitUrl: commitResult.commit?.html_url || `https://github.com/${owner}/${repo}`,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || "Failed to sync events to GitHub" });
+    }
+  });
+
   // Backend endpoint to sync sermons directly to GitHub repo
   app.post("/api/github/sync-sermons", async (req: express.Request, res: express.Response) => {
     try {
@@ -2931,10 +3150,11 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       // 1. Fetch current file sha if exists
       let currentSha: string | undefined = undefined;
       const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${activePath}?ref=${activeBranch}`;
+      const authHeader = token.startsWith("Bearer ") || token.startsWith("token ") ? token : `Bearer ${token}`;
       
       const getRes = await fetch(getFileUrl, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: authHeader,
           Accept: "application/vnd.github+json",
           "User-Agent": "CanaanChurchApp/1.0"
         }
@@ -2949,10 +3169,10 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       const putFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${activePath}`;
       const defaultMsg = `feat(sermons): update Sunday sermon archive (${sermonList.length} records) - ${new Date().toISOString().slice(0, 10)}`;
       
-      const putRes = await fetch(putFileUrl, {
+      let putRes = await fetch(putFileUrl, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: authHeader,
           Accept: "application/vnd.github+json",
           "Content-Type": "application/json",
           "User-Agent": "CanaanChurchApp/1.0"
@@ -2965,6 +3185,25 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
         })
       });
 
+      if (putRes.status === 401 && !token.startsWith("token ")) {
+        const fallbackAuth = `token ${token.replace(/^Bearer\s+/i, '')}`;
+        putRes = await fetch(putFileUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: fallbackAuth,
+            Accept: "application/vnd.github+json",
+            "Content-Type": "application/json",
+            "User-Agent": "CanaanChurchApp/1.0"
+          },
+          body: JSON.stringify({
+            message: commitMessage || defaultMsg,
+            content: base64Content,
+            branch: activeBranch,
+            sha: currentSha
+          })
+        });
+      }
+
       if (!putRes.ok) {
         const errJson: any = await putRes.json().catch(() => ({}));
         return res.status(putRes.status).json({
@@ -2973,6 +3212,44 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       }
 
       const commitResult: any = await putRes.json();
+
+      // Also sync public/canaan_master_data.json if exists
+      const masterPath = path.join(process.cwd(), "public", "canaan_master_data.json");
+      if (fs.existsSync(masterPath)) {
+        try {
+          const masterRaw = fs.readFileSync(masterPath, "utf-8");
+          let masterSha: string | undefined = undefined;
+          const getMasterRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/canaan_master_data.json?ref=${activeBranch}`, {
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            }
+          });
+          if (getMasterRes.ok) {
+            const masterInfo: any = await getMasterRes.json();
+            masterSha = masterInfo.sha;
+          }
+          await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/canaan_master_data.json`, {
+            method: "PUT",
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "Content-Type": "application/json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            },
+            body: JSON.stringify({
+              message: `chore(data): update master snapshot with latest sermons (${sermonList.length})`,
+              content: Buffer.from(masterRaw, "utf-8").toString("base64"),
+              branch: activeBranch,
+              sha: masterSha
+            })
+          });
+        } catch (mErr) {
+          console.warn("Could not sync remote canaan_master_data.json:", mErr);
+        }
+      }
+
       return res.json({
         success: true,
         commitSha: commitResult.commit?.sha?.slice(0, 7) || "latest",

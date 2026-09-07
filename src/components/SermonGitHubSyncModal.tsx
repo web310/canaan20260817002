@@ -132,19 +132,63 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
     setPushError(null);
     setPushSuccessResult(null);
 
+    const defaultCommitMsg = `feat(sermons): update Sunday sermon archive (${sermons.length} records) - ${new Date().toISOString().slice(0, 10)}`;
+    const commitMessage = customCommitMsg.trim() || defaultCommitMsg;
+
     try {
+      // 1. Try server-side proxy first (bypasses browser CORS, executes clean commit & syncs master json)
+      try {
+        const backendRes = await fetch('/api/github/sync-sermons', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token,
+            owner,
+            repo,
+            branch: targetBranch,
+            path: targetPath,
+            sermons,
+            commitMessage
+          })
+        });
+
+        if (backendRes.ok) {
+          const resData = await backendRes.json();
+          setPushSuccessResult({
+            commitSha: resData.commitSha || 'latest',
+            commitUrl: resData.commitUrl || `https://github.com/${owner}/${repo}/commits/${targetBranch}`,
+            date: new Date().toLocaleTimeString()
+          });
+          return;
+        } else {
+          const errData = await backendRes.json().catch(() => ({}));
+          const errMsg = errData.error || `Server GitHub error (${backendRes.status})`;
+          if (errMsg.includes("Resource not accessible") || errMsg.includes("403") || errMsg.includes("Bad credentials") || errMsg.includes("401")) {
+            throw new Error(`GitHub 權限不足或 Token 無效 (${errMsg})。\n💡 請確認您的 GitHub Token 是否具有對倉庫「${owner}/${repo}」的寫入權限：\n1. 若為 Classic Token (ghp_...)：需勾選「repo」完整權限。\n2. 若為 Fine-grained Token (github_pat_...)：需在 Repository Access 選取此倉庫，並在 Permissions -> Contents 設定為「Read and write」。`);
+          }
+          console.warn("Backend proxy sync returned non-ok, attempting direct GitHub client fallback:", errMsg);
+        }
+      } catch (backendErr: any) {
+        if (backendErr.message && (backendErr.message.includes("GitHub 權限不足") || backendErr.message.includes("Token 無效"))) {
+          throw backendErr;
+        }
+        console.warn("Backend proxy call failed, fallback to client fetch:", backendErr);
+      }
+
+      // 2. Client-side direct GitHub fallback
       const tsCode = generateTypeScriptCode();
       // UTF-8 to base64 encoding safely
       const encodedContent = btoa(unescape(encodeURIComponent(tsCode)));
 
-      // 1. Get existing file SHA if it exists
+      // Get existing file SHA if it exists
       let existingSha: string | undefined = undefined;
       const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${targetPath}?ref=${targetBranch}`;
+      const authHeader = token.startsWith('Bearer ') || token.startsWith('token ') ? token : `Bearer ${token}`;
 
       try {
         const getRes = await fetch(getFileUrl, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': authHeader,
             'Accept': 'application/vnd.github+json',
             'X-GitHub-Api-Version': '2022-11-28'
           }
@@ -157,15 +201,12 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
         console.warn("File check notice:", checkErr);
       }
 
-      // 2. Commit & Push file to GitHub
-      const defaultCommitMsg = `feat(sermons): update Sunday sermon archive (${sermons.length} records) - ${new Date().toISOString().slice(0, 10)}`;
-      const commitMessage = customCommitMsg.trim() || defaultCommitMsg;
-
+      // Commit & Push file to GitHub
       const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${targetPath}`;
-      const putRes = await fetch(putUrl, {
+      let putRes = await fetch(putUrl, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': authHeader,
           'Accept': 'application/vnd.github+json',
           'Content-Type': 'application/json',
           'X-GitHub-Api-Version': '2022-11-28'
@@ -177,6 +218,25 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
           sha: existingSha
         })
       });
+
+      if (putRes.status === 401 && !token.startsWith('token ')) {
+        const fallbackAuth = `token ${token.replace(/^Bearer\s+/i, '')}`;
+        putRes = await fetch(putUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': fallbackAuth,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          },
+          body: JSON.stringify({
+            message: commitMessage,
+            content: encodedContent,
+            branch: targetBranch,
+            sha: existingSha
+          })
+        });
+      }
 
       if (!putRes.ok) {
         const errJson = await putRes.json().catch(() => ({}));

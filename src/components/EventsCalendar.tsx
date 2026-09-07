@@ -20,13 +20,15 @@ import {
   Lock,
   RotateCcw,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Github
 } from 'lucide-react';
 
 interface EventsProps {
   lang: Language;
   adminEmail?: string | null;
   onOpenAdminLogin?: () => void;
+  onOpenGlobalSync?: () => void;
 }
 
 const STORAGE_EVENTS_KEY = 'canaan_events_data';
@@ -35,7 +37,8 @@ const STORAGE_DELETED_KEY = 'canaan_deleted_event_ids';
 export const EventsCalendar: React.FC<EventsProps> = ({
   lang,
   adminEmail,
-  onOpenAdminLogin
+  onOpenAdminLogin,
+  onOpenGlobalSync
 }) => {
   const [rawEvents, setRawEvents] = useState<ChurchEvent[]>(() => {
     try {
@@ -457,6 +460,19 @@ export const EventsCalendar: React.FC<EventsProps> = ({
               >
                 <Plus className="w-4 h-4" />
                 <span>{lang === 'zh' ? '新增聚會 • 靈修活動' : '+ Add Gathering / Event'}</span>
+              </button>
+            )}
+
+            {/* Admin GitHub Sync Button */}
+            {adminEmail && onOpenGlobalSync && (
+              <button
+                type="button"
+                onClick={onOpenGlobalSync}
+                className="inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-amber-950 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 px-3.5 py-2.5 rounded-xl shadow-xs transition-all"
+                title={lang === 'zh' ? '將最新聚會日程與全站資料同步至 GitHub' : 'Sync gathering schedule & church data to GitHub'}
+              >
+                <Github className="w-4 h-4 text-slate-950" />
+                <span>{lang === 'zh' ? '同步至 GitHub' : 'Sync to GitHub'}</span>
               </button>
             )}
 

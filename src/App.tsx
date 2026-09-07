@@ -97,6 +97,7 @@ export default function App() {
           lang={lang} 
           adminEmail={adminEmail}
           onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+          onOpenGlobalSync={() => setIsGlobalGitHubSyncOpen(true)}
         />
 
         {/* Photo Gallery & Google Photos Albums */}
