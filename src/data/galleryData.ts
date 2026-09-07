@@ -21,10 +21,10 @@ export const LOCAL_ASSET_MAP: Record<string, string> = {
   'canaan_christmas_praise_1786671410013.jpg': christmasImg,
   'canaan_love_feast_1786671419624.jpg': feastImg,
   'canaan_family_sunday_1786671430385.jpg': familyImg,
-  'chinese_fellowship_photo_1786495882516.jpg': cellGroupImg,
   'canaan_fellowship_1786434097997.jpg': fellowshipImg,
-  'chinese_church_hero_1786495867006.jpg': outdoorImg,
+  'chinese_fellowship_photo_1786495882516.jpg': cellGroupImg,
   'canaan_church_hero_1786434083190.jpg': churchHeroImg,
+  'chinese_church_hero_1786495867006.jpg': outdoorImg
 };
 
 export const resolveGalleryImageUrl = (url?: string): string => {
