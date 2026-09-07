@@ -3,11 +3,11 @@ import { PrayerRequest } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - PRAYER WALL MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-06T21:58:16.026Z
+// Updated at: 2026-09-07T19:07:00.109Z
 // Total Active Prayers: 8
 // ============================================================================
 
-export const PRAYERS_DATA_VERSION = "version-2026-09-06-mtqcsc7u";
+export const PRAYERS_DATA_VERSION = "version-2026-09-07-mtrm3xxp";
 
 export const INITIAL_PRAYERS: PrayerRequest[] = [
   {
