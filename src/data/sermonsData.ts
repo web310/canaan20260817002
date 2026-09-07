@@ -3,14 +3,40 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-06T21:58:16.026Z
+// Updated at: 2026-09-07T19:07:00.109Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
-// Total Sermons: 4
+// Total Sermons: 5
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-06-mtqcsc7u";
+export const SERMONS_DATA_VERSION = "version-2026-09-07-mtrm3xxp";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1788806518535",
+    "title": "Walking a Path We Have Never Walked Before",
+    "titleZh": "走一條我們從未走過的路",
+    "speaker": "Rev. Zhixia Wan",
+    "speakerZh": "萬志俠 牧師",
+    "date": "2026-09-12",
+    "scripture": "Joshua 3:1-17",
+    "scriptureZh": "約書亞記第三章（約書亞記 3:1-17）",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Zhixia Wan on \"Walking a Path We Have Never Walked Before\", reflecting on Joshua 3:1-17.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，萬志俠 牧師證道傳講《走一條我們從未走過的路》，分享經文「約書亞記第三章（約書亞記 3:1-17）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+      "2. All must be united; God will perfect and fulfill our entire church.",
+      "3. A journey born of faith will surely witness God's mighty works firsthand."
+    ],
+    "pointsZh": [
+      "1. 踏上新的旅程，我們必須緊隨神的腳步。",
+      "2. 眾人要合一，神要讓我們整個教會被成全。",
+      "3. 出于信心的旅程，必能親眼見證神的作為。"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
   {
     "id": "sermon-20260906",
     "title": "The Antioch Church",
