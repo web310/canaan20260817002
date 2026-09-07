@@ -23,6 +23,7 @@ export interface ComputedChurchEvent {
   zoomPasscode?: string;
   isToday?: boolean;
   daysUntil: number;
+  order?: number;
 }
 
 /**

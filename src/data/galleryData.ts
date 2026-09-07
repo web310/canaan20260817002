@@ -14,6 +14,32 @@ export const GOOGLE_PHOTOS_HISTORICAL_ALBUM_URL = "https://photos.app.goo.gl/S4i
 export const GOOGLE_SITES_GALLERY_URL = "https://sites.google.com/a/canaannewlife.org/cnl/%E7%85%A7%E7%89%87%E8%B5%B0%E5%BB%8A";
 export const GOOGLE_PHOTOS_DEFAULT_URL = "https://photos.app.goo.gl/S4i2xq8Ghh5QwdYg7";
 
+export const LOCAL_ASSET_MAP: Record<string, string> = {
+  'canaan_worship_choir_1786671374150.jpg': choirImg,
+  'canaan_baptism_service_1786671385015.jpg': baptismImg,
+  'canaan_retreat_camp_1786671399070.jpg': retreatImg,
+  'canaan_christmas_praise_1786671410013.jpg': christmasImg,
+  'canaan_love_feast_1786671419624.jpg': feastImg,
+  'canaan_family_sunday_1786671430385.jpg': familyImg,
+  'canaan_fellowship_1786434097997.jpg': fellowshipImg,
+  'chinese_fellowship_photo_1786495882516.jpg': cellGroupImg,
+  'canaan_church_hero_1786434083190.jpg': churchHeroImg,
+  'chinese_church_hero_1786495867006.jpg': outdoorImg
+};
+
+export const resolveGalleryImageUrl = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  for (const [filename, importedAsset] of Object.entries(LOCAL_ASSET_MAP)) {
+    if (url.includes(filename)) {
+      return importedAsset;
+    }
+  }
+  return url;
+};
+
 export const INITIAL_GOOGLE_ALBUMS: GoogleAlbum[] = [
   {
     "id": "album-2015-dumplings",
