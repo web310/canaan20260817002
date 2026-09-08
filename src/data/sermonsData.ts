@@ -3,12 +3,12 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-08T16:53:31.276Z
-// Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
+// Updated at: 2026-09-08T18:30:51.076Z
+// Authoritative Constant: SERMON_CONTENT_LIST (Strictly top 3 latest sermons)
 // Total Sermons: 6
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-08-mtsws4y4";
+export const SERMONS_DATA_VERSION = "version-2026-09-08-mtt09ays";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
@@ -47,8 +47,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "3) 立志與弟兄姐妹一起迫切禱告"
     ],
     "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
+    "showVideo": true,
+    "showAudio": true
   },
   {
     "id": "sermon-2",
@@ -76,8 +76,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
     ],
     "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
+    "showVideo": true,
+    "showAudio": true
   },
   {
     "id": "sermon-3",
@@ -105,8 +105,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "4. 專心尋求神引領"
     ],
     "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
+    "showVideo": true,
+    "showAudio": true
   },
   {
     "id": "sermon-4",
@@ -164,8 +164,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "五、靈魂的醫生 （5:31）"
     ],
     "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
+    "showVideo": true,
+    "showAudio": true
   },
   {
     "id": "sermon-6",
@@ -191,8 +191,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
     "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
+    "showVideo": true,
+    "showAudio": true
   }
 ];
 
