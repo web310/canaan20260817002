@@ -29,28 +29,61 @@ export function getMasterDataFingerprint(): string {
 
 /**
  * Authoritative sermon loader.
- * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
- * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
+ * Validates cache against compiled master version and fingerprint.
+ * Guarantees that any turned-off visibility flags (showVideo: false, showAudio: false) in the
+ * deployed master take immediate effect across all deployment environments (Cloudflare Pages, GitHub).
  */
 export function loadAndSyncSermons(): Sermon[] {
   try {
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    } catch {
-      // ignore storage errors
+    const currentFingerprint = getMasterDataFingerprint();
+    const cachedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
+    const cachedVersion = localStorage.getItem('canaan_sermons_data_version');
+    const saved = localStorage.getItem('canaan_sermons_data');
+
+    // If cache is missing, or if the deployed release changed (different version or fingerprint),
+    // immediately sync to the authoritative compiled INITIAL_SERMONS!
+    if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
+      const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      try {
+        localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+        localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
+        localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+      } catch {}
+      return list;
     }
-    return list;
-  } catch {
-    return INITIAL_SERMONS;
+
+    const parsed: Sermon[] = JSON.parse(saved);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      // Reconcile visibility flags: if the master data explicitly marks a sermon as showVideo: false
+      // or showAudio: false, ensure that is respected even if local cache had an older value
+      const reconciled = parsed.map(s => {
+        const master = INITIAL_SERMONS.find(m => m.id === s.id || m.date === s.date);
+        if (master) {
+          return {
+            ...s,
+            showVideo: master.showVideo === false ? false : s.showVideo,
+            showAudio: master.showAudio === false ? false : s.showAudio
+          };
+        }
+        return s;
+      });
+      return reconciled;
+    }
+  } catch (e) {
+    // ignore
   }
+  return [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 }
 
 /**
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  return loadAndSyncSermons();
+  const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  try {
+    localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+    localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+    localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+  } catch {}
+  return list;
 }

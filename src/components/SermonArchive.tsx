@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, Sermon } from '../types';
-import { SERMON_CONTENT_LIST } from '../data/sermonsData';
+import { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION } from '../data/sermonsData';
+import { loadAndSyncSermons, getMasterDataFingerprint, resetSermonsToDeployedMaster } from '../utils/sermonStorage';
 import { CHURCH_INFO } from '../data/churchData';
 import { SermonEditModal } from './SermonEditModal';
 import { SermonGitHubSyncModal } from './SermonGitHubSyncModal';
@@ -46,8 +47,8 @@ interface SermonProps {
 }
 
 export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenGlobalSync }) => {
-  // Sermons state ALWAYS initialized directly from authoritative SERMON_CONTENT_LIST
-  const [sermons, setSermons] = useState<Sermon[]>(() => SERMON_CONTENT_LIST);
+  // Sermons state initialized directly from authoritative loadAndSyncSermons()
+  const [sermons, setSermons] = useState<Sermon[]>(() => loadAndSyncSermons());
 
   const [selectedSermon, setSelectedSermon] = useState<Sermon | null>(null);
   const [activeTab, setActiveTab] = useState<'video' | 'audio' | 'notes'>('video');
@@ -66,7 +67,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Load initial sermons: query server first (which syncs from disk file), fallback to localStorage, then SERMON_CONTENT_LIST
+  // Load initial sermons: query server first (in Node.js dev environment), fallback to static/deployed master sync
   useEffect(() => {
     fetch('/api/sermons')
       .then(res => res.json())
@@ -75,28 +76,57 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
           setSermons(data.sermons);
           try {
             localStorage.setItem('canaan_sermons_data', JSON.stringify(data.sermons));
+            localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+            localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
           } catch {}
         } else {
-          loadFromLocalOrStatic();
+          syncWithStaticOrStorage();
         }
       })
       .catch(() => {
-        loadFromLocalOrStatic();
+        syncWithStaticOrStorage();
       });
   }, []);
 
-  const loadFromLocalOrStatic = () => {
-    try {
-      const saved = localStorage.getItem('canaan_sermons_data');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setSermons(parsed);
+  const syncWithStaticOrStorage = () => {
+    // In static environment (like Cloudflare Pages), check /canaan_master_data.json
+    fetch(`/canaan_master_data.json?t=${Date.now()}`)
+      .then(res => res.json())
+      .then(json => {
+        if (json?.data?.sermons && Array.isArray(json.data.sermons) && json.data.sermons.length > 0) {
+          const masterList: Sermon[] = json.data.sermons;
+          setSermons(masterList);
+          try {
+            localStorage.setItem('canaan_sermons_data', JSON.stringify(masterList));
+            localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+            localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+          } catch {}
           return;
         }
+        setSermons(loadAndSyncSermons());
+      })
+      .catch(() => {
+        setSermons(loadAndSyncSermons());
+      });
+  };
+
+  const handleOpenSermon = (sermon: Sermon, preferredTab?: 'video' | 'audio' | 'notes') => {
+    setSelectedSermon(sermon);
+    if (preferredTab) {
+      if (preferredTab === 'video' && sermon.showVideo === false) {
+        setActiveTab(sermon.showAudio !== false && (sermon.audioUrl || sermon.videoUrl) ? 'audio' : 'notes');
+      } else if (preferredTab === 'audio' && sermon.showAudio === false) {
+        setActiveTab(sermon.showVideo !== false && (sermon.videoUrl || sermon.videoPasscode) ? 'video' : 'notes');
+      } else {
+        setActiveTab(preferredTab);
       }
-    } catch {}
-    setSermons(SERMON_CONTENT_LIST || []);
+    } else if (sermon.showVideo !== false && (sermon.videoUrl || sermon.videoPasscode)) {
+      setActiveTab('video');
+    } else if (sermon.showAudio !== false && (sermon.audioUrl || sermon.videoUrl)) {
+      setActiveTab('audio');
+    } else {
+      setActiveTab('notes');
+    }
   };
 
   // Listen to external sermon updates (e.g. from PDF Bulletin upload or manual admin save)
@@ -219,6 +249,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
     try {
       localStorage.setItem('canaan_sermons_data', JSON.stringify(fullList));
+      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
     } catch {}
 
     // Sync with backend API to auto-write to src/data/sermonsData.ts on disk
@@ -252,9 +284,18 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
     handleSaveSermon(updatedSermon);
 
+    if (selectedSermon && (selectedSermon.id === sermonId || selectedSermon.date === target.date)) {
+      setSelectedSermon(updatedSermon);
+      if (type === 'video' && newShowVideo === false && activeTab === 'video') {
+        setActiveTab(newShowAudio !== false && (updatedSermon.audioUrl || updatedSermon.videoUrl) ? 'audio' : 'notes');
+      } else if (type === 'audio' && newShowAudio === false && activeTab === 'audio') {
+        setActiveTab(newShowVideo !== false && (updatedSermon.videoUrl || updatedSermon.videoPasscode) ? 'video' : 'notes');
+      }
+    }
+
     const stateZh = (type === 'video' ? newShowVideo : newShowAudio)
       ? '已設為【讓使用者看到】'
-      : '已設為【對使用者隱藏】';
+      : '已設為【關閉 / 對使用者隱藏】';
     const labelZh = type === 'video' ? '「觀看影音」' : '「收聽音訊」';
     showToast(`${labelZh} ${stateZh}！（已更新並同步至檔案，可點擊「同步至 GitHub」永久保存）`);
   };
@@ -266,6 +307,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
     setSermons(remainingSermons);
     try {
       localStorage.setItem('canaan_sermons_data', JSON.stringify(remainingSermons));
+      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
     } catch {}
 
     if (selectedSermon && selectedSermon.id === sermonId) {
@@ -300,19 +343,17 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const handleResetToDefaults = () => {
-    setSermons(SERMON_CONTENT_LIST);
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(SERMON_CONTENT_LIST));
-    } catch {}
+    const defaultList = resetSermonsToDeployedMaster();
+    setSermons(defaultList);
     fetch('/api/sermons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sermons: SERMON_CONTENT_LIST })
+      body: JSON.stringify({ sermons: defaultList })
     }).catch(e => console.warn(e));
 
     window.dispatchEvent(
       new CustomEvent('canaan_sermons_updated', {
-        detail: { allSermons: SERMON_CONTENT_LIST }
+        detail: { allSermons: defaultList }
       })
     );
     setIsResetModalOpen(false);
@@ -572,8 +613,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     </div>
                   )}
 
-                  {/* Video and Passcode Indicator Badges (Shown if video is visible to user, or if admin is logged in) */}
-                  {(adminEmail || sermon.showVideo !== false) && (sermon.videoUrl || sermon.videoPasscode) && (
+                  {/* Video and Passcode Indicator Badges */}
+                  {sermon.showVideo !== false && (sermon.videoUrl || sermon.videoPasscode) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-700/40">
                       {sermon.videoUrl?.includes('zoom.us') ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-[11px] font-semibold border border-blue-500/40">
@@ -598,13 +639,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                           <span>Passcode: {sermon.videoPasscode}</span>
                         </span>
                       )}
-
-                      {adminEmail && sermon.showVideo === false && (
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-rose-950/80 text-rose-300 text-[10px] font-bold border border-rose-500/40">
-                          <EyeOff className="w-3 h-3" />
-                          <span>{lang === 'zh' ? '對訪客隱藏' : 'Hidden from Visitors'}</span>
-                        </span>
-                      )}
                     </div>
                   )}
                 </div>
@@ -625,7 +659,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                             ? 'bg-blue-950/80 text-blue-300 border-blue-500/50 hover:bg-blue-900'
                             : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
                         }`}
-                        title={lang === 'zh' ? (sermon.showVideo !== false ? '「觀看影音」目前對訪客可見，點擊設為隱藏' : '「觀看影音」目前對訪客隱藏，點擊設為可見') : 'Toggle video visibility'}
+                        title={lang === 'zh' ? (sermon.showVideo !== false ? '「觀看影音」目前開啟，點擊設為關閉' : '「觀看影音」目前關閉，點擊設為開啟') : 'Toggle video visibility'}
                       >
                         {sermon.showVideo !== false ? <Eye className="w-3 h-3 text-blue-400" /> : <EyeOff className="w-3 h-3 text-rose-400" />}
                         <span>{sermon.showVideo !== false ? (lang === 'zh' ? '影音:開' : 'Vid:ON') : (lang === 'zh' ? '影音:關' : 'Vid:OFF')}</span>
@@ -640,7 +674,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                             ? 'bg-amber-950/80 text-amber-300 border-amber-500/50 hover:bg-amber-900'
                             : 'bg-rose-950/80 text-rose-300 border-rose-500/50 hover:bg-rose-900 line-through'
                         }`}
-                        title={lang === 'zh' ? (sermon.showAudio !== false ? '「收聽音訊」目前對訪客可見，點擊設為隱藏' : '「收聽音訊」目前對訪客隱藏，點擊設為可見') : 'Toggle audio visibility'}
+                        title={lang === 'zh' ? (sermon.showAudio !== false ? '「收聽音訊」目前開啟，點擊設為關閉' : '「收聽音訊」目前關閉，點擊設為開啟') : 'Toggle audio visibility'}
                       >
                         {sermon.showAudio !== false ? <Eye className="w-3 h-3 text-amber-400" /> : <EyeOff className="w-3 h-3 text-rose-400" />}
                         <span>{sermon.showAudio !== false ? (lang === 'zh' ? '音訊:開' : 'Aud:ON') : (lang === 'zh' ? '音訊:關' : 'Aud:OFF')}</span>
@@ -651,71 +685,50 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
                 {/* Card Actions */}
                 <div className="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
-                  {/* 觀看影音按鈕：管理員可自選讓使用者看到或看不到 */}
-                  {(adminEmail || sermon.showVideo !== false) && (
+                  {/* 觀看影音按鈕：僅在影音開啟且有影音/密碼時顯示 */}
+                  {sermon.showVideo !== false && (sermon.videoUrl || sermon.videoPasscode) && (
                     <button
-                      onClick={() => {
-                        setSelectedSermon(sermon);
-                        setActiveTab('video');
-                      }}
-                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-semibold transition-colors ${
-                        sermon.showVideo !== false
-                          ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-sm'
-                          : 'bg-slate-800 text-slate-300 border border-dashed border-rose-500/60 hover:bg-slate-750'
-                      }`}
-                      title={adminEmail && sermon.showVideo === false ? (lang === 'zh' ? '此按鈕目前對一般使用者隱藏（管理員可預覽）' : 'Hidden from visitors (Admin preview)') : undefined}
+                      onClick={() => handleOpenSermon(sermon, 'video')}
+                      className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition-colors"
+                      title={lang === 'zh' ? '點擊觀看主日影音' : 'Watch Sermon Video'}
                     >
                       <Video className="w-3.5 h-3.5" />
                       <span>{lang === 'zh' ? '觀看影音' : 'Watch Video'}</span>
-                      {adminEmail && sermon.showVideo === false && (
-                        <span className="text-[9px] bg-rose-950 text-rose-300 px-1 py-0.2 rounded border border-rose-500/40">
-                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
-                        </span>
-                      )}
                     </button>
                   )}
 
-                  {/* 收聽音訊按鈕：管理員可自選讓使用者看到或看不到 */}
-                  {(adminEmail || sermon.showAudio !== false) && (
+                  {/* 收聽音訊按鈕：僅在音訊開啟且有音訊/影音時顯示 */}
+                  {sermon.showAudio !== false && (sermon.audioUrl || sermon.videoUrl) && (
                     <button
-                      onClick={() => {
-                        setSelectedSermon(sermon);
-                        setActiveTab('audio');
-                      }}
+                      onClick={() => handleOpenSermon(sermon, 'audio')}
                       className={`flex items-center justify-center space-x-1 py-2 px-3 rounded-xl text-xs font-medium transition-colors ${
-                        sermon.showAudio !== false
-                          ? 'bg-slate-700 hover:bg-slate-600 text-slate-200'
-                          : 'bg-slate-800 text-slate-400 border border-dashed border-rose-500/60 hover:bg-slate-750'
+                        sermon.showVideo === false || (!sermon.videoUrl && !sermon.videoPasscode)
+                          ? 'flex-1 bg-amber-600 hover:bg-amber-700 text-white shadow-sm font-semibold'
+                          : 'bg-slate-700 hover:bg-slate-600 text-slate-200'
                       }`}
-                      title={adminEmail && sermon.showAudio === false ? (lang === 'zh' ? '此按鈕目前對一般使用者隱藏（管理員可預覽）' : 'Hidden from visitors (Admin preview)') : undefined}
+                      title={lang === 'zh' ? '點擊收聽主日錄音廣播' : 'Listen to Audio'}
                     >
                       <Volume2 className="w-3.5 h-3.5 text-amber-400" />
                       <span>{lang === 'zh' ? '收聽音訊' : 'Audio'}</span>
-                      {adminEmail && sermon.showAudio === false && (
-                        <span className="text-[9px] bg-rose-950 text-rose-300 px-1 py-0.2 rounded border border-rose-500/40">
-                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
-                        </span>
-                      )}
                     </button>
                   )}
 
                   {/* 證道講義大綱按鈕 */}
                   <button
-                    onClick={() => {
-                      setSelectedSermon(sermon);
-                      setActiveTab('notes');
-                    }}
+                    onClick={() => handleOpenSermon(sermon, 'notes')}
                     className={`${
-                      !adminEmail && sermon.showVideo === false && sermon.showAudio === false
-                        ? 'flex-1 flex items-center justify-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-xl text-xs font-semibold transition-colors shadow-sm'
-                        : (!adminEmail && (sermon.showVideo === false || sermon.showAudio === false))
+                      (sermon.showVideo === false || (!sermon.videoUrl && !sermon.videoPasscode)) &&
+                      (sermon.showAudio === false || (!sermon.audioUrl && !sermon.videoUrl))
+                        ? 'flex-1 flex items-center justify-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white py-2.5 px-4 rounded-xl text-xs font-semibold transition-colors shadow-sm'
+                        : (sermon.showVideo === false || sermon.showAudio === false)
                           ? 'flex items-center justify-center space-x-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 px-3 rounded-xl text-xs font-medium transition-colors'
                           : 'p-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl transition-colors'
                     }`}
                     title={lang === 'zh' ? '查看證道經文與大綱' : 'View Scripture & Notes'}
                   >
                     <FileText className="w-3.5 h-3.5 text-amber-400" />
-                    {(!adminEmail && (sermon.showVideo === false || sermon.showAudio === false)) && (
+                    {((sermon.showVideo === false || (!sermon.videoUrl && !sermon.videoPasscode)) ||
+                      (sermon.showAudio === false || (!sermon.audioUrl && !sermon.videoUrl))) && (
                       <span>{lang === 'zh' ? '證道大綱與經文' : 'Sermon Notes'}</span>
                     )}
                   </button>
@@ -812,7 +825,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
               {/* Modal Tabs */}
               <div className="px-6 flex items-center justify-between border-b border-slate-800 flex-wrap gap-2">
                 <div className="flex space-x-2">
-                  {(adminEmail || selectedSermon.showVideo !== false) && (
+                  {selectedSermon.showVideo !== false && (selectedSermon.videoUrl || selectedSermon.videoPasscode) && (
                     <button
                       onClick={() => setActiveTab('video')}
                       className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
@@ -821,15 +834,10 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     >
                       <Video className="w-3.5 h-3.5" />
                       <span>{lang === 'zh' ? '影音播放' : 'Video Player'}</span>
-                      {adminEmail && selectedSermon.showVideo === false && (
-                        <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
-                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
-                        </span>
-                      )}
                     </button>
                   )}
 
-                  {(adminEmail || selectedSermon.showAudio !== false) && (
+                  {selectedSermon.showAudio !== false && (selectedSermon.audioUrl || selectedSermon.videoUrl) && (
                     <button
                       onClick={() => setActiveTab('audio')}
                       className={`py-2 px-4 text-xs font-bold rounded-t-lg transition-colors flex items-center space-x-1.5 ${
@@ -838,11 +846,6 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                     >
                       <Volume2 className="w-3.5 h-3.5" />
                       <span>{lang === 'zh' ? '錄音廣播' : 'Audio Stream'}</span>
-                      {adminEmail && selectedSermon.showAudio === false && (
-                        <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
-                          {lang === 'zh' ? '訪客隱藏' : 'Hidden'}
-                        </span>
-                      )}
                     </button>
                   )}
 

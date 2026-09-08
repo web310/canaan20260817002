@@ -2567,30 +2567,59 @@ export function getMasterDataFingerprint(): string {
 
 /**
  * Authoritative sermon loader.
- * Always initializes directly from compiled INITIAL_SERMONS to guarantee 100% synchronization
- * across all deployment environments (Cloudflare Pages, GitHub, preview) without stale cache.
+ * Validates cache against compiled master version and fingerprint.
+ * Guarantees that any turned-off visibility flags (showVideo: false, showAudio: false) in the
+ * deployed master take immediate effect across all deployment environments (Cloudflare Pages, GitHub).
  */
 export function loadAndSyncSermons(): Sermon[] {
   try {
-    const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
-      localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-      localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-    } catch {
-      // ignore storage errors
+    const currentFingerprint = getMasterDataFingerprint();
+    const cachedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
+    const cachedVersion = localStorage.getItem('canaan_sermons_data_version');
+    const saved = localStorage.getItem('canaan_sermons_data');
+
+    if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
+      const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      try {
+        localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+        localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
+        localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+      } catch {}
+      return list;
     }
-    return list;
-  } catch {
-    return INITIAL_SERMONS;
+
+    const parsed: Sermon[] = JSON.parse(saved);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      const reconciled = parsed.map(s => {
+        const master = INITIAL_SERMONS.find(m => m.id === s.id || m.date === s.date);
+        if (master) {
+          return {
+            ...s,
+            showVideo: master.showVideo === false ? false : s.showVideo,
+            showAudio: master.showAudio === false ? false : s.showAudio
+          };
+        }
+        return s;
+      });
+      return reconciled;
+    }
+  } catch (e) {
+    // ignore
   }
+  return [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 }
 
 /**
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  return loadAndSyncSermons();
+  const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  try {
+    localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+    localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+    localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+  } catch {}
+  return list;
 }
 `;
 
@@ -3340,6 +3369,43 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
           });
         } catch (mErr) {
           console.warn("Could not sync remote canaan_master_data.json:", mErr);
+        }
+      }
+
+      // Also sync src/utils/sermonStorage.ts if exists
+      const storagePath = path.join(process.cwd(), "src", "utils", "sermonStorage.ts");
+      if (fs.existsSync(storagePath)) {
+        try {
+          const storageRaw = fs.readFileSync(storagePath, "utf-8");
+          let storageSha: string | undefined = undefined;
+          const getStorageRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/src/utils/sermonStorage.ts?ref=${activeBranch}`, {
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            }
+          });
+          if (getStorageRes.ok) {
+            const storageInfo: any = await getStorageRes.json();
+            storageSha = storageInfo.sha;
+          }
+          await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/src/utils/sermonStorage.ts`, {
+            method: "PUT",
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "Content-Type": "application/json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            },
+            body: JSON.stringify({
+              message: `chore(storage): synchronize sermon loader and version fingerprint`,
+              content: Buffer.from(storageRaw, "utf-8").toString("base64"),
+              branch: activeBranch,
+              sha: storageSha
+            })
+          });
+        } catch (sErr) {
+          console.warn("Could not sync remote sermonStorage.ts:", sErr);
         }
       }
 
