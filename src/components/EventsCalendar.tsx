@@ -4,6 +4,7 @@ import { CHURCH_INFO } from '../data/churchData';
 import { INITIAL_DEFAULT_EVENTS } from '../data/eventsData';
 import { computeAllChurchEvents, ComputedChurchEvent } from '../utils/scheduleHelper';
 import { AdminEventModal } from './AdminEventModal';
+import { EventDetailModal } from './EventDetailModal';
 import {
   Calendar,
   Clock,
@@ -63,6 +64,7 @@ export const EventsCalendar: React.FC<EventsProps> = ({
   const [addedCalId, setAddedCalId] = useState<string | null>(null);
   const [copiedZoom, setCopiedZoom] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedDetailEvent, setSelectedDetailEvent] = useState<ComputedChurchEvent | null>(null);
 
   // Admin Modal State
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -665,27 +667,78 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                     </div>
 
                     {/* Title & Description */}
-                    <div className="space-y-1">
-                      <h3 className="font-serif text-lg font-bold text-stone-900 leading-snug">
+                    <div className="space-y-2">
+                      <h3
+                        onClick={() => setSelectedDetailEvent(evt)}
+                        className="font-serif text-lg sm:text-xl font-bold text-stone-900 leading-snug hover:text-amber-700 cursor-pointer transition-colors"
+                        title={lang === 'zh' ? '點擊查看活動詳細內容' : 'Click to view event details'}
+                      >
                         {lang === 'zh' ? evt.titleZh : evt.title}
                       </h3>
-                      <p className="text-stone-600 text-xs leading-relaxed line-clamp-3">
-                        {lang === 'zh' ? evt.descriptionZh : evt.description}
-                      </p>
+
+                      {(() => {
+                        const rawDesc = lang === 'zh' ? (evt.descriptionZh || evt.description) : (evt.description || evt.descriptionZh);
+                        const isLong = rawDesc.length > 60 || rawDesc.includes('\n');
+                        // First line preview or first 50 chars
+                        const previewLine = rawDesc.split('\n')[0].trim();
+                        const snippet = isLong ? (previewLine.length > 55 ? previewLine.slice(0, 52).trim() : previewLine) : rawDesc;
+
+                        return (
+                          <div className="space-y-2">
+                            <p className="text-stone-600 text-sm leading-relaxed">
+                              <span>{snippet}</span>
+                              {isLong && (
+                                <>
+                                  <span className="text-stone-400 font-bold"> ... </span>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedDetailEvent(evt);
+                                    }}
+                                    className="inline-flex items-center text-amber-700 hover:text-amber-900 font-bold text-sm underline underline-offset-2 ml-0.5 cursor-pointer transition-colors"
+                                    title={lang === 'zh' ? '點擊查看所有詳細內容' : 'Click to view full details'}
+                                  >
+                                    (..more)
+                                  </button>
+                                </>
+                              )}
+                            </p>
+
+                            {/* Prominent (..more) button for long content */}
+                            {isLong && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedDetailEvent(evt);
+                                }}
+                                className="w-full text-left inline-flex items-center justify-between text-xs sm:text-sm font-bold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100/90 px-3 py-2 rounded-xl border border-amber-200/80 transition-all group/more cursor-pointer"
+                              >
+                                <span className="flex items-center gap-1.5">
+                                  <span>📖</span>
+                                  <span>{lang === 'zh' ? '查看詳細內容 (..more)' : 'View full details (..more)'}</span>
+                                </span>
+                                <span className="text-amber-600 group-hover/more:translate-x-0.5 transition-transform font-bold">→</span>
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Time & Location Details */}
-                    <div className="space-y-2 text-xs text-stone-700 bg-stone-50/90 rounded-2xl p-3.5 border border-stone-100">
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-700 bg-stone-50/90 rounded-2xl p-3.5 border border-stone-100">
                       <div className="flex items-center space-x-2">
-                        <Clock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                        <Clock className="w-4 h-4 text-amber-700 shrink-0" />
                         <span className="font-semibold text-stone-800">{lang === 'zh' ? evt.timeZh : evt.time}</span>
                       </div>
 
                       <div className="flex items-start space-x-2">
                         {evt.zoomId ? (
-                          <Video className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
+                          <Video className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
                         ) : (
-                          <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                          <MapPin className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                         )}
                         <div className="leading-snug">
                           <div className="font-medium text-stone-800">
@@ -693,15 +746,15 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                           </div>
                           {evt.zoomId && (
                             <div className="flex items-center space-x-2 mt-1.5">
-                              <span className="text-[11px] font-mono text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                              <span className="text-xs font-mono text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
                                 ID: {evt.zoomId}
                               </span>
                               <button
                                 type="button"
                                 onClick={handleCopyZoom}
-                                className="text-[11px] text-indigo-700 hover:text-indigo-900 underline font-semibold flex items-center space-x-0.5"
+                                className="text-xs text-indigo-700 hover:text-indigo-900 underline font-semibold flex items-center space-x-0.5"
                               >
-                                {copiedZoom ? <Check className="w-3 h-3 text-emerald-600" /> : null}
+                                {copiedZoom ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : null}
                                 <span>{copiedZoom ? (lang === 'zh' ? '已複製' : 'Copied') : (lang === 'zh' ? '複製ID' : 'Copy')}</span>
                               </button>
                             </div>
@@ -716,16 +769,16 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                     <button
                       type="button"
                       onClick={() => handleAddToCalendar(evt)}
-                      className="flex-1 flex items-center justify-center space-x-1.5 bg-stone-900 hover:bg-stone-800 text-white py-2.5 rounded-xl text-xs font-semibold transition-all shadow-xs"
+                      className="flex-1 flex items-center justify-center space-x-1.5 bg-stone-900 hover:bg-stone-800 text-white py-3 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs"
                     >
                       {addedCalId === evt.id ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <Check className="w-4 h-4 text-emerald-400" />
                           <span className="text-emerald-300">{lang === 'zh' ? '已開啟日曆' : 'Opened Calendar'}</span>
                         </>
                       ) : (
                         <>
-                          <Plus className="w-3.5 h-3.5 text-amber-300" />
+                          <Plus className="w-4 h-4 text-amber-300" />
                           <span>{lang === 'zh' ? '加到 Google 日曆' : 'Add to Google Cal'}</span>
                         </>
                       )}
@@ -736,10 +789,10 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                         href={`https://zoom.us/j/${evt.zoomId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1 transition-colors shrink-0 shadow-xs"
+                        className="px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1 transition-colors shrink-0 shadow-xs"
                       >
                         <span>{lang === 'zh' ? 'Zoom 連線' : 'Zoom'}</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     )}
                   </div>
@@ -749,6 +802,16 @@ export const EventsCalendar: React.FC<EventsProps> = ({
           </div>
         )}
       </div>
+
+      {/* Event Detail Modal for Viewing Full Information */}
+      <EventDetailModal
+        isOpen={!!selectedDetailEvent}
+        onClose={() => setSelectedDetailEvent(null)}
+        event={selectedDetailEvent}
+        lang={lang}
+        onAddToCalendar={handleAddToCalendar}
+        isAddedToCal={selectedDetailEvent ? addedCalId === selectedDetailEvent.id : false}
+      />
 
       {/* Admin Event Add/Edit Modal */}
       {isEventModalOpen && (
