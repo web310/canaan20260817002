@@ -3,7 +3,7 @@ import { ChurchEvent } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-08T16:53:31.276Z
+// Updated at: 2026-09-08T21:35:15.284Z
 // Total Events: 5
 // ============================================================================
 
@@ -12,29 +12,22 @@ export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = [
     "id": "event-1788806584933",
     "category": "devotion",
     "title": "Canaan Shin Sheng Hiking Group",
-    "titleZh": "加南新生健行隊",
+    "titleZh": "新生健行隊",
     "date": "2026-09-12",
     "time": "9:30 AM - 12:00 PM",
     "timeZh": "上午 9:30 - 12:00",
     "location": "Robert Ryan Park",
     "locationZh": "Robert Ryan Park",
-    "description": "Event: Canaan Shin Sheng Hiking Group – Robert Ryan Park (30359 Hawthorne Blvd, RPV) to PV3 Scenic Overlook\n\nDate: Saturday, September 12, 2026, 9:30 AM – 12:00 PM. \n\nMeeting Point: \n9:15 AM at the picnic area on the west side of Robert Ryan Park (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8). Departure: \n9:30 AM sharp; the hike proceeds to the PV3 scenic overlook (southeast view). Please refer to the route map for the outbound and return paths. \n\nLunch: 11:00 AM at the starting point (picnic tables); sandwiches, fruit, salad, bread, snacks, and water will be provided.\n\nRegistration: Please sign up via the Newcomers Hiking Group LINE or WeChat groups, or send a text message to Simon Ma at (310) 989-4528.",
-    "descriptionZh": "Event: 新生健行隊 Robert Ryan Park（30359 Hawthorne Bl. RPV） → PV 3 峽灣美景 觀景點\n\nDate：9/12/2026(六) 9:30 am – 12pm \n\n集合地點: \n9:15am 在Robert Ryan Park 公園內西邊的野餐區集合 (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8) \n9:30am 準時出發到東南邊灣景點 PV3 東南邊的景觀。請參閱出發/回程 路線圖。\n\n午餐地點: 11am 在公園的出發點（野餐桌）招待三明治，水果，沙拉，麵包，點心，水。\n\n報名：請在新生健行隊的LINE 群 或 微信群， 或傳簡報給 Simon Ma （310） 989-4528",
+    "description": "Event: Canaan Shin Sheng Hiking Group – Robert Ryan Park (30359 Hawthorne Blvd, RPV) to PV3 Scenic Overlook\nDate: Saturday, September 12, 2026, 9:30 AM – 12:00 PM. Meeting Point: 9:15 AM at the picnic area on the west side of Robert Ryan Park (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8). Departure: 9:30 AM sharp; the hike proceeds to the PV3 scenic overlook (southeast view). Please refer to the route map for the outbound and return paths. Lunch: 11:00 AM at the starting point (picnic tables); sandwiches, fruit, salad, bread, snacks, and water will be provided.\nRegistration: Please sign up via the Newcomers Hiking Group LINE or WeChat groups, or send a text message to Simon Ma at (310) 989-4528.",
+    "descriptionZh": "Event: 新生健行隊 Robert Ryan Park（30359 Hawthorne Bl. RPV） → PV 3 峽灣美景 觀景點\nDate：9/12/2026(六) 9:30 am – 12pm 集合地點: 9:15am 在Robert Ryan Park 公園內西邊的野餐區集合 (https://maps.app.goo.gl/4uYGA8L2s3wAuzHd8) 9:30am 準時出發到東南邊灣景點 PV3 東南邊的景觀。請參閱出發/回程 路線圖。 午餐地點: 11am 在公園的出發點（野餐桌）招待三明治，水果，沙拉，麵包，點心，水。\n報名：請在新生健行隊的LINE 群 或 微信群， 或傳簡報給 Simon Ma （310） 989-4528",
     "recurrenceRuleZh": "特別聚會日程",
     "recurrenceRuleEn": "Special Gathering Schedule",
     "recurrenceType": "specific_date",
     "dayOfWeek": 0,
     "zoomId": "",
     "zoomPasscode": "",
-    "imageUrl": "/images/ryan_park_hiking_map.jpg",
-    "imageCaptionZh": "Robert Ryan Park 健行路線與集合/午餐野餐區、洗手間及東南峽灣觀景點導覽圖",
-    "imageCaptionEn": "Robert Ryan Park Trail Route Map: Meeting/Lunch Picnic Area, Restrooms & Scenic Overlook",
     "isCustom": true,
-    "order": 10,
-    "dateFormattedZh": "9月12日 (週六)",
-    "dateFormattedEn": "Sat, Sep 12",
-    "daysUntil": 5,
-    "isToday": false
+    "order": 10
   },
   {
     "id": "sunday-school",
