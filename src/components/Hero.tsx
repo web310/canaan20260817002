@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
-import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink } from 'lucide-react';
+import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight } from 'lucide-react';
 import heroImgUrl from '../assets/images/canaan_church_hero_1786434083190.jpg';
 import { getTodayDevotion } from '../data/dailyDevotionData';
+import { DailyDevotionModal } from './DailyDevotionModal';
 
 interface HeroProps {
   lang: Language;
@@ -14,13 +15,14 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
   const [copiedVerse, setCopiedVerse] = useState(false);
   const [fontScale, setFontScale] = useState<'large' | 'huge'>('large');
+  const [isDevotionModalOpen, setIsDevotionModalOpen] = useState(false);
   const todayDevotion = getTodayDevotion();
 
   const handleCopyVerse = () => {
     const d = todayDevotion.devotion;
     const verseText = lang === 'zh'
-      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n\n📖 靈修經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 今日勉勵 • 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 今日禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 靈修出處：靈命日糧 (www.odbm.org)\n加南新生基督教會 祝福您有平安喜樂的一天！`
-      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\n\n📖 Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Today's Encouragement • Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Today's Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n主題：《${d.titleZh || '美好的團契'}》\n讀經：${d.passageReadingZh || d.referenceZh}\n\n📖 今日經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 今日勉勵：\n${d.thoughtZh}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您有平安喜樂的一天！`
+      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\nTitle: "${d.titleEn || 'What a Fellowship'}"\nPassage: ${d.passageReadingEn || d.referenceEn}\n\n📖 Today's Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Thought:\n${d.thoughtEn}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
     
     navigator.clipboard.writeText(verseText);
     setCopiedVerse(true);
@@ -86,12 +88,24 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                 </span>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Read Today's Devotional Modal Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsDevotionModalOpen(true)}
+                  className="inline-flex items-center space-x-2 text-sm sm:text-base text-amber-950 hover:text-black bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 hover:brightness-105 px-4 py-2 rounded-xl transition font-black shadow-md cursor-pointer animate-pulse hover:animate-none"
+                  title={lang === 'zh' ? '閱讀今日完整靈修信息、反思與禱告' : "Read Today's Devotional"}
+                >
+                  <BookOpen className="w-4 h-4 text-amber-950" />
+                  <span>{lang === 'zh' ? '閱讀今日靈修' : "Read Today's Devotional"}</span>
+                  <ChevronRight className="w-4 h-4 text-amber-950" />
+                </button>
+
                 {/* Font Size Toggle Button */}
                 <button
                   type="button"
                   onClick={() => setFontScale(prev => prev === 'large' ? 'huge' : 'large')}
-                  className="inline-flex items-center space-x-2 text-sm sm:text-base text-amber-100 hover:text-white bg-amber-500/25 hover:bg-amber-500/40 border border-amber-500/50 px-3.5 py-2 rounded-lg transition font-bold shadow-sm"
+                  className="inline-flex items-center space-x-1.5 text-sm sm:text-base text-amber-100 hover:text-white bg-amber-500/25 hover:bg-amber-500/40 border border-amber-500/50 px-3 py-2 rounded-lg transition font-bold shadow-sm cursor-pointer"
                   title={lang === 'zh' ? '調整靈修字體大小' : 'Adjust font size'}
                 >
                   <span className="font-serif font-black text-base sm:text-lg">A{fontScale === 'huge' ? '++' : '+'}</span>
@@ -99,11 +113,11 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                 </button>
 
                 <a
-                  href={todayDevotion.devotion.sourceUrl || "https://traditional-odb.org/"}
+                  href={todayDevotion.devotion.sourceUrl || "https://www.odbm.org/tc/devotionals"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-sm sm:text-base text-amber-200 hover:text-white bg-amber-500/20 hover:bg-amber-500/35 border border-amber-500/40 px-3.5 py-2 rounded-lg transition font-semibold shadow-sm"
-                  title={lang === 'zh' ? '前往靈命日糧網站 (www.odbm.org)' : 'Visit Our Daily Bread (www.odbm.org)'}
+                  className="inline-flex items-center space-x-1.5 text-sm sm:text-base text-amber-200 hover:text-white bg-amber-500/20 hover:bg-amber-500/35 border border-amber-500/40 px-3 py-2 rounded-lg transition font-semibold shadow-sm cursor-pointer"
+                  title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals)' : 'Visit Our Daily Bread (www.odbm.org)'}
                 >
                   <BookOpen className="w-4 h-4 text-amber-400" />
                   <span>{lang === 'zh' ? '靈命日糧 odbm.org' : 'Our Daily Bread'}</span>
@@ -113,8 +127,8 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                 <button
                   type="button"
                   onClick={handleCopyVerse}
-                  className="flex items-center space-x-2 text-sm sm:text-base text-amber-100 hover:text-white bg-amber-500/25 hover:bg-amber-500/40 border border-amber-500/50 px-4 py-2 rounded-lg transition font-bold shadow-sm"
-                  title={lang === 'zh' ? '複製今日經文與靈修反思禱告' : 'Copy verse, reflection and prayer'}
+                  className="flex items-center space-x-1.5 text-sm sm:text-base text-amber-100 hover:text-white bg-amber-500/25 hover:bg-amber-500/40 border border-amber-500/50 px-3.5 py-2 rounded-lg transition font-bold shadow-sm cursor-pointer"
+                  title={lang === 'zh' ? '複製今日經文與反思禱告' : 'Copy verse, reflection and prayer'}
                 >
                   {copiedVerse ? (
                     <>
@@ -131,8 +145,29 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               </div>
             </div>
 
-            {/* Scripture Verse (Large & Prominent) */}
+            {/* Devotional Theme Title & Passage */}
+            <div className="flex flex-wrap items-center justify-between gap-2 bg-amber-500/10 rounded-xl px-4 py-2.5 border border-amber-500/20">
+              <div className="flex items-center space-x-2">
+                <span className="text-xs sm:text-sm font-bold px-2.5 py-1 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  {lang === 'zh' ? '靈修主題' : 'Theme'}
+                </span>
+                <h3 className="text-lg sm:text-xl font-serif font-bold text-amber-100">
+                  {lang === 'zh' ? (todayDevotion.devotion.titleZh || '美好的團契') : (todayDevotion.devotion.titleEn || 'What a Fellowship')}
+                </h3>
+              </div>
+              {todayDevotion.devotion.passageReadingZh && (
+                <div className="text-xs sm:text-sm text-amber-300/90 font-medium">
+                  {lang === 'zh' ? `讀經：${todayDevotion.devotion.passageReadingZh}` : `Reading: ${todayDevotion.devotion.passageReadingEn}`}
+                </div>
+              )}
+            </div>
+
+            {/* Section 1: 今日經文 (Today's Scripture) */}
             <div className="space-y-2.5 pl-4 border-l-4 border-amber-400">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5">
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>{lang === 'zh' ? '今日經文' : "Today's Scripture"}</span>
+              </div>
               <blockquote className={`font-serif text-amber-50 italic leading-relaxed tracking-wide font-medium ${
                 fontScale === 'huge' 
                   ? 'text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem]' 
@@ -149,18 +184,28 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               </div>
             </div>
 
-            {/* Today's Encouragement: Reflection & Prayer (今日勉勵：反思與禱告) */}
+            {/* Section 2: 反思和禱告 (Reflect and Pray) */}
             <div className="space-y-3 pt-2 border-t border-amber-500/25">
-              <div className="text-sm sm:text-base md:text-lg font-bold tracking-wider uppercase text-amber-300 flex items-center space-x-2">
-                <span className="text-lg">🌱</span>
-                <span>{lang === 'zh' ? '今日勉勵 • 靈修默想' : "Today's Encouragement & Reflection"}</span>
+              <div className="text-sm sm:text-base md:text-lg font-bold tracking-wider text-amber-300 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">🌱</span>
+                  <span>{lang === 'zh' ? '反思和禱告' : 'Reflect and Pray'}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDevotionModalOpen(true)}
+                  className="text-xs sm:text-sm text-amber-300 hover:text-amber-100 underline underline-offset-2 flex items-center gap-1 cursor-pointer font-medium"
+                >
+                  <span>{lang === 'zh' ? '閱讀完整信息' : 'Read Full Article'}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
 
               {/* Reflection (反思) */}
               <div className="rounded-xl bg-slate-950/65 border border-amber-500/30 p-4 sm:p-5 text-slate-100 shadow-inner">
                 <div className="flex items-start space-x-3">
                   <span className="text-amber-200 text-sm sm:text-base font-bold px-3 py-1 rounded-md bg-amber-500/25 border border-amber-500/45 shrink-0 mt-0.5">
-                    {lang === 'zh' ? '反思' : 'Reflection'}
+                    💡 {lang === 'zh' ? '反思' : 'Reflection'}
                   </span>
                   <p className={`text-amber-50 font-normal leading-relaxed ${
                     fontScale === 'huge' 
@@ -176,7 +221,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               <div className="rounded-xl bg-slate-950/65 border border-emerald-500/35 p-4 sm:p-5 text-slate-100 shadow-inner">
                 <div className="flex items-start space-x-3">
                   <span className="text-emerald-200 text-sm sm:text-base font-bold px-3 py-1 rounded-md bg-emerald-500/25 border border-emerald-500/45 shrink-0 mt-0.5">
-                    {lang === 'zh' ? '禱告' : 'Prayer'}
+                    🙏 {lang === 'zh' ? '禱告' : 'Prayer'}
                   </span>
                   <p className={`text-emerald-50 font-normal italic leading-relaxed ${
                     fontScale === 'huge' 
@@ -189,20 +234,28 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               </div>
             </div>
 
-            {/* Footer Source Credit */}
-            <div className="pt-1.5 flex flex-wrap items-center justify-between gap-2 text-sm sm:text-base text-slate-200 font-normal">
+            {/* Footer Source Credit & Action */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base text-slate-200 font-normal border-t border-amber-500/20">
               <span className="flex items-center space-x-2">
                 <span className="font-medium text-slate-300">靈修出處：</span>
                 <a
-                  href="https://traditional-odb.org/"
+                  href="https://www.odbm.org/tc/devotionals"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-amber-300 hover:text-amber-100 underline underline-offset-2 transition font-bold"
                 >
-                  靈命日糧 Our Daily Bread (www.odbm.org)
+                  靈命日糧 Our Daily Bread (www.odbm.org/tc/devotionals)
                 </a>
               </span>
-              <span className="text-amber-300/80 font-medium hidden sm:inline">每日清晨更新 • 恩典同行</span>
+
+              <button
+                type="button"
+                onClick={() => setIsDevotionModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-200 hover:text-white bg-amber-500/20 hover:bg-amber-500/35 border border-amber-500/40 px-3 py-1.5 rounded-lg transition cursor-pointer"
+              >
+                <span>{lang === 'zh' ? '展開完整今日靈修' : "Open Today's Devotional"}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -274,6 +327,16 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
           </div>
         </div>
       </div>
+
+      {/* Full Daily Devotional Modal (靈命日糧今日靈修) */}
+      <DailyDevotionModal
+        isOpen={isDevotionModalOpen}
+        onClose={() => setIsDevotionModalOpen(false)}
+        devotion={todayDevotion.devotion}
+        formattedDateZh={todayDevotion.formattedDateZh}
+        formattedDateEn={todayDevotion.formattedDateEn}
+        lang={lang}
+      />
     </section>
   );
 };

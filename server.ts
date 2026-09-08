@@ -88,6 +88,40 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
+  // API to upload/replace hiking map image
+  app.post("/api/upload-hiking-map", (req, res) => {
+    try {
+      const { imageBase64 } = req.body;
+      if (!imageBase64) {
+        return res.status(400).json({ error: "Missing imageBase64 data" });
+      }
+      const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, "base64");
+
+      const targets = [
+        path.join(process.cwd(), "public", "images", "ryan_park_hiking_map.jpg"),
+        path.join(process.cwd(), "public", "images", "ryan_park_hiking_map.png"),
+        path.join(process.cwd(), "dist", "images", "ryan_park_hiking_map.jpg"),
+        path.join(process.cwd(), "dist", "images", "ryan_park_hiking_map.png"),
+        path.join(process.cwd(), "src", "assets", "images", "ryan_park_hiking_map.jpg"),
+      ];
+
+      for (const t of targets) {
+        try {
+          fs.mkdirSync(path.dirname(t), { recursive: true });
+          fs.writeFileSync(t, buffer);
+        } catch (e) {
+          console.warn("Failed to write to target", t, e);
+        }
+      }
+
+      return res.json({ success: true, message: "Map image updated successfully" });
+    } catch (err: any) {
+      console.error("Failed to upload map:", err);
+      return res.status(500).json({ error: err.message || "Failed to upload map image" });
+    }
+  });
+
   // Helper to initialize GoogleGenAI safely
   const getAI = (customKey?: string) => {
     const rawKey = (customKey || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "").trim();

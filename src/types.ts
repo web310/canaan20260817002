@@ -58,6 +58,9 @@ export interface ChurchEvent {
   dayOfWeek?: number; // 0=Sun, 1=Mon, ..., 6=Sat
   zoomId?: string;
   zoomPasscode?: string;
+  imageUrl?: string;
+  imageCaptionZh?: string;
+  imageCaptionEn?: string;
   isCustom?: boolean;
   order?: number;
   // Computed display fields

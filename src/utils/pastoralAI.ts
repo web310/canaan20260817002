@@ -242,23 +242,24 @@ God invites you to cast every single burden upon Him. His peace surpasses all hu
     const d = td.devotion;
 
     if (lang === 'zh') {
+      const themeLine = d.titleZh ? `📖 **今日靈修主題**：《${d.titleZh}》\n${d.passageReadingZh ? `📜 **讀經進度**：${d.passageReadingZh}\n` : ''}\n` : '';
       return {
         reply: `平安！為您送上今日（${td.formattedDateZh}）經文靈修與默想（靈修出處：靈命日糧 odbm.org）：
 
-☀️ **今日靈修經文**：
+${themeLine}☀️ **今日靈修經文**：
 **${d.referenceZh}**：「${d.verseZh}」
 
-💡 **今日勉勵 • 反思**：
+💡 **反思**：
 ${d.reflectionZh}
 
-🙏 **今日同心禱告**：
+🙏 **禱告**：
 ${d.prayerZh}
 
-🌱 **靈修默想指引**：
+🌱 **今日勉勵**：
 ${d.thoughtZh}
 
-🌐 **靈修來源推薦**：
-靈命日糧 Our Daily Bread (www.odbm.org) • 願神親自引領您今天每一個腳步，心中滿有屬天的平安與力量！`,
+🌐 **靈修來源**：
+靈命日糧 Our Daily Bread (www.odbm.org/tc/devotionals) • 願神親自引領您今天每一個腳步，心中滿有屬天的平安與力量！`,
         scriptures: [
           { reference: d.referenceZh, text: d.verseZh }
         ],

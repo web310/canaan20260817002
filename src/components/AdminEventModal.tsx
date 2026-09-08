@@ -131,6 +131,9 @@ export const AdminEventModal: React.FC<AdminEventModalProps> = ({
     dayOfWeek: event?.dayOfWeek ?? 0,
     zoomId: event?.zoomId || '',
     zoomPasscode: event?.zoomPasscode || '',
+    imageUrl: event?.imageUrl || '',
+    imageCaptionZh: event?.imageCaptionZh || '',
+    imageCaptionEn: event?.imageCaptionEn || '',
     isCustom: event?.isCustom ?? true,
     order: event?.order ?? 99
   });
@@ -623,6 +626,54 @@ export const AdminEventModal: React.FC<AdminEventModalProps> = ({
                   placeholder="e.g. 25226"
                   className="w-full px-3 py-1.5 bg-white border border-indigo-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500"
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Optional Event Image / Route Map */}
+          <div className="p-3.5 bg-amber-50/60 rounded-xl border border-amber-200/80 space-y-2.5">
+            <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-amber-700" />
+              {lang === 'zh' ? '活動地圖 / 導覽圖片 (可選)' : 'Event Map / Image (Optional)'}
+            </span>
+            <div className="space-y-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-amber-900 mb-1">
+                  {lang === 'zh' ? '圖片網址或路徑 (如 /images/ryan_park_hiking_map.jpg)' : 'Image URL or Path'}
+                </label>
+                <input
+                  type="text"
+                  value={formData.imageUrl || ''}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  placeholder="e.g. /images/ryan_park_hiking_map.jpg"
+                  className="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 font-mono"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-semibold text-amber-900 mb-1">
+                    {lang === 'zh' ? '圖片說明 (中文)' : 'Image Caption (Chinese)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.imageCaptionZh || ''}
+                    onChange={(e) => setFormData({ ...formData, imageCaptionZh: e.target.value })}
+                    placeholder="例如：Robert Ryan Park 健行路線圖"
+                    className="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-amber-900 mb-1">
+                    {lang === 'zh' ? '圖片說明 (英文)' : 'Image Caption (English)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.imageCaptionEn || ''}
+                    onChange={(e) => setFormData({ ...formData, imageCaptionEn: e.target.value })}
+                    placeholder="e.g. Robert Ryan Park Trail Route Map"
+                    className="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
               </div>
             </div>
           </div>

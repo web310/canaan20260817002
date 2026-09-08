@@ -1,10 +1,18 @@
 export interface DailyDevotion {
   id: number;
   dateStr?: string;
+  titleZh?: string;
+  titleEn?: string;
   verseZh: string;
   verseEn: string;
   referenceZh: string;
   referenceEn: string;
+  passageReadingZh?: string;
+  passageReadingEn?: string;
+  authorZh?: string;
+  authorEn?: string;
+  contentZh?: string;
+  contentEn?: string;
   reflectionZh?: string;
   reflectionEn?: string;
   prayerZh?: string;
@@ -18,8 +26,37 @@ export interface DailyDevotion {
 
 export const DAILY_DEVOTIONS: DailyDevotion[] = [
   {
+    "id": 100,
+    "dateStr": "2026-09-08",
+    "titleZh": "美好的團契",
+    "titleEn": "What a Fellowship",
+    "authorZh": "雷翠霞",
+    "authorEn": "Poh Fang Chia",
+    "passageReadingZh": "腓立比書 1:27, 2:1-4",
+    "passageReadingEn": "Philippians 1:27, 2:1-4",
+    "verseZh": "只要你們行事為人與基督的福音相稱，叫我…可以聽見你們的景況，知道你們同有一個心志，站立得穩，為所信的福音齊心努力。",
+    "verseEn": "Whatever happens, conduct yourselves in a manner worthy of the gospel of Christ. Then ... I will know that you stand firm in the one Spirit, striving together as one for the faith of the gospel.",
+    "referenceZh": "腓立比書 1 篇 27 節",
+    "referenceEn": "Philippians 1:27",
+    "reflectionZh": "你如何體會到聖靈在你的生命中動工？上帝的靈如何幫助你在教會中增進美好的團契？",
+    "reflectionEn": "How do you sense the Holy Spirit working in your life? How can God's Spirit help you grow His fellowship in your church?",
+    "prayerZh": "親愛的上帝，在這有時缺乏愛的世界裡，懇求祢激勵我順服聖靈的引導，幫助建立能彰顯祢榮美形象的屬靈群體。",
+    "prayerEn": "Dear God, in a sometimes-unloving world, please inspire me to follow Your Holy Spirit’s leading to help build communities that reflect You.",
+    "thoughtZh": "教會是藉著聖靈相連結的屬靈團契。當我們放下自私的私心與紛爭，同心合意為福音齊心努力時，基督的愛就在我們彼此相顧與和睦的團契中真實彰顯。",
+    "thoughtEn": "The church is a sacred fellowship bound by the Holy Spirit. When we lay aside selfish ambition and stand firm as one in faith, Christ's radiant love shines brightly through our unity.",
+    "contentZh": "瑞秋因聽力受損，一度感到在教會中難以融入。然而，當弟兄姊妹主動為她安排文字輔助與手語翻譯，並以真誠的愛接納她時，她深切體會到什麼是「在基督裡的美好團契」。\n\n使徒保羅在羅馬監獄寫信給腓立比教會時，深切渴望聽見信徒們「同有一個心志，站立得穩，為所信的福音齊心努力」（腓立比書1:27）。保羅進一步勸勉信徒們凡事不可結黨，不可貪圖虛浮的榮耀，只要存心謙卑，各人看別人比自己強；各人不要單顧自己的事，也要顧別人的事（2:3-4）。\n\n真正的團契並不是志趣相投者的社交聚會，而是藉著聖靈的大能，使背景各異的人在基督裡合而為一，在彼此和睦中一同服事，向世界活出榮耀神的生命。",
+    "contentEn": "Rachel, who experienced severe hearing impairment, once felt disconnected at church. Yet when fellow believers thoughtfully arranged captions and sign support, welcoming her with Christ's warmth, she discovered the profound beauty of fellowship in Him.\n\nWriting from a Roman prison, the apostle Paul longed to hear that the Philippian believers were \"standing firm in the one Spirit, striving together as one for the faith of the gospel\" (Philippians 1:27). He urged them not to act out of selfish ambition or conceit, but in humility to value others above themselves, looking to the interests of others (2:3-4).\n\nTrue Christian fellowship is far more than a social club; it is the miraculous work of the Holy Spirit drawing diverse hearts into Christlike unity, harmony, and humble service to glorify God.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  },
+  {
     "id": 1,
     "dateStr": "2026-09-07",
+    "titleZh": "慈愛的看顧",
+    "titleEn": "Loving Guidance",
+    "passageReadingZh": "詩篇 32:1-11",
+    "passageReadingEn": "Psalm 32:1-11",
     "verseZh": "我要教導你，指示你當行的路；我要定睛在你身上勸戒你。",
     "verseEn": "I will instruct you and teach you in the way you should go; I will counsel you with my loving eye on you.",
     "referenceZh": "詩篇 32 篇 8 節",
@@ -338,17 +375,19 @@ export function getTodayDevotion(customDate?: Date) {
   const dayOfYear = Math.floor(diff / oneDay);
   const idx = Math.abs(dayOfYear - 1) % DAILY_DEVOTIONS.length;
 
-  const rawDevotion = matched || DAILY_DEVOTIONS[0] || DAILY_DEVOTIONS[idx];
+  const rawDevotion = matched || DAILY_DEVOTIONS[idx] || DAILY_DEVOTIONS[0];
 
   const devotion: DailyDevotion = {
     ...rawDevotion,
+    titleZh: rawDevotion.titleZh || '今日靈修默想',
+    titleEn: rawDevotion.titleEn || 'Daily Devotion',
     reflectionZh: rawDevotion.reflectionZh || "你曾經歷哪些事，使你想起上帝慈愛地看顧你？上帝永恆不變的愛，對你來說有何意義？",
     reflectionEn: rawDevotion.reflectionEn || "What experiences remind you of God's loving care? What does His unfailing love mean to you?",
     prayerZh: rawDevotion.prayerZh || "親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。",
     prayerEn: rawDevotion.prayerEn || "Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.",
     sourceNameZh: rawDevotion.sourceNameZh || "靈命日糧",
     sourceNameEn: rawDevotion.sourceNameEn || "Our Daily Bread",
-    sourceUrl: rawDevotion.sourceUrl || "https://traditional-odb.org/"
+    sourceUrl: rawDevotion.sourceUrl || "https://www.odbm.org/tc/devotionals"
   };
 
   const weekdaysZh = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];

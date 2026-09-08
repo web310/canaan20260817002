@@ -21,6 +21,9 @@ export interface ComputedChurchEvent {
   ordinalTextEn?: string;
   zoomId?: string;
   zoomPasscode?: string;
+  imageUrl?: string;
+  imageCaptionZh?: string;
+  imageCaptionEn?: string;
   isToday?: boolean;
   daysUntil: number;
   order?: number;

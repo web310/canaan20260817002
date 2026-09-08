@@ -664,6 +664,13 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                           <span>{lang === 'zh' ? evt.ordinalTextZh : evt.ordinalTextEn}</span>
                         </div>
                       )}
+
+                      {(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.titleZh && evt.titleZh.includes('健行'))) && (
+                        <div className="inline-flex items-center space-x-1 text-xs font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-200">
+                          <span>🗺️</span>
+                          <span>{lang === 'zh' ? '附路線地圖' : 'With Trail Map'}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Title & Description */}
@@ -679,6 +686,7 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                       {(() => {
                         const rawDesc = lang === 'zh' ? (evt.descriptionZh || evt.description) : (evt.description || evt.descriptionZh);
                         const isLong = rawDesc.length > 60 || rawDesc.includes('\n');
+                        const hasMap = !!(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.titleZh && evt.titleZh.includes('健行')));
                         // First line preview or first 50 chars
                         const previewLine = rawDesc.split('\n')[0].trim();
                         const snippet = isLong ? (previewLine.length > 55 ? previewLine.slice(0, 52).trim() : previewLine) : rawDesc;
@@ -697,7 +705,7 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                                       setSelectedDetailEvent(evt);
                                     }}
                                     className="inline-flex items-center text-amber-700 hover:text-amber-900 font-bold text-sm underline underline-offset-2 ml-0.5 cursor-pointer transition-colors"
-                                    title={lang === 'zh' ? '點擊查看所有詳細內容' : 'Click to view full details'}
+                                    title={lang === 'zh' ? '點擊查看所有詳細內容與地圖' : 'Click to view full details & map'}
                                   >
                                     (..more)
                                   </button>
@@ -716,8 +724,12 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                                 className="w-full text-left inline-flex items-center justify-between text-xs sm:text-sm font-bold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100/90 px-3 py-2 rounded-xl border border-amber-200/80 transition-all group/more cursor-pointer"
                               >
                                 <span className="flex items-center gap-1.5">
-                                  <span>📖</span>
-                                  <span>{lang === 'zh' ? '查看詳細內容 (..more)' : 'View full details (..more)'}</span>
+                                  <span>{hasMap ? '🗺️' : '📖'}</span>
+                                  <span>
+                                    {hasMap
+                                      ? (lang === 'zh' ? '查看詳細內容與路線圖 (..more)' : 'View full details & route map (..more)')
+                                      : (lang === 'zh' ? '查看詳細內容 (..more)' : 'View full details (..more)')}
+                                  </span>
                                 </span>
                                 <span className="text-amber-600 group-hover/more:translate-x-0.5 transition-transform font-bold">→</span>
                               </button>

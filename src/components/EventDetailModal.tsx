@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ComputedChurchEvent } from '../utils/scheduleHelper';
 import { Language } from '../types';
+import { RobertRyanHikingMapGuide } from './RobertRyanHikingMapGuide';
 import {
   X,
   Calendar,
@@ -13,7 +14,10 @@ import {
   Sparkles,
   Phone,
   Navigation,
-  Share2
+  Share2,
+  Map,
+  ZoomIn,
+  Maximize2
 } from 'lucide-react';
 
 interface EventDetailModalProps {
@@ -33,8 +37,16 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onAddToCalendar,
   isAddedToCal
 }) => {
-  const [copiedLink, setCopiedLink] = React.useState(false);
-  const [copiedPhone, setCopiedPhone] = React.useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [customHikingMap, setCustomHikingMap] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('canaan_custom_hiking_map') || null;
+    } catch {
+      return null;
+    }
+  });
 
   if (!isOpen || !event) return null;
 
@@ -52,6 +64,24 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   };
 
   const detectedMapUrl = extractMapUrl(desc) || (location.includes('http') ? extractMapUrl(location) : null);
+
+  // Check if event has a custom image or is the hiking event
+  const isHikingEvent =
+    event.id === 'event-1788806584933' ||
+    (event.titleZh && event.titleZh.includes('健行')) ||
+    (event.title && event.title.toLowerCase().includes('hiking'));
+
+  const mapImage = (isHikingEvent && customHikingMap) 
+    ? customHikingMap 
+    : (event.imageUrl || (isHikingEvent ? '/images/ryan_park_hiking_map.jpg' : null));
+
+  const mapCaption =
+    (lang === 'zh' ? event.imageCaptionZh : event.imageCaptionEn) ||
+    (isHikingEvent
+      ? (lang === 'zh'
+          ? 'Robert Ryan Park 健行路線地圖：集合/午餐野餐區、洗手間與東南峽灣觀景點'
+          : 'Robert Ryan Park Trail Route Map: Meeting/Lunch Picnic Area, Restrooms & Scenic Overlook')
+      : '');
 
   // Helper to copy phone or contact
   const handleCopyPhone = (phoneNum: string) => {
@@ -282,6 +312,74 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             )}
           </div>
 
+          {/* Route Map & Visual Guide Section */}
+          {isHikingEvent ? (
+            <RobertRyanHikingMapGuide
+              lang={lang}
+              onOpenZoomModal={() => setIsImageZoomed(true)}
+              onMapImageChange={(newUrl) => setCustomHikingMap(newUrl)}
+            />
+          ) : mapImage ? (
+            <div className="space-y-3.5 bg-amber-50/60 rounded-2xl p-4 sm:p-5 border border-amber-200/90 shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-200/80 pb-3">
+                <div className="flex items-center space-x-2 text-amber-950 font-bold text-base sm:text-lg">
+                  <Map className="w-5 h-5 text-amber-700" />
+                  <span>{lang === 'zh' ? '活動地標與路線導覽' : 'Event Map & Landmarks'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsImageZoomed(true)}
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-900 hover:text-amber-950 bg-amber-200/70 hover:bg-amber-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer border border-amber-300"
+                  >
+                    <ZoomIn className="w-4 h-4 text-amber-800" />
+                    <span>{lang === 'zh' ? '點擊放大全圖' : 'Enlarge Map'}</span>
+                  </button>
+                  {detectedMapUrl && (
+                    <a
+                      href={detectedMapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-white bg-amber-700 hover:bg-amber-800 px-3 py-1.5 rounded-xl transition-colors shadow-xs"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '開啟地圖導航' : 'Open in Maps'}</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Map Preview Image with Hover Effect */}
+              <div
+                onClick={() => setIsImageZoomed(true)}
+                className="relative group rounded-2xl overflow-hidden border-2 border-amber-300/80 bg-stone-900 shadow-md cursor-pointer"
+              >
+                <img
+                  src={mapImage}
+                  alt={mapCaption}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto max-h-[460px] object-cover sm:object-contain bg-stone-950 transition-transform duration-300 group-hover:scale-[1.015]"
+                />
+                <div className="absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="bg-stone-900/90 backdrop-blur-xs text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xl border border-white/20">
+                    <Maximize2 className="w-4 h-4 text-amber-300" />
+                    <span>{lang === 'zh' ? '點擊檢視高解析全圖與路線' : 'Click for Fullscreen View'}</span>
+                  </div>
+                </div>
+                <div className="absolute bottom-2.5 right-2.5 bg-stone-900/80 backdrop-blur-xs text-stone-200 text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg border border-white/10 flex items-center gap-1.5 pointer-events-none">
+                  <ZoomIn className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{lang === 'zh' ? '可點擊放大' : 'Click to zoom'}</span>
+                </div>
+              </div>
+
+              {mapCaption && (
+                <p className="text-xs sm:text-sm text-stone-600 text-center font-medium">
+                  {mapCaption}
+                </p>
+              )}
+            </div>
+          ) : null}
+
           {/* Full Detailed Description Section */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2 text-amber-900 font-bold text-base sm:text-lg border-b border-stone-200 pb-2">
@@ -349,6 +447,54 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Map / Image Lightbox */}
+      {isImageZoomed && mapImage && (
+        <div
+          className="fixed inset-0 z-70 bg-stone-950/95 backdrop-blur-md flex flex-col items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200"
+          onClick={() => setIsImageZoomed(false)}
+        >
+          <div
+            className="relative max-w-5xl w-full max-h-[94vh] flex flex-col bg-stone-900 rounded-2xl overflow-hidden border border-stone-700 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-stone-900 border-b border-stone-800 text-white">
+              <div className="font-bold text-sm sm:text-base flex items-center gap-2">
+                <span>🗺️</span>
+                <span>{mapCaption || (lang === 'zh' ? '活動路線地圖' : 'Event Route Map')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={mapImage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download="canaan_hiking_map.jpg"
+                  className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-xs sm:text-sm font-bold text-stone-200 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>{lang === 'zh' ? '另存/原圖檢視' : 'Open Original'}</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsImageZoomed(false)}
+                  className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition-colors cursor-pointer"
+                  title={lang === 'zh' ? '關閉放大' : 'Close Zoom'}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="overflow-auto max-h-[85vh] p-2 flex items-center justify-center bg-stone-950">
+              <img
+                src={mapImage}
+                alt={mapCaption}
+                referrerPolicy="no-referrer"
+                className="max-w-full max-h-[82vh] object-contain rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
