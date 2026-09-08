@@ -40,8 +40,6 @@ export function loadAndSyncSermons(): Sermon[] {
     const cachedVersion = localStorage.getItem('canaan_sermons_data_version');
     const saved = localStorage.getItem('canaan_sermons_data');
 
-    // If cache is missing, or if the deployed release changed (different version or fingerprint),
-    // immediately sync to the authoritative compiled INITIAL_SERMONS!
     if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
       const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       try {
@@ -54,8 +52,6 @@ export function loadAndSyncSermons(): Sermon[] {
 
     const parsed: Sermon[] = JSON.parse(saved);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      // Reconcile visibility flags: if the master data explicitly marks a sermon as showVideo: false
-      // or showAudio: false, ensure that is respected even if local cache had an older value
       const reconciled = parsed.map(s => {
         const master = INITIAL_SERMONS.find(m => m.id === s.id || m.date === s.date);
         if (master) {
