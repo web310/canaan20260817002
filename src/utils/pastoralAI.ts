@@ -4,6 +4,8 @@
 // and devotional reflections with zero latency.
 // ============================================================================
 
+import { getTodayDevotion } from '../data/dailyDevotionData';
+
 export interface PastoralAIResponse {
   reply: string;
   scriptures?: Array<{ reference: string; text: string }>;
@@ -236,25 +238,29 @@ God invites you to cast every single burden upon Him. His peace surpasses all hu
     query.includes('scripture') ||
     query.includes('morning')
   ) {
+    const td = getTodayDevotion();
+    const d = td.devotion;
+
     if (lang === 'zh') {
       return {
-        reply: `平安！為您送上今日充滿恩典與力量的靈修默想：
+        reply: `平安！為您送上今日（${td.formattedDateZh}）經文靈修與默想（靈修出處：靈命日糧 odbm.org）：
 
-☀️ **今日靈修金句**：
-**約書亞記 1:9**：「我豈沒有吩咐你嗎？你當剛強壯膽！不要懼怕，也不要驚惶；因為你無論往哪裡去，耶和華你的神必與你同在。」
+☀️ **今日靈修經文**：
+**${d.referenceZh}**：「${d.verseZh}」
 
-🌱 **靈修短文默想【步步跟隨，滿有指望】**：
-每一個清晨都是神施恩的起點。無論今天擺在您眼前的是挑戰、繁重的工作還是未知的路程，請記得：神總在您前頭引路。當我們專心倚靠祂時，祂必為我們修平崎嶇的道路。
+💡 **今日勉勵 • 反思**：
+${d.reflectionZh}
 
-📖 **精選對照經文**：
-• **詩篇 119:105**：「你的話是我腳前的燈，是我路上的光。」
-• **箴言 3:5-6**：「你要專心仰賴耶和華，不可倚靠自己的聰明，在你一切所行的事上都要認定他，他必指引你的路。」
-• **哀歌 3:22-23**：「我們不至消滅，是出於耶和華諸般的慈愛；是因他的憐憫不致斷絕。每早晨，這都是新的；你的誠實極其廣大！」
+🙏 **今日同心禱告**：
+${d.prayerZh}
 
-✨ **今日生活實踐**：
-今天在遇到焦慮或急躁時，停下 10 秒鐘，默念「耶穌與我同在」，帶著平安去祝福周遭的一個人！`,
+🌱 **靈修默想指引**：
+${d.thoughtZh}
+
+🌐 **靈修來源推薦**：
+靈命日糧 Our Daily Bread (www.odbm.org) • 願神親自引領您今天每一個腳步，心中滿有屬天的平安與力量！`,
         scriptures: [
-          { reference: '詩篇 23:1-3', text: '耶和華是我的牧者，我必不致缺乏。他使我躺臥在青草地上，領我在可安歇的水邊。他使我的靈魂甦醒，為自己的名引導我走義路。' }
+          { reference: d.referenceZh, text: d.verseZh }
         ],
         suggestedQuestions: [
           '請為我提供適合今天下班後的晚禱經文',
@@ -265,19 +271,23 @@ God invites you to cast every single burden upon Him. His peace surpasses all hu
       };
     } else {
       return {
-        reply: `Peace be with you! Here is your daily spiritual reflection and golden verse:
+        reply: `Peace be with you! Here is today's (${td.formattedDateEn}) scripture and devotional reflection (Source: Our Daily Bread odbm.org):
 
-☀️ **Daily Golden Verse**:
-**Joshua 1:9**: "Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go."
+☀️ **Daily Scripture Verse**:
+**${d.referenceEn}**: "${d.verseEn}"
+
+💡 **Today's Reflection**:
+${d.reflectionEn}
+
+🙏 **Today's Prayer**:
+${d.prayerEn}
 
 🌱 **Devotional Thought**:
-Every morning is a fresh start of God's abundant grace. As you step into this day, remember that God goes before you to prepare the way.
+${d.thoughtEn}
 
-📖 **Accompanying Scriptures**:
-• **Psalm 119:105**: "Your word is a lamp for my feet, a light on my path."
-• **Proverbs 3:5-6**: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight."`,
+🌐 **Source**: Our Daily Bread Ministries (www.odbm.org)`,
         scriptures: [
-          { reference: 'Psalm 23:1', text: 'The LORD is my shepherd; I shall not want.' }
+          { reference: d.referenceEn, text: d.verseEn }
         ],
         suggestedQuestions: [
           'Give me an evening reflection prayer',

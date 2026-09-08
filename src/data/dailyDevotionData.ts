@@ -1,22 +1,38 @@
 export interface DailyDevotion {
   id: number;
+  dateStr?: string;
   verseZh: string;
   verseEn: string;
   referenceZh: string;
   referenceEn: string;
+  reflectionZh?: string;
+  reflectionEn?: string;
+  prayerZh?: string;
+  prayerEn?: string;
   thoughtZh: string;
   thoughtEn: string;
+  sourceNameZh?: string;
+  sourceNameEn?: string;
+  sourceUrl?: string;
 }
 
 export const DAILY_DEVOTIONS: DailyDevotion[] = [
   {
     "id": 1,
-    "verseZh": "你當剛強壯膽！不要懼怕，也不要驚惶；因為你無論往哪裡去，耶和華你的神必與你同在。",
-    "verseEn": "Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.",
-    "referenceZh": "約書亞記 1:9",
-    "referenceEn": "Joshua 1:9",
-    "thoughtZh": "清晨醒來，新的恩典已為您預備。無論今天擺在眼前的是怎樣的挑戰或未知的路，請深知：神總在您前頭引路，祂的同在是您最堅固的後盾，放膽迎向美好的一天！",
-    "thoughtEn": "His mercies are new every morning. No matter what unknown paths lie ahead today, rest in the assurance that God goes before you. His presence is your strongest anchor."
+    "dateStr": "2026-09-07",
+    "verseZh": "我要教導你，指示你當行的路；我要定睛在你身上勸戒你。",
+    "verseEn": "I will instruct you and teach you in the way you should go; I will counsel you with my loving eye on you.",
+    "referenceZh": "詩篇 32 篇 8 節",
+    "referenceEn": "Psalm 32:8",
+    "reflectionZh": "你曾經歷哪些事，使你想起上帝慈愛地看顧你？上帝永恆不變的愛，對你來說有何意義？",
+    "reflectionEn": "What experiences remind you of God's loving care? What does His unfailing love mean to you?",
+    "prayerZh": "親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。",
+    "prayerEn": "Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.",
+    "thoughtZh": "上帝深知我們前行的方向，祂應許親自教導並指示我們當行的路。在人生的每一個交叉路口與抉擇時刻，祂的慈眼始終定睛在我們身上，引導我們行走在蒙福平坦的義路上。",
+    "thoughtEn": "God knows the road ahead and promises to teach and counsel us. In every decision and life crossroads, His loving eyes rest upon us, guiding our steps with unfailing peace.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://traditional-odb.org/"
   },
   {
     "id": 2,
@@ -24,8 +40,15 @@ export const DAILY_DEVOTIONS: DailyDevotion[] = [
     "verseEn": "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.",
     "referenceZh": "腓立比書 4:6-7",
     "referenceEn": "Philippians 4:6-7",
+    "reflectionZh": "今天有什麼擔憂佔據了你的心思？你願意藉著感恩的禱告，把它一件件交託給神嗎？",
+    "reflectionEn": "What worries are occupying your mind today? Are you willing to release them to God in thankful prayer?",
+    "prayerZh": "主啊，我將心中所有的掛慮交在祢手中，求祢出人意外的平安充滿並保守我的心靈。",
+    "prayerEn": "Lord, I surrender all my anxieties into Your hands. Let Your transcendent peace fill and guard my heart.",
     "thoughtZh": "焦慮是心靈沉重的行囊，但禱告是通往平安的鑰匙。將您今日心中的擔憂一件一件交給主，祂必以屬天的平安環繞您，使您的腳步輕快安穩。",
-    "thoughtEn": "Worry weighs the heart down, but prayer unlocks divine peace. Surrender your concerns one by one to the Lord today, and let His gentle peace guard your spirit."
+    "thoughtEn": "Worry weighs the heart down, but prayer unlocks divine peace. Surrender your concerns one by one to the Lord today, and let His gentle peace guard your spirit.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://traditional-odb.org/"
   },
   {
     "id": 3,
@@ -33,8 +56,15 @@ export const DAILY_DEVOTIONS: DailyDevotion[] = [
     "verseEn": "Your word is a lamp for my feet, a light on my path.",
     "referenceZh": "詩篇 119:105",
     "referenceEn": "Psalm 119:105",
+    "reflectionZh": "在迷茫或看不清前路時，神的話語曾如何成為指引你腳步的明燈？",
+    "reflectionEn": "How has God's Word served as a guiding light for your steps in moments of uncertainty?",
+    "prayerZh": "親愛的天父，求祢每天用真理的話語光照我，使我腳步不偏離祢公義的道路。",
+    "prayerEn": "Heavenly Father, shine the light of Your truth upon me each day so that my steps never stray from Your path.",
     "thoughtZh": "有時候我們不需要看清整條未來的道路，只需要看見下一步。神的話語如同夜行中的明燈，當我們依循真理而行，前面的方向自然清晰明亮。",
-    "thoughtEn": "We don't need to see the entire road ahead, only the next step. God's Word illuminates our path step by step as we walk faithfully in His truth."
+    "thoughtEn": "We don't need to see the entire road ahead, only the next step. God's Word illuminates our path step by step as we walk faithfully in His truth.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://traditional-odb.org/"
   },
   {
     "id": 4,
@@ -292,19 +322,41 @@ export const DAILY_DEVOTIONS: DailyDevotion[] = [
 
 export function getTodayDevotion(customDate?: Date) {
   const d = customDate || new Date();
-  const startOfYear = new Date(d.getFullYear(), 0, 0);
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const date = d.getDate();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const fullDateKey = `${year}-${pad(month)}-${pad(date)}`;
+  const monthDayKey = `${pad(month)}-${pad(date)}`;
+
+  // Check if there is an exact date match (e.g. 2026-09-07 or 09-07)
+  const matched = DAILY_DEVOTIONS.find(dev => dev.dateStr === fullDateKey || dev.dateStr === monthDayKey);
+
+  const startOfYear = new Date(year, 0, 0);
   const diff = d.getTime() - startOfYear.getTime();
   const oneDay = 1000 * 60 * 60 * 24;
   const dayOfYear = Math.floor(diff / oneDay);
   const idx = Math.abs(dayOfYear - 1) % DAILY_DEVOTIONS.length;
-  const devotion = DAILY_DEVOTIONS[idx];
-  const month = d.getMonth() + 1;
-  const date = d.getDate();
+
+  const rawDevotion = matched || DAILY_DEVOTIONS[0] || DAILY_DEVOTIONS[idx];
+
+  const devotion: DailyDevotion = {
+    ...rawDevotion,
+    reflectionZh: rawDevotion.reflectionZh || "你曾經歷哪些事，使你想起上帝慈愛地看顧你？上帝永恆不變的愛，對你來說有何意義？",
+    reflectionEn: rawDevotion.reflectionEn || "What experiences remind you of God's loving care? What does His unfailing love mean to you?",
+    prayerZh: rawDevotion.prayerZh || "親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。",
+    prayerEn: rawDevotion.prayerEn || "Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.",
+    sourceNameZh: rawDevotion.sourceNameZh || "靈命日糧",
+    sourceNameEn: rawDevotion.sourceNameEn || "Our Daily Bread",
+    sourceUrl: rawDevotion.sourceUrl || "https://traditional-odb.org/"
+  };
+
   const weekdaysZh = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
   const weekdaysEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const monthsEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const formattedDateZh = `${month}月${date}日 ${weekdaysZh[d.getDay()]}`;
   const formattedDateEn = `${monthsEn[d.getMonth()]} ${date}, ${weekdaysEn[d.getDay()]}`;
+
   return {
     devotion,
     formattedDateZh,
