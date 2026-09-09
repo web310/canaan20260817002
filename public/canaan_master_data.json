@@ -1,6 +1,6 @@
 {
   "app": "Canaan Shin Sheng Christian Church",
-  "exportedAt": "2026-09-09T01:20:43.055Z",
+  "exportedAt": "2026-09-09T17:36:06.670Z",
   "version": "2.0",
   "stats": {
     "totalSermons": 6,
@@ -48,8 +48,8 @@
           "3) 立志與弟兄姐妹一起迫切禱告"
         ],
         "videoPasscode": "25226",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-2",
@@ -77,8 +77,8 @@
           "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
         ],
         "videoPasscode": "25226",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-3",
@@ -106,8 +106,8 @@
           "4. 專心尋求神引領"
         ],
         "videoPasscode": "25226",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-4",
@@ -165,8 +165,8 @@
           "五、靈魂的醫生 （5:31）"
         ],
         "videoPasscode": "25226",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-6",
@@ -192,8 +192,8 @@
           "三、因名記在天上而歡喜 (路加福音 10:17-21)"
         ],
         "videoPasscode": "25226",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       }
     ],
     "events": [
