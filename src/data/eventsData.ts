@@ -3,7 +3,7 @@ import { ChurchEvent } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-09T17:36:06.669Z
+// Updated at: 2026-09-19T07:39:41.724Z
 // Total Events: 5
 // ============================================================================
 
