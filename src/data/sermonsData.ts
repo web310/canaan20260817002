@@ -3,14 +3,72 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-09T17:36:06.669Z
+// Updated at: 2026-09-19T07:39:41.724Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: 6
+// Total Sermons: 8
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-09-mtudqrd9";
+export const SERMONS_DATA_VERSION = "version-2026-09-19-mu82ua70";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1789803203031",
+    "title": "From the Feast of Tabernacles to the New Heaven and New Earth — God’s Tabernacle Among Humanity",
+    "titleZh": "從住棚到新天新地-神的帳幕在人間",
+    "speaker": "Brother Feng-Chih Tsai",
+    "speakerZh": "蔡豐智弟兄",
+    "date": "2026-09-20",
+    "scripture": "Revelation 21:3",
+    "scriptureZh": "啟示錄21章3節（啟示錄 21:3）",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Today’s message will begin with the background and significance of the Feast of Tabernacles, reflecting on how God has been present with His people in the past. Then, through the water and light of the Feast of Tabernacles, we will reflect on Christ as our Living Water and the Light of the World. Finally, we will look forward to the New Heaven and New Earth, with hope that God will dwell with His people forever.",
+    "summaryZh": "今天的信息會帶我們從住棚節的背景和意義開始，思想神過去如何與祂的百姓同在；接著透過住棚節的水與光，思想基督是我們的活水，也是世界的光；最後，我們一起仰望將來的新天新地，盼望神永遠與祂的百姓同住。",
+    "points": [
+      "1.紀念過去：住棚節的背景，禮節與意義",
+      "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
+      "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
+    ],
+    "pointsZh": [
+      "1.紀念過去：住棚節的背景，禮節與意義",
+      "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
+      "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "audioUrl": "",
+    "showVideo": true,
+    "showAudio": true
+  },
+  {
+    "id": "sermon-1789261339556",
+    "title": "A fighting chance",
+    "titleZh": "一線生機",
+    "speaker": "Rev. Sulun Meng",
+    "speakerZh": "孟蘇倫 牧師",
+    "date": "2026-09-13",
+    "scripture": "Joshua 2:15-21",
+    "scriptureZh": "約書亞記第二章（約書亞記 2:15-21）",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Sulun Meng on \"A fighting chance.\", reflecting on Joshua 2:15-21.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，孟蘇倫 牧師證道傳講《一線生機》，分享經文「約書亞記第二章（約書亞記 2:15-21）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+      "2. All must be united; God will perfect and fulfill our entire church.",
+      "3. A journey born of faith will surely witness God's mighty works firsthand."
+    ],
+    "pointsZh": [
+      "1.在絕境中經歷生機",
+      "2. 在審判時獲得生機",
+      "3. 界線之內才有生機"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "audioUrl": "",
+    "showVideo": false,
+    "showAudio": false
+  },
   {
     "id": "sermon-20260906",
     "title": "The Antioch Church",
@@ -133,8 +191,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
     "videoPasscode": "8s4y?JHX",
-    "showVideo": true,
-    "showAudio": true
+    "showVideo": false,
+    "showAudio": false
   },
   {
     "id": "sermon-5",
