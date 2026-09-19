@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-09T17:36:06.670Z
+// Updated at: 2026-09-19T07:39:41.724Z
 // ============================================================================
 
 export interface BulletinData {
@@ -112,28 +112,28 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
     "每週四晚上 8:00 線上守望禱告會 (Zoom ID: 310-626-6103，密碼: 25226)，歡迎弟兄姊妹同心代求。"
   ],
   "updatedAt": "2026-09-06T10:00:00.000Z",
-  "serviceDate": "2026-08-30",
+  "serviceDate": "2026-09-20",
   "presider": "鄭育青 弟兄",
-  "speaker": "萬志俠 牧師",
-  "speakerEn": "Rev. Zhixia Wan",
-  "sermonTitle": "走一條我們從未走過的路",
-  "sermonTitleEn": "Walking a Path We Have Never Walked Before",
-  "sermonScripture": "約書亞記第三章（約書亞記 3:1-17）",
-  "sermonScriptureEn": "Joshua 3:1-17",
-  "sermonSummary": "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
-  "sermonSummaryEn": "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
+  "speaker": "蔡豐智弟兄",
+  "speakerEn": "蔡豐智弟兄",
+  "sermonTitle": "從住棚到新天新地-神的帳幕在人間",
+  "sermonTitleEn": "From the Feast of Tabernacles to the New Heaven and New Earth — God’s Tabernacle Among Humanity",
+  "sermonScripture": "啟示錄21章3節（啟示錄 21:3）",
+  "sermonScriptureEn": "Revelation 21:3",
+  "sermonSummary": "在加南新生基督教會主日崇拜中，蔡豐智弟兄證道傳講《從住棚到新天新地-神的帳幕在人間崇拜經文：啟示錄21章3節內容大綱：》，分享經文「約書亞記第二章（約書亞記 2:15-21）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by 蔡豐智弟兄 on \"從住棚到新天新地-神的帳幕在人間崇拜經文：啟示錄21章3節內容大綱：\", reflecting on Joshua 2:15-21.",
   "sermonPointsZh": [
-    "1. 踏上新的旅程，我們必須緊隨神的腳步。",
-    "2. 眾人要合一，神要讓我們整個教會被成全。",
-    "3. 出于信心的旅程，必能親眼見證神的作為。"
+    "1.紀念過去：住棚節的背景，禮節與意義",
+    "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
+    "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
   ],
   "sermonPoints": [
-    "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
-    "2. All must be united; God will perfect and fulfill our entire church.",
-    "3. A journey born of faith will surely witness God's mighty works firsthand."
+    "1.紀念過去：住棚節的背景，禮節與意義",
+    "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
+    "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
   ],
-  "memoryVerse": "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
-  "memoryVerseRef": "約書亞記 3:5",
+  "memoryVerse": "我聽見有大聲音從寶座出來說：看哪，神的帳幕在人間。他要與人同住，他們要作他的子民。神要親自與他們同在，作他們的神。(啟 21:3)",
+  "memoryVerseRef": "啟示錄21章3節",
   "weeklyReadingRange": "8/31 - 9/6",
   "weeklyReadingSchedule": [
     {
