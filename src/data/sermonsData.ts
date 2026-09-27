@@ -3,36 +3,36 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-19T10:42:31.841Z
+// Updated at: 2026-09-27T08:49:16.522Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
 // Total Sermons: 8
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-19-mu89desh";
+export const SERMONS_DATA_VERSION = "version-2026-09-27-mujkuktm";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
-    "id": "sermon-1789803203031",
-    "title": "From the Feast of Tabernacles to the New Heaven and New Earth — God’s Tabernacle Among Humanity",
-    "titleZh": "從住棚到新天新地-神的帳幕在人間",
-    "speaker": "Brother Feng-Chih Tsai",
-    "speakerZh": "蔡豐智弟兄",
-    "date": "2026-09-20",
-    "scripture": "Revelation 21:3",
-    "scriptureZh": "啟示錄21章3節（啟示錄 21:3）",
+    "id": "sermon-1790498669580",
+    "title": "Understanding the Gospel of Jesus Christ",
+    "titleZh": "認識耶穌基督的福音",
+    "speaker": "Brother Shaoxin Li",
+    "speakerZh": "李紹信 弟兄",
+    "date": "2026-09-27",
+    "scripture": "Mark 1",
+    "scriptureZh": "馬可福音第一章",
     "series": "Sunday Message",
     "seriesZh": "主日證道",
-    "summary": "Today’s message will begin with the background and significance of the Feast of Tabernacles, reflecting on how God has been present with His people in the past. Then, through the water and light of the Feast of Tabernacles, we will reflect on Christ as our Living Water and the Light of the World. Finally, we will look forward to the New Heaven and New Earth, with hope that God will dwell with His people forever.",
-    "summaryZh": "今天的信息會帶我們從住棚節的背景和意義開始，思想神過去如何與祂的百姓同在；接著透過住棚節的水與光，思想基督是我們的活水，也是世界的光；最後，我們一起仰望將來的新天新地，盼望神永遠與祂的百姓同住。",
+    "summary": "The Truth of the Gospel · The Foundation of the Gospel\nThe Heart of the Gospel · Proclaiming the Gospel\nPassing on the Gospel · The Mission of the Gospel",
+    "summaryZh": "福音的真假‧福音的根基\n福音的核心‧福音的傳揚\n福音的傳承‧福音的使命",
     "points": [
-      "1.紀念過去：住棚節的背景，禮節與意義",
-      "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
-      "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
+      "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+      "2. All must be united; God will perfect and fulfill our entire church.",
+      "3. A journey born of faith will surely witness God's mighty works firsthand."
     ],
     "pointsZh": [
-      "1.紀念過去：住棚節的背景，禮節與意義",
-      "2.活在當下：任棚節的水與光（基督是活水與世界的光）",
-      "3.盼望等候神永遠的同在：新天新地，神的帳墓在人間"
+      "福音的真假‧福音的根基",
+      "福音的核心‧福音的傳揚",
+      "福音的傳承‧福音的使命"
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
