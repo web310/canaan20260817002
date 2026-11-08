@@ -3,16 +3,16 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-08T22:54:57.562Z
+// Updated at: 2026-11-08T23:14:16.341Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
 // Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-11-08-mw8fjwuy";
+export const SERMONS_DATA_VERSION = "version-2026-11-08-mw8g8qz9";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
-    "id": "sermon-1794175641470",
+    "id": "sermon-1794179421775",
     "title": "True Freedom from Jesus",
     "titleZh": "耶穌所賜的真自由",
     "speaker": "Brother Zhengyi Qiu",
@@ -29,8 +29,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     "videoUrl": "",
     "videoPasscode": "25226",
     "showVideo": false,
-    "showAudio": false,
-    "audioUrl": ""
+    "showAudio": false
   },
   {
     "id": "sermon-1791706122891",
@@ -54,8 +53,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     "videoUrl": "",
     "videoPasscode": "25226",
     "showVideo": false,
-    "showAudio": false,
-    "audioUrl": ""
+    "showAudio": false
   },
   {
     "id": "sermon-20261004",
