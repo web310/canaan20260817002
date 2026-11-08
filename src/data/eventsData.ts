@@ -3,7 +3,7 @@ import { ChurchEvent } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-08T22:54:57.562Z
+// Updated at: 2026-11-08T23:14:16.341Z
 // Total Events: 6
 // ============================================================================
 
@@ -14,8 +14,8 @@ export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = [
     "title": "Shin Sheng Hiking Club - Hiking Event",
     "titleZh": "新生健行隊 - 健行活動",
     "date": "2026-11-14",
-    "time": "09:00 AM ~ 11:30 AM",
-    "timeZh": "禮拜六 上午 9:00 ~ 11:30",
+    "time": "09:00 AM ~ 11:00 AM",
+    "timeZh": "禮拜六 上午 9:00 ~ 11:00",
     "location": "",
     "locationZh": "",
     "description": "Registration: Please sign up in the Shin Sheng Hiking Club LINE group or WeChat group, or send a text message to Simon Ma at (310) 989-4528",
@@ -28,9 +28,9 @@ export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = [
     "zoomPasscode": "",
     "isCustom": true,
     "order": 0,
-    "dateFormattedZh": "11月14日 (週六)",
-    "dateFormattedEn": "Sat, Nov 14",
-    "daysUntil": 6,
+    "dateFormattedZh": "10月10日 (週六)",
+    "dateFormattedEn": "Sat, Oct 10",
+    "daysUntil": -29,
     "isToday": false
   },
   {
