@@ -3,14 +3,78 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-28T01:21:01.465Z
+// Updated at: 2026-11-08T22:25:14.226Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: 8
+// Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-28-mukk9z4p";
+export const SERMONS_DATA_VERSION = "version-2026-11-08-mw8ehotu";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1794175641470",
+    "title": "True Freedom from Jesus",
+    "titleZh": "耶穌所賜的真自由",
+    "speaker": "Brother Zhengyi Qiu",
+    "speakerZh": "邱正一 弟兄",
+    "date": "2026-11-08",
+    "scripture": "John 8:34-36",
+    "scriptureZh": "約翰福音 8:34-36",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"耶穌所賜的真自由\", reflecting on John 8:34-36.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《耶穌所賜的真自由》，分享經文「約翰福音 8:34-36」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
+    "id": "sermon-1791706122891",
+    "title": "The True Vine and the Branches",
+    "titleZh": "主是葡萄樹，我是枝子",
+    "speaker": "Brother Zhengyi Qiu",
+    "speakerZh": "邱正一 弟兄",
+    "date": "2026-10-11",
+    "scripture": "John 15:4-5",
+    "scriptureZh": "約翰福音 15:4-5",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"The True Vine and the Branches\", reflecting on John 15:4-5.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《主是葡萄樹，我是枝子》，分享經文「約翰福音 15:4-5」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
+      "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
+      "3. Opening the Eyes of Hope (Romans 8:18)"
+    ],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
+    "id": "sermon-20261004",
+    "title": "From Wheel to Wheel",
+    "titleZh": "從輪到輪",
+    "speaker": "Rev. Jiasheng Huang",
+    "speakerZh": "黃嘉生 牧師",
+    "date": "2026-10-04",
+    "scripture": "Jeremiah 18:3-6",
+    "scriptureZh": "耶利米書 18:3-6",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Jiasheng Huang on \"From Wheel to Wheel\", reflecting on Jeremiah 18:3-6.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，黃嘉生 牧師證道傳講《從輪到輪》，分享經文「耶利米書 18:3-6」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
   {
     "id": "sermon-1790547163293",
     "title": "Understanding the Gospel of Jesus Christ",
@@ -36,13 +100,12 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
   {
     "id": "sermon-1789261339556",
-    "title": "A fighting chance",
+    "title": "A Fighting Chance",
     "titleZh": "一線生機",
     "speaker": "Rev. Sulun Meng",
     "speakerZh": "孟蘇倫 牧師",
@@ -65,7 +128,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
@@ -188,65 +250,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "日光之下的虛空 — 傳道書 1:2-3",
       "神造萬物，各按其時成為美好 — 傳道書 3:11",
       "人所當盡的分 — 傳道書 12:13"
-    ],
-    "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
-    "videoPasscode": "8s4y?JHX",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-5",
-    "title": "Those Who Are Well Do Not Need a Physician",
-    "titleZh": "康健的人用不著醫生",
-    "speaker": "Rev. Yijun Guo",
-    "speakerZh": "郭易君 牧師",
-    "date": "2026-08-02",
-    "scripture": "Luke 5:27-32",
-    "scriptureZh": "路加福音第 5 章第 27-32 節",
-    "series": "Sunday Worship",
-    "seriesZh": "主日崇拜",
-    "summary": "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
-    "summaryZh": "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
-    "points": [
-      "1. Sitting at the Tax Booth (5:27a)",
-      "2. Follow Me (5:27b)",
-      "3. Followed Jesus (5:28)",
-      "4. Hosted a Great Feast (5:29-30)",
-      "5. Physician of Souls (5:31)"
-    ],
-    "pointsZh": [
-      "一、坐在稅關上 （5:27上）",
-      "二、你跟從我來 （5:27下）",
-      "三、跟從了耶穌 （5:28）",
-      "四、他大擺筵席 （5:29-30）",
-      "五、靈魂的醫生 （5:31）"
-    ],
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-6",
-    "title": "The Lord Jesus Personally Teaches Service",
-    "titleZh": "主耶穌親自教導事奉",
-    "speaker": "Brother Shaoxin Li",
-    "speakerZh": "李紹信 弟兄",
-    "date": "2026-07-26",
-    "scripture": "Luke 10:1-12, 17-21",
-    "scriptureZh": "路加福音第 10 章第 1-12，17-21 節",
-    "series": "Sunday Worship",
-    "seriesZh": "主日崇拜",
-    "summary": "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
-    "summaryZh": "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
-    "points": [
-      "1. The Lord Personally Sends Disciples (Luke 10:1-3)",
-      "2. Principles and Attitudes of Ministry (Luke 10:4-12)",
-      "3. Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
-    ],
-    "pointsZh": [
-      "一、主親自差遣門徒 (路加福音 10:1-3)",
-      "二、事奉的原則與態度 (路加福音 10:4-12)",
-      "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
     "videoPasscode": "25226",
     "showVideo": false,
