@@ -1,6 +1,6 @@
 {
   "app": "Canaan Shin Sheng Christian Church",
-  "exportedAt": "2026-11-08T22:54:57.563Z",
+  "exportedAt": "2026-11-08T23:14:16.341Z",
   "version": "2.0",
   "stats": {
     "totalSermons": 9,
@@ -8,12 +8,12 @@
     "totalPhotos": 32,
     "totalCategories": 9,
     "totalAlbums": 6,
-    "totalPrayers": 5
+    "totalPrayers": 4
   },
   "data": {
     "sermons": [
       {
-        "id": "sermon-1794175641470",
+        "id": "sermon-1794179421775",
         "title": "True Freedom from Jesus",
         "titleZh": "耶穌所賜的真自由",
         "speaker": "Brother Zhengyi Qiu",
@@ -30,8 +30,7 @@
         "videoUrl": "",
         "videoPasscode": "25226",
         "showVideo": false,
-        "showAudio": false,
-        "audioUrl": ""
+        "showAudio": false
       },
       {
         "id": "sermon-1791706122891",
@@ -55,8 +54,7 @@
         "videoUrl": "",
         "videoPasscode": "25226",
         "showVideo": false,
-        "showAudio": false,
-        "audioUrl": ""
+        "showAudio": false
       },
       {
         "id": "sermon-20261004",
@@ -266,8 +264,8 @@
         "title": "Shin Sheng Hiking Club - Hiking Event",
         "titleZh": "新生健行隊 - 健行活動",
         "date": "2026-11-14",
-        "time": "09:00 AM ~ 11:30 AM",
-        "timeZh": "禮拜六 上午 9:00 ~ 11:30",
+        "time": "09:00 AM ~ 11:00 AM",
+        "timeZh": "禮拜六 上午 9:00 ~ 11:00",
         "location": "",
         "locationZh": "",
         "description": "Registration: Please sign up in the Shin Sheng Hiking Club LINE group or WeChat group, or send a text message to Simon Ma at (310) 989-4528",
@@ -280,9 +278,9 @@
         "zoomPasscode": "",
         "isCustom": true,
         "order": 0,
-        "dateFormattedZh": "11月14日 (週六)",
-        "dateFormattedEn": "Sat, Nov 14",
-        "daysUntil": 6,
+        "dateFormattedZh": "10月10日 (週六)",
+        "dateFormattedEn": "Sat, Oct 10",
+        "daysUntil": -29,
         "isToday": false
       },
       {
@@ -1029,29 +1027,21 @@
       }
     ],
     "bulletin": {
-      "serviceDate": "2026-09-27",
-      "presider": "鄭育青 弟兄",
-      "speaker": "李紹信 弟兄",
-      "speakerEn": "Brother Shaoxin Li",
-      "sermonTitle": "認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命",
-      "sermonTitleEn": "認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命",
-      "sermonScripture": "約書亞記第二章（約書亞記 2:15-21）",
-      "sermonScriptureEn": "Joshua 2:15-21",
-      "sermonSummary": "在加南新生基督教會主日崇拜中，李紹信 弟兄證道傳講《認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命》，分享經文「約書亞記第二章（約書亞記 2:15-21）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-      "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Shaoxin Li on \"認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命\", reflecting on Joshua 2:15-21.",
-      "sermonPointsZh": [
-        "1.在絕境中經歷生機",
-        "2. 在審判時獲得生機",
-        "3. 界線之內才有生機"
-      ],
-      "sermonPoints": [
-        "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
-        "2. All must be united; God will perfect and fulfill our entire church.",
-        "3. A journey born of faith will surely witness God's mighty works firsthand."
-      ],
+      "serviceDate": "2026-11-08",
+      "presider": "鄭育青 鄭育青 弟兄",
+      "speaker": "邱正一 弟兄",
+      "speakerEn": "Brother Zhengyi Qiu",
+      "sermonTitle": "耶穌所賜的真自由",
+      "sermonTitleEn": "True Freedom from Jesus",
+      "sermonScripture": "約翰福音 8:34-36",
+      "sermonScriptureEn": "John 8:34-36",
+      "sermonSummary": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《耶穌所賜的真自由》，分享經文「約翰福音 8:34-36」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+      "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"耶穌所賜的真自由\", reflecting on John 8:34-36.",
+      "sermonPointsZh": [],
+      "sermonPoints": [],
       "memoryVerseZh": "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。（詩篇 1:2-3）",
       "memoryVerseEn": "Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord, and who meditates on his law day and night. That person is like a tree planted by streams of water, which yields its fruit in season and whose leaf does not wither—whatever they do prospers. (Psalms 1:2-3)",
-      "memoryVerseRef": "使徒行傳4章12節",
+      "memoryVerseRef": "",
       "verseReference": "詩篇 1:2-3 / Psalms 1:2-3",
       "readingRange": "10/5 - 10/11",
       "schedule": [
@@ -1112,116 +1102,60 @@
           "newTestamentEn": "2 Corinthians 6"
         }
       ],
-      "announcements": [
-        "年度標題同心合一，興旺福音，建造教會感謝紹信兄帶來寶貴的信息，願主幫助我們不僅認識福音，更在生活中活出福音，忠心跟隨基督、傳揚福音，並將信仰一代一代傳承下去。下週由萬四長老帶來信息，求主賜他智慧與能力，忠心傳講神的話語；也求主預備我們的心，使我們謙卑領受、明白並遵行主的旨意。禮拜前主日學；十月份開始即將展開《約書亞記》門徒訓練，盼望透過神的話語與門徒操練，幫助弟兄姊妹在真理上扎根，在信心中成長，更深認識主、跟隨主，並學習在生活與服事中活出門徒的生命。歡迎弟兄姊妹踴躍參加，一同在主裡學習、成長與彼此造就。背誦經文：拜背誦經文在詩篇第96篇第2-3節。"
-      ],
-      "prayerRequests": [
-        "為談妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷神的恩典與同在。為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
-      ],
+      "announcements": [],
+      "prayerRequests": [],
       "zoomPasscode": "25226",
       "videoUrl": "",
-      "memoryVerse": "拜背誦經文在詩篇第96篇第2-3節。【代禱與感恩】為談妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷神的恩典與同在。為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。【背誦經文】詩篇第96篇第2-3節",
-      "weeklyReadingRange": "8/31 - 9/6",
-      "weeklyReadingSchedule": [
-        {
-          "date": "8/31 (週一)",
-          "oldTestament": "詩篇 132-134",
-          "newTestament": "哥林多前書 11:17-34"
-        },
-        {
-          "date": "9/01 (週二)",
-          "oldTestament": "詩篇 135-136",
-          "newTestament": "哥林多前書 12"
-        },
-        {
-          "date": "9/02 (週三)",
-          "oldTestament": "詩篇 137-139",
-          "newTestament": "哥林多前書 13"
-        },
-        {
-          "date": "9/03 (週四)",
-          "oldTestament": "詩篇 140-141",
-          "newTestament": "哥林多前書 14:1-20"
-        },
-        {
-          "date": "9/04 (週五)",
-          "oldTestament": "詩篇 142-143",
-          "newTestament": "哥林多前書 14:21-40"
-        },
-        {
-          "date": "9/05 (週六)",
-          "oldTestament": "詩篇 144-145",
-          "newTestament": "哥林多前書 15:1-34"
-        },
-        {
-          "date": "9/06 (週日)",
-          "oldTestament": "詩篇 146-147",
-          "newTestament": "哥林多前書 15:35-58"
-        }
-      ]
+      "memoryVerse": "",
+      "weeklyReadingRange": "",
+      "weeklyReadingSchedule": []
     },
     "prayers": [
       {
-        "id": "bulletin-prayer-4-1791014936583",
+        "id": "bulletin-prayer-3-1794179305872",
         "author": "教會同工會",
         "authorZh": "教會同工會",
         "authorEn": "Church Board",
         "category": "health",
-        "title": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "titleZh": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "titleEn": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "content": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentZh": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentEn": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。. Please join together in prayer for God's grace and guidance.",
-        "date": "2026-10-04",
-        "isConfidential": false,
-        "prayedCount": 30
-      },
-      {
-        "id": "bulletin-prayer-3-1791014936583",
-        "author": "教會同工會",
-        "authorZh": "教會同工會",
-        "authorEn": "Church Board",
-        "category": "health",
-        "title": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。",
-        "titleZh": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。",
-        "titleEn": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。",
-        "content": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentZh": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentEn": "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。. Please join together in prayer for God's grace and guidance.",
-        "date": "2026-10-04",
+        "title": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "titleZh": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "titleEn": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "content": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentZh": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentEn": "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊 妹智慧，使一切安排合乎主的心意，成為接觸社區、傳 揚福音的橋樑，為教會未來的宣教事工預備道路。. Please join together in prayer for God's grace and guidance.",
+        "date": "2026-10-25",
         "isConfidential": false,
         "prayedCount": 25
       },
       {
-        "id": "bulletin-prayer-2-1791014936583",
+        "id": "bulletin-prayer-2-1794179305872",
         "author": "教會同工會",
         "authorZh": "教會同工會",
         "authorEn": "Church Board",
         "category": "faith",
-        "title": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。",
-        "titleZh": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。",
-        "titleEn": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。",
-        "content": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentZh": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentEn": "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。. Please join together in prayer for God's grace and guidance.",
-        "date": "2026-10-04",
+        "title": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。",
+        "titleZh": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。",
+        "titleEn": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。",
+        "content": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentZh": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentEn": "請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱 告，求主保守他們一路平安，出入蒙恩，身體健康，也 看顧他們在外的一切安排，讓他們經歷主的同在，並在 適當的時候平安回到我們當中，一同敬拜神。. Please join together in prayer for God's grace and guidance.",
+        "date": "2026-10-25",
         "isConfidential": false,
         "prayedCount": 20
       },
       {
-        "id": "bulletin-prayer-1-1791014936583",
+        "id": "bulletin-prayer-1-1794179305872",
         "author": "教會同工會",
         "authorZh": "教會同工會",
         "authorEn": "Church Board",
         "category": "general",
-        "title": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。",
-        "titleZh": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。",
-        "titleEn": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。",
-        "content": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentZh": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentEn": "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。. Please join together in prayer for God's grace and guidance.",
-        "date": "2026-10-04",
+        "title": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。",
+        "titleZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。",
+        "titleEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。",
+        "content": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫 治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平 安、力量與智慧，也看顧家庭、減輕家人的壓力；願他 們在恢復過程中更深經歷主的恩典與同在，身心靈都得 著更新。. Please join together in prayer for God's grace and guidance.",
+        "date": "2026-10-25",
         "isConfidential": false,
         "prayedCount": 15
       },
