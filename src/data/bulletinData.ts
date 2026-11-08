@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-28T01:21:01.465Z
+// Updated at: 2026-11-08T22:25:14.227Z
 // ============================================================================
 
 export interface BulletinData {
@@ -53,6 +53,7 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
   "sermonScripture": "約書亞記第二章（約書亞記 2:15-21）",
   "sermonScriptureEn": "Joshua 2:15-21",
   "sermonSummary": "在加南新生基督教會主日崇拜中，李紹信 弟兄證道傳講《認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命》，分享經文「約書亞記第二章（約書亞記 2:15-21）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Shaoxin Li on \"認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命\", reflecting on Joshua 2:15-21.",
   "sermonPointsZh": [
     "1.在絕境中經歷生機",
     "2. 在審判時獲得生機",
@@ -63,10 +64,11 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
     "2. All must be united; God will perfect and fulfill our entire church.",
     "3. A journey born of faith will surely witness God's mighty works firsthand."
   ],
-  "memoryVerseZh": "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。（馬太福音第 28 章第 19-20 節）",
-  "memoryVerseEn": "Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age. (Matthew 28:19-20)",
-  "verseReference": "馬太福音 28:19-20 / Matthew 28:19-20",
-  "readingRange": "9/7 - 9/13",
+  "memoryVerseZh": "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。（詩篇 1:2-3）",
+  "memoryVerseEn": "Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord, and who meditates on his law day and night. That person is like a tree planted by streams of water, which yields its fruit in season and whose leaf does not wither—whatever they do prospers. (Psalms 1:2-3)",
+  "memoryVerseRef": "使徒行傳4章12節",
+  "verseReference": "詩篇 1:2-3 / Psalms 1:2-3",
+  "readingRange": "10/5 - 10/11",
   "schedule": [
     {
       "date": "9/7 (週一)",
@@ -128,9 +130,12 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
   "announcements": [
     "年度標題同心合一，興旺福音，建造教會感謝紹信兄帶來寶貴的信息，願主幫助我們不僅認識福音，更在生活中活出福音，忠心跟隨基督、傳揚福音，並將信仰一代一代傳承下去。下週由萬四長老帶來信息，求主賜他智慧與能力，忠心傳講神的話語；也求主預備我們的心，使我們謙卑領受、明白並遵行主的旨意。禮拜前主日學；十月份開始即將展開《約書亞記》門徒訓練，盼望透過神的話語與門徒操練，幫助弟兄姊妹在真理上扎根，在信心中成長，更深認識主、跟隨主，並學習在生活與服事中活出門徒的生命。歡迎弟兄姊妹踴躍參加，一同在主裡學習、成長與彼此造就。背誦經文：拜背誦經文在詩篇第96篇第2-3節。"
   ],
-  "updatedAt": "2026-09-27T15:20:00.000Z",
+  "prayerRequests": [
+    "為談妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷神的恩典與同在。為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
+  ],
+  "zoomPasscode": "25226",
+  "videoUrl": "",
   "memoryVerse": "拜背誦經文在詩篇第96篇第2-3節。【代禱與感恩】為談妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷神的恩典與同在。為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。【背誦經文】詩篇第96篇第2-3節",
-  "memoryVerseRef": "使徒行傳4章12節",
   "weeklyReadingRange": "8/31 - 9/6",
   "weeklyReadingSchedule": [
     {
@@ -168,11 +173,5 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
       "oldTestament": "詩篇 146-147",
       "newTestament": "哥林多前書 15:35-58"
     }
-  ],
-  "prayerRequests": [
-    "為談妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷神的恩典與同在。為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
-  ],
-  "zoomPasscode": "25226",
-  "videoUrl": "",
-  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Shaoxin Li on \"認識耶穌基督的福音經文：馬可福音第一章大綱：福音的真假福音的根基福音的核心福音的傳揚福音的傳承福音的使命\", reflecting on Joshua 2:15-21."
+  ]
 };
