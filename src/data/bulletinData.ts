@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-08T23:15:10.875Z
+// Updated at: 2026-11-23T23:34:36.050Z
 // ============================================================================
 
 export interface BulletinData {
@@ -56,67 +56,67 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
   "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"耶穌所賜的真自由\", reflecting on John 8:34-36.",
   "sermonPointsZh": [],
   "sermonPoints": [],
-  "memoryVerseZh": "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。（詩篇 1:2-3）",
-  "memoryVerseEn": "Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord, and who meditates on his law day and night. That person is like a tree planted by streams of water, which yields its fruit in season and whose leaf does not wither—whatever they do prospers. (Psalms 1:2-3)",
+  "memoryVerseZh": "你們也靠他同被建造，成為神藉著聖靈居住的所在。（以弗所書 2:22）",
+  "memoryVerseEn": "And in him you too are being built together to become a dwelling in which God lives by his Spirit. (Ephesians 2:22)",
   "memoryVerseRef": "",
-  "verseReference": "詩篇 1:2-3 / Psalms 1:2-3",
-  "readingRange": "10/5 - 10/11",
+  "verseReference": "以弗所書 2:22 / Ephesians 2:22",
+  "readingRange": "11/23 - 11/29",
   "schedule": [
     {
-      "date": "9/7 (週一)",
-      "dateEn": "9/7 (Mon)",
-      "oldTestament": "箴言 1-2",
-      "oldTestamentEn": "Proverbs 1-2",
-      "newTestament": "哥林多前書 16",
-      "newTestamentEn": "1 Corinthians 16"
+      "date": "11/23 (週一)",
+      "dateEn": "11/23 (Mon)",
+      "oldTestament": "以西結書 20-21",
+      "oldTestamentEn": "Ezekiel 20-21",
+      "newTestament": "雅各書 5",
+      "newTestamentEn": "James 5"
     },
     {
-      "date": "9/8 (週二)",
-      "dateEn": "9/8 (Tue)",
-      "oldTestament": "箴言 3-5",
-      "oldTestamentEn": "Proverbs 3-5",
-      "newTestament": "哥林多後書 1",
-      "newTestamentEn": "2 Corinthians 1"
+      "date": "11/24 (週二)",
+      "dateEn": "11/24 (Tue)",
+      "oldTestament": "以西結書 22-23",
+      "oldTestamentEn": "Ezekiel 22-23",
+      "newTestament": "彼得前書 1",
+      "newTestamentEn": "1 Peter 1"
     },
     {
-      "date": "9/9 (週三)",
-      "dateEn": "9/9 (Wed)",
-      "oldTestament": "箴言 6-7",
-      "oldTestamentEn": "Proverbs 6-7",
-      "newTestament": "哥林多後書 2",
-      "newTestamentEn": "2 Corinthians 2"
+      "date": "11/25 (週三)",
+      "dateEn": "11/25 (Wed)",
+      "oldTestament": "以西結書 24-26",
+      "oldTestamentEn": "Ezekiel 24-26",
+      "newTestament": "彼得前書 2",
+      "newTestamentEn": "1 Peter 2"
     },
     {
-      "date": "9/10 (週四)",
-      "dateEn": "9/10 (Thu)",
-      "oldTestament": "箴言 8-9",
-      "oldTestamentEn": "Proverbs 8-9",
-      "newTestament": "哥林多後書 3",
-      "newTestamentEn": "2 Corinthians 3"
+      "date": "11/26 (週四)",
+      "dateEn": "11/26 (Thu)",
+      "oldTestament": "以西結書 27-29",
+      "oldTestamentEn": "Ezekiel 27-29",
+      "newTestament": "彼得前書 3",
+      "newTestamentEn": "1 Peter 3"
     },
     {
-      "date": "9/11 (週五)",
-      "dateEn": "9/11 (Fri)",
-      "oldTestament": "箴言 10-12",
-      "oldTestamentEn": "Proverbs 10-12",
-      "newTestament": "哥林多後書 4",
-      "newTestamentEn": "2 Corinthians 4"
+      "date": "11/27 (週五)",
+      "dateEn": "11/27 (Fri)",
+      "oldTestament": "以西結書 30-32",
+      "oldTestamentEn": "Ezekiel 30-32",
+      "newTestament": "彼得前書 4",
+      "newTestamentEn": "1 Peter 4"
     },
     {
-      "date": "9/12 (週六)",
-      "dateEn": "9/12 (Sat)",
-      "oldTestament": "箴言 13-15",
-      "oldTestamentEn": "Proverbs 13-15",
-      "newTestament": "哥林多後書 5",
-      "newTestamentEn": "2 Corinthians 5"
+      "date": "11/28 (週六)",
+      "dateEn": "11/28 (Sat)",
+      "oldTestament": "以西結書 33-34",
+      "oldTestamentEn": "Ezekiel 33-34",
+      "newTestament": "彼得前書 5",
+      "newTestamentEn": "1 Peter 5"
     },
     {
-      "date": "9/13 (週日)",
-      "dateEn": "9/13 (Sun)",
-      "oldTestament": "箴言 16-18",
-      "oldTestamentEn": "Proverbs 16-18",
-      "newTestament": "哥林多後書 6",
-      "newTestamentEn": "2 Corinthians 6"
+      "date": "11/29 (週日)",
+      "dateEn": "11/29 (Sun)",
+      "oldTestament": "以西結書 35-36",
+      "oldTestamentEn": "Ezekiel 35-36",
+      "newTestament": "彼得後書 1",
+      "newTestamentEn": "2 Peter 1"
     }
   ],
   "announcements": [],
